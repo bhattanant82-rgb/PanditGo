@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - PanditGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .contact-hero {
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('images/contact-bg.jpg');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 120px 0;
+        }
+        .contact-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            padding: 40px;
+            transition: all 0.3s;
+        }
+        .contact-card:hover {
+            transform: translateY(-10px);
+        }
+        .icon-circle {
+            width: 70px;
+            height: 70px;
+            background: #FF9933;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 28px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar (same as other pages) -->
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="index.html">PanditGo</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="book-pandit.html">Book Puja</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="contact.html">Contact</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="contact-hero text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-3">Get in Touch</h1>
+            <p class="lead">We are here to help you with your spiritual needs 24/7</p>
+        </div>
+    </section>
+
+    <!-- Contact Details -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row g-5 justify-content-center">
+                <!-- Email -->
+                <div class="col-md-4">
+                    <div class="contact-card text-center">
+                        <div class="icon-circle text-white">
+                            <i class="bi bi-envelope-fill fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mt-3">Email Us</h5>
+                        <p class="text-muted">For inquiries & support</p>
+                        <a href="mailto:support@panditgo.com" class="text-primary fw-bold">support@panditgo.com</a>
+                    </div>
+                </div>
+
+                <!-- Phone -->
+                <div class="col-md-4">
+                    <div class="contact-card text-center">
+                        <div class="icon-circle text-white">
+                            <i class="bi bi-telephone-fill fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mt-3">Call Us</h5>
+                        <p class="text-muted">Mon-Sun: 7AM - 11PM</p>
+                        <a href="tel:+916359290705" class="text-primary fw-bold">+91 63592 90705</a>
+                    </div>
+                </div>
+
+                <!-- WhatsApp -->
+                <div class="col-md-4">
+                    <div class="contact-card text-center">
+                        <div class="icon-circle text-white">
+                            <i class="bi bi-whatsapp fs-3"></i>
+                        </div>
+                        <h5 class="fw-bold mt-3">WhatsApp</h5>
+                        <p class="text-muted">Instant support</p>
+                        <a href="https://wa.me/916359290705" target="_blank" class="text-success fw-bold">+91 63592 90705</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Address -->
+            <div class="row mt-5">
+                <div class="col-12 text-center">
+                    <h4 class="fw-bold mb-3">Our Location</h4>
+                    <p class="text-muted lead">
+                        PanditGo Office, Near Temple Road,<br>
+                        Ahmedabad, Gujarat - 380001
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4">
+        <div class="container text-center">
+            <p>&copy; 2025 PanditGo. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
