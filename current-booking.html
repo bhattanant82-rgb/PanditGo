@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Booking - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: #f8f2eb; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .pin { font-size: 2.5rem; font-weight: bold; color: #C2412F; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container">
+        <div class="card p-4 mt-5">
+            <h3 class="text-danger mb-3">Current Booking - <span id="pujaName"></span></h3>
+            <p>Pandit: <strong id="panditName"></strong> • <span id="dateTime"></span></p>
+            <p class="text-success fw-bold">Pandit is on the way</p>
+            <hr>
+            <div class="text-center my-5">
+                <p class="text-muted">Arriving in ~15 minutes</p>
+                <p class="pin" id="arrivalPin"></p>
+                <p class="text-muted small">Pandit ko ye PIN bolna when he arrives</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('bookingConfirmed') === 'true') {
+            document.getElementById('pujaName').textContent = localStorage.getItem('bookingPuja');
+            document.getElementById('panditName').textContent = localStorage.getItem('bookingPandit');
+            document.getElementById('dateTime').textContent = localStorage.getItem('bookingDateTime');
+            document.getElementById('arrivalPin').textContent = localStorage.getItem('arrivalPin');
+        } else {
+            alert('No active booking! Payment complete karo pehle');
+            window.location.href = 'book-pandit.html';
+        }
+    </script>
+</body>
+</html>

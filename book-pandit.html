@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book a Pandit - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Razorpay Checkout Script -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <style>
+        /* Progress Bar */
+        .step .circle {
+            width: 50px;
+            height: 50px;
+            background: #ccc;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        .step .circle.active {
+            background: #FF9933;
+        }
+        .step .line {
+            flex-grow: 1;
+            height: 4px;
+            background: #ccc;
+            margin: 0 10px;
+        }
+        .step-content {
+            display: none;
+            min-height: 500px; /* Blank screen fix */
+        }
+        .step-content.active {
+            display: block;
+        }
+        .bg-warning.bg-opacity-10 {
+            background-color: rgba(255, 153, 51, 0.1) !important;
+        }
+        /* Card fix */
+        .card.shadow-lg {
+            background: white !important;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-lg bg-white shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="index.html">BookMyPandit</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Services</a></li>
+                </ul>
+                <div class="d-flex gap-3 align-items-center">
+                    <a href="login.html" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-medium">Login</a>
+                    <a href="login.html" class="btn btn-danger rounded-pill px-4 py-2 fw-medium">Sign Up</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <section class="py-5 bg-light min-vh-100">
+        <div class="container">
+            <h1 class="text-center display-4 fw-bold text-primary mb-5">Book Your Puja</h1>
+
+            <!-- Progress Bar -->
+            <div class="row mb-5">
+                <div class="col">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div class="step text-center"><div class="circle active">1</div><p>Select City</p></div>
+                        <div class="line"></div>
+                        <div class="step text-center"><div class="circle">2</div><p>Choose Puja</p></div>
+                        <div class="line"></div>
+                        <div class="step text-center"><div class="circle">3</div><p>Select Pandit</p></div>
+                        <div class="line"></div>
+                        <div class="step text-center"><div class="circle">4</div><p>Date & Time</p></div>
+                        <div class="line"></div>
+                        <div class="step text-center"><div class="circle">5</div><p>Phone & OTP</p></div>
+                        <div class="line"></div>
+                        <div class="step text-center"><div class="circle">6</div><p>Summary</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Card (No blank screen) -->
+            <div class="card shadow-lg p-5 rounded-3 bg-white">
+                <form id="multiStepForm">
+                    <!-- Step 1: Select City -->
+                    <div class="step-content active" id="step1">
+                        <h3 class="text-center mb-4">Select City</h3>
+                        <select class="form-select form-select-lg rounded-pill mb-4" id="city" required>
+                            <option value="" disabled selected>Select City</option>
+                            <option>Mumbai</option>
+                            <option>Ahmedabad</option>
+                            <option>Bharuch</option>
+                            <option>Surat</option>
+                            <option>Ankleshwar</option>
+                            <option>Vadodara</option>
+                            <option>Rajkot</option>
+                        </select>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-warning btn-lg rounded-pill px-5 next-btn">Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 2: Choose Puja -->
+                    <div class="step-content" id="step2">
+                        <h3 class="text-center mb-4">Choose Puja</h3>
+                        <select class="form-select form-select-lg rounded-pill mb-4" id="puja" required>
+                            <option value="" disabled selected>Select Puja</option>
+                            <option data-price="2500">Satyanarayan Puja</option>
+                            <option data-price="5100">Griha Pravesh</option>
+                            <option data-price="1100">Ganesh Puja</option>
+                            <option data-price="1500">Lakshmi Puja</option>
+                            <option data-price="1200">Saraswati Puja</option>
+                            <option data-price="1800">Navgraha Shanti Puja</option>
+                            <option data-price="2100">Satyanarayan Katha</option>
+                            <option data-price="1600">Mahamrityunjaya Jaap</option>
+                            <option data-price="2000">Rudrabhishek</option>
+                            <option data-price="1300">Gayatri Mantra Jaap</option>
+                            <option data-price="2500">Mini Vastu Shanti Puja</option>
+                            <option data-price="2200">Small Havan</option>
+                        </select>
+                        <div class="text-center">
+                            <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
+                            <button type="button" class="btn btn-warning btn-lg rounded-pill px-5 next-btn">Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Select Pandit -->
+                    <div class="step-content" id="step3">
+                        <h3 class="text-center mb-4">Select Pandit</h3>
+                        <div class="row g-4">
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit1.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Ram Sharma</h5>
+                                    <p class="small text-muted">20+ Years • Hindi/Sanskrit/Gujarati</p>
+                                    <p class="text-warning">⭐ 4.9</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Ram Sharma">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit2.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Mahesh Joshi</h5>
+                                    <p class="small text-muted">18 Years • Hindi/Sanskrit</p>
+                                    <p class="text-warning">⭐ 4.8</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Mahesh Joshi">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit3.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Vikram Patel</h5>
+                                    <p class="small text-muted">25 Years • Gujarati/Hindi</p>
+                                    <p class="text-warning">⭐ 5.0</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Vikram Patel">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit4.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Anil Trivedi</h5>
+                                    <p class="small text-muted">15 Years • Hindi/Sanskrit</p>
+                                    <p class="text-warning">⭐ 4.7</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Anil Trivedi">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit5.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Rajesh Dubey</h5>
+                                    <p class="small text-muted">22 Years • Hindi/Sanskrit</p>
+                                    <p class="text-warning">⭐ 4.9</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Rajesh Dubey">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit6.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Sanjay Mishra</h5>
+                                    <p class="small text-muted">17 Years • Hindi</p>
+                                    <p class="text-warning">⭐ 4.8</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Sanjay Mishra">Select</button>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center p-3 shadow">
+                                    <img src="images/pandit7.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
+                                    <h5>Pt. Kishan Shastri</h5>
+                                    <p class="small text-muted">30 Years • Sanskrit/Hindi/Gujarati</p>
+                                    <p class="text-warning">⭐ 5.0</p>
+                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Kishan Shastri">Select</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
+                            <button type="button" class="btn btn-warning btn-lg rounded-pill px-5 next-btn">Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 4: Date & Time -->
+                    <div class="step-content" id="step4">
+                        <h3 class="text-center mb-4">Select Date & Time</h3>
+                        <div class="row g-4 justify-content-center">
+                            <div class="col-md-5">
+                                <input type="date" id="date" class="form-control form-control-lg rounded-pill text-center" required>
+                            </div>
+                            <div class="col-md-5">
+                                <input type="time" id="time" class="form-control form-control-lg rounded-pill text-center" required>
+                            </div>
+                        </div>
+                        <div class="text-center mt-5">
+                            <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
+                            <button type="button" class="btn btn-warning btn-lg rounded-pill px-5 next-btn">Continue to Phone Verification</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 5: Phone & OTP -->
+                    <div class="step-content" id="step5">
+                        <h3 class="text-center mb-4">Phone Verification</h3>
+                        <div class="row g-3 justify-content-center">
+                            <div class="col-md-6">
+                                <input type="tel" id="phone" class="form-control form-control-lg rounded-pill" placeholder="Mobile Number" maxlength="10" required>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" id="sendOtp" class="btn btn-outline-primary btn-lg rounded-pill w-100">Send OTP</button>
+                            </div>
+                        </div>
+                        <div id="otpField" class="mt-3 text-center" style="display:none;">
+                            <input type="text" id="otpInput" class="form-control form-control-lg rounded-pill d-inline-block w-50" placeholder="Enter OTP" maxlength="6">
+                            <button type="button" id="verifyOtp" class="btn btn-success btn-lg rounded-pill ms-3">Verify</button>
+                        </div>
+                        <div class="text-center mt-5">
+                            <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
+                            <button type="button" class="btn btn-warning btn-lg rounded-pill px-5 next-btn" disabled id="nextAfterOtp">Continue</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 6: Summary + Razorpay -->
+                    <div class="step-content" id="step6">
+                        <h3 class="text-center mb-5 fw-bold">Booking Summary</h3>
+                        <div class="card shadow p-4">
+                            <div class="border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>City</strong></p>
+                                <p class="text-muted" id="sumCity">-</p>
+                            </div>
+                            <div class="border-bottom pb-3 mb-3 d-flex justify-content-between">
+                                <div>
+                                    <p class="mb-1"><strong>Puja</strong></p>
+                                    <p class="text-muted" id="sumPuja">-</p>
+                                </div>
+                                <p class="text-warning fw-bold" id="sumPrice">₹2500</p>
+                            </div>
+                            <div class="border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>Pandit</strong></p>
+                                <p class="text-muted" id="sumPandit">-</p>
+                            </div>
+                            <div class="border-bottom pb-3 mb-3">
+                                <p class="mb-1"><strong>Date & Time</strong></p>
+                                <p class="text-muted" id="sumDateTime">-</p>
+                            </div>
+                            <div class="mb-4">
+                                <p class="mb-1"><strong>Phone Number</strong></p>
+                                <p class="text-muted" id="sumPhone">-</p>
+                            </div>
+                            <div class="bg-warning bg-opacity-10 rounded-3 p-4 mb-4">
+                                <p class="mb-2"><strong>Total Amount</strong><span class="float-end" id="totalAmount">₹2500</span></p>
+                                <p class="mb-2"><strong>Advance Payment (Now)</strong><span class="float-end text-success">₹151</span></p>
+                                <p class="mb-0"><strong>Balance Payment (Later)</strong><span class="float-end">₹2349</span></p>
+                            </div>
+                            <div class="text-center">
+                                <button type="button" id="razorpayBtn" class="btn btn-warning btn-lg rounded-pill px-5 py-3 fw-bold w-100">
+                                    Confirm Booking & Pay ₹151
+                                </button>
+                                <small class="d-block mt-3 text-muted">UPI • Card • NetBanking • Secure with Razorpay</small>
+                            </div>
+                        </div>
+                        <div class="text-center mt-4">
+                            <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const steps = document.querySelectorAll('.step-content');
+        const nextBtns = document.querySelectorAll('.next-btn');
+        const prevBtns = document.querySelectorAll('.prev-btn');
+        const circles = document.querySelectorAll('.circle');
+        let currentStep = 0;
+        let bookingData = {};
+
+        function showStep(n) {
+            steps.forEach((step, i) => step.classList.toggle('active', i === n));
+            circles.forEach((circle, i) => circle.classList.toggle('active', i <= n));
+        }
+
+        function validateStep(step) {
+            const required = steps[step].querySelectorAll('select[required], input[required]');
+            for (let field of required) {
+                if (!field.value.trim()) {
+                    alert('Sab fields fill kar bhai!');
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        nextBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (validateStep(currentStep)) {
+                    if (currentStep === 0) bookingData.city = document.getElementById('city').value;
+                    if (currentStep === 1) {
+                        bookingData.puja = document.querySelector('#puja option:checked').textContent;
+                        bookingData.price = document.querySelector('#puja option:checked').dataset.price || '2500';
+                    }
+                    if (currentStep === 2) bookingData.pandit = document.querySelector('.select-pandit.btn-primary')?.dataset.pandit || 'Not selected';
+                    if (currentStep === 3) {
+                        bookingData.date = document.getElementById('date').value;
+                        bookingData.time = document.getElementById('time').value;
+                    }
+                    if (currentStep === 4) bookingData.phone = document.getElementById('phone').value;
+
+                    if (currentStep < steps.length - 1) {
+                        currentStep++;
+                        showStep(currentStep);
+
+                        if (currentStep === 5) {
+                            document.getElementById('sumCity').textContent = bookingData.city || '-';
+                            document.getElementById('sumPuja').textContent = bookingData.puja || '-';
+                            document.getElementById('sumPrice').textContent = '₹' + bookingData.price;
+                            document.getElementById('sumPandit').textContent = bookingData.pandit || '-';
+                            document.getElementById('sumDateTime').textContent = bookingData.date + ' at ' + bookingData.time || '-';
+                            document.getElementById('sumPhone').textContent = '+91 ' + bookingData.phone || '-';
+                            document.getElementById('totalAmount').textContent = '₹' + bookingData.price;
+                        }
+                    }
+                }
+            });
+        });
+
+        prevBtns.forEach(btn => btn.addEventListener('click', () => { if (currentStep > 0) { currentStep--; showStep(currentStep); } }));
+
+        document.querySelectorAll('.select-pandit').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.select-pandit').forEach(b => b.classList.remove('btn-primary'));
+                this.classList.add('btn-primary');
+            });
+        });
+
+        // Demo OTP (Smooth)
+        document.getElementById('sendOtp').addEventListener('click', () => {
+            const phone = document.getElementById('phone').value.trim();
+            if (phone.length !== 10 || !phone.match(/^[6-9]\d{9}$/)) {
+                alert('Valid number daal bhai!');
+                return;
+            }
+            sessionStorage.setItem('currentOtp', '123456');
+            document.getElementById('otpField').style.display = 'block';
+            alert('OTP sent! 📱 Demo OTP: 123456');
+        });
+
+        document.getElementById('verifyOtp').addEventListener('click', () => {
+            if (document.getElementById('otpInput').value.trim() === sessionStorage.getItem('currentOtp')) {
+                document.getElementById('nextAfterOtp').disabled = false;
+                alert('OTP Verified! ✅');
+                sessionStorage.removeItem('currentOtp');
+            } else {
+                alert('Galat OTP! Demo me 123456');
+            }
+        });
+
+        // Razorpay LIVE MODE (Tera Key + Real Payment)
+        document.getElementById('razorpayBtn').addEventListener('click', function(e) {
+            const advanceAmount = 15100;
+
+            const options = {
+                "key": "rzp_live_RwBuGYKySb2uQY", // Tera LIVE KEY
+                "amount": advanceAmount,
+                "currency": "INR",
+                "name": "BookMyPandit",
+                "description": "Advance Payment - Puja Booking",
+                "image": "images/logo.jpg",
+                "handler": function (response){
+    // Payment successful – ab booking confirm kar
+    localStorage.setItem('bookingConfirmed', 'true');
+    localStorage.setItem('bookingStatus', 'confirmed');
+    localStorage.setItem('paymentID', response.razorpay_payment_id);
+    localStorage.setItem('bookingPuja', bookingData.puja);
+    localStorage.setItem('bookingPandit', bookingData.pandit);
+    localStorage.setItem('bookingDateTime', bookingData.date + ' at ' + bookingData.time);
+    localStorage.setItem('bookingCity', bookingData.city);
+    localStorage.setItem('bookingPhone', bookingData.phone);
+    
+    // Save to allBookings array
+    let bookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+    bookings.push({
+        ref: 'BK' + Date.now(),
+        puja: bookingData.puja,
+        pandit: bookingData.pandit,
+        userName: localStorage.getItem('userName') || 'Anant Bhatt',
+        date: bookingData.date,
+        time: bookingData.time,
+        city: bookingData.city,
+        phone: bookingData.phone,
+        paymentID: response.razorpay_payment_id
+    });
+    localStorage.setItem('allBookings', JSON.stringify(bookings));
+    
+    // Random Arrival PIN generate (4 digit)
+    const arrivalPin = Math.floor(1000 + Math.random() * 9000);
+    localStorage.setItem('arrivalPin', arrivalPin);
+
+    alert('Payment Successful! Booking Confirmed 🙏');
+    alert('Pandit assigned. Arrival PIN: ' + arrivalPin + ' (Pandit aaye to ye PIN bolna)');
+    
+    window.location.href = 'current-booking.html'; // Ye page bana jisme arrival PIN dikhe
+},
+            };
+
+            const rzp = new Razorpay(options);
+            rzp.on('payment.failed', function (response){
+                alert('Payment Failed: ' + response.error.description);
+            });
+            rzp.open();
+            e.preventDefault();
+        });
+
+        showStep(currentStep);
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

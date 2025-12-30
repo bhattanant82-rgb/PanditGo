@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background: #f8f2eb; margin: 0; font-family: 'Inter', sans-serif; }
+        .sidebar { width: 280px; background: #1e293b; height: 100vh; position: fixed; box-shadow: 10px 0 30px rgba(0,0,0,0.2); }
+        .sidebar-header { padding: 40px 20px; text-align: center; }
+        .sidebar-header h2 { color: white; font-weight: 700; }
+        .menu li { padding: 15px 30px; cursor: pointer; }
+        .menu li a { color: #cbd5e1; text-decoration: none; display: flex; align-items: center; gap: 15px; }
+        .menu li:hover { background: #334155; }
+        .menu li.active { background: #FF9933; }
+        .menu li.active a { color: white; font-weight: bold; }
+        .main { margin-left: 280px; padding: 40px; }
+        .section { display: none; }
+        .section.active { display: block; }
+        .card { background: white; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); padding: 30px; margin-bottom: 30px; }
+        .btn-action { font-size: 12px; padding: 5px 10px; border-radius: 8px; }
+        .badge { font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h2>BookMyPandit Admin</h2>
+        </div>
+        <ul class="menu list-unstyled">
+            <li class="active" data-section="dashboard"><a><i class="bi bi-speedometer2"></i> Dashboard</a></li>
+            <li data-section="bookings"><a><i class="bi bi-calendar-check"></i> Bookings Management</a></li>
+            <li data-section="pandits"><a><i class="bi bi-person-badge"></i> Pandit Management</a></li>
+            <li data-section="payments"><a><i class="bi bi-credit-card"></i> Payments & Razorpay</a></li>
+            <li data-section="users"><a><i class="bi bi-people"></i> Users Management</a></li>
+            <li data-section="reviews"><a><i class="bi bi-star"></i> Reviews & Ratings</a></li>
+            <li data-section="settings"><a><i class="bi bi-gear"></i> Content Control</a></li>
+            <li><a href="#" onclick="localStorage.clear(); window.location.href='login.html'"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <!-- Dashboard -->
+        <div class="section active" id="dashboard">
+            <h2>Welcome CEO Anant Bhatt 👑</h2>
+            <p>Ye tera full control room hai – business manage kar!</p>
+
+            <div class="row mt-4">
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <h4>Total Bookings</h4>
+                        <h2 id="totalBookings">0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <h4>Active Pandits</h4>
+                        <h2>42</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <h4>Revenue (Advance)</h4>
+                        <h2 id="revenue">₹0</h2>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card text-center">
+                        <h4>Pending Refunds</h4>
+                        <h2 id="pendingRefunds">0</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3>Recent Bookings (Real Data)</h3>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Puja</th>
+                                <th>Pandit</th>
+                                <th>Date/Time</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dashboardBookings">
+                            <!-- Load -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bookings Management -->
+        <div class="section" id="bookings">
+            <h2>Bookings Management (Real Data)</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>City</th>
+                                <th>Puja</th>
+                                <th>Pandit</th>
+                                <th>Date & Time</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTable">
+                            <!-- Real full bookings -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pandit Management -->
+        <div class="section" id="pandits">
+            <h2>Pandit Management</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>City</th>
+                                <th>Experience</th>
+                                <th>Status</th>
+                                <th>Earnings</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Pt. Ram Sharma</td>
+                                <td>Mumbai</td>
+                                <td>20+ Years</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td>₹45,000</td>
+                                <td>
+                                    <button class="btn btn-sm btn-primary btn-action">View</button>
+                                    <button class="btn btn-sm btn-danger btn-action">Block</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Pt. Vivek Tripathi</td>
+                                <td>Ahmedabad</td>
+                                <td>15 Years</td>
+                                <td><span class="badge bg-warning">Pending</span></td>
+                                <td>₹0</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success btn-action">Approve</button>
+                                    <button class="btn btn-sm btn-danger btn-action">Reject</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments & Razorpay -->
+        <div class="section" id="payments">
+            <h2>Payments & Razorpay (Real Data)</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Payment ID</th>
+                                <th>Booking ID</th>
+                                <th>Amount</th>
+                                <th>User</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="paymentsTable">
+                            <!-- Real payments -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Users Management -->
+        <div class="section" id="users">
+            <h2>Users Management</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Phone</th>
+                                <th>Email</th>
+                                <th>Total Bookings</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Anant Bhatt</td>
+                                <td>6359290705</td>
+                                <td>bhattanant82@gmail.com</td>
+                                <td>5</td>
+                                <td><span class="badge bg-success">Active</span></td>
+                                <td><button class="btn btn-sm btn-danger btn-action">Block</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Reviews & Ratings -->
+        <div class="section" id="reviews">
+            <h2>Reviews & Ratings</h2>
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Pandit</th>
+                                <th>Rating</th>
+                                <th>Review</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Anant Bhatt</td>
+                                <td>Pt. Ram Sharma</td>
+                                <td>5 ⭐</td>
+                                <td>Excellent service!</td>
+                                <td><span class="badge bg-success">Approved</span></td>
+                                <td><button class="btn btn-sm btn-danger btn-action">Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Control -->
+        <div class="section" id="settings">
+            <h2>Content Control</h2>
+            <div class="card">
+                <h4>Puja Prices Edit</h4>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label>Puja Name</label>
+                            <input type="text" class="form-control" value="Satyanarayan Puja">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label>Price (₹)</label>
+                            <input type="number" class="form-control" value="2500">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-success" onclick="alert('Price updated!')">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        if (localStorage.getItem('adminLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        // Sidebar click handler
+        document.querySelectorAll('.menu li').forEach(li => {
+            li.addEventListener('click', function() {
+                document.querySelectorAll('.menu li').forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                const section = this.getAttribute('data-section');
+                if (section) {
+                    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+                    document.getElementById(section).classList.add('active');
+                }
+            });
+        });
+
+        // Real bookings load
+        let bookings = JSON.parse(localStorage.getItem('allBookings') || '[]');
+        document.getElementById('totalBookings').textContent = bookings.length;
+        document.getElementById('revenue').textContent = '₹' + (bookings.length * 151);
+
+        // Dashboard recent
+        const dashboardTable = document.getElementById('dashboardBookings');
+        dashboardTable.innerHTML = bookings.length === 0 ? '<tr><td colspan="7" class="text-center">No bookings yet</td></tr>' : '';
+        bookings.slice(-5).reverse().forEach(b => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${b.ref}</td><td>${b.userName}</td><td>${b.puja}</td><td>${b.pandit}</td><td>${b.date} at ${b.time}</td><td><span class="badge bg-success">Confirmed</span></td><td><button class="btn btn-sm btn-primary btn-action">View</button></td>`;
+            dashboardTable.appendChild(row);
+        });
+
+        // Full bookings
+        const bookingsTable = document.getElementById('bookingsTable');
+        bookingsTable.innerHTML = bookings.length === 0 ? '<tr><td colspan="9" class="text-center">No bookings yet</td></tr>' : '';
+        bookings.forEach(b => {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td>${b.ref}</td><td>${b.userName}</td><td>${b.city || 'Mumbai'}</td><td>${b.puja}</td><td>${b.pandit}</td><td>${b.date} at ${b.time}</td><td><span class="badge bg-success">Confirmed</span></td><td>₹151</td><td><button class="btn btn-sm btn-primary btn-action">View</button> <button class="btn btn-sm btn-warning btn-action">Refund</button> <button class="btn btn-sm btn-danger btn-action">Cancel</button></td>`;
+            bookingsTable.appendChild(row);
+        });
+
+        // Payments real
+        const paymentsTable = document.getElementById('paymentsTable');
+        paymentsTable.innerHTML = bookings.length === 0 ? '<tr><td colspan="7" class="text-center">No payments yet</td></tr>' : '';
+        bookings.forEach(b => {
+            if (b.paymentID) {
+                const row = document.createElement('tr');
+                row.innerHTML = `<td>${b.paymentID}</td><td>${b.ref}</td><td>₹151</td><td>${b.userName}</td><td>Today</td><td><span class="badge bg-success">Success</span></td><td><button class="btn btn-sm btn-warning btn-action">Refund</button></td>`;
+                paymentsTable.appendChild(row);
+            }
+        });
+    </script>
+</body>
+</html>

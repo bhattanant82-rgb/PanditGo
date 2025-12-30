@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandits - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+
+    <!-- Navbar -->
+
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h1 class="display-4 fw-bold text-primary">Our Verified Pandits</h1>
+                <p class="lead">Book puja or consult instantly (₹19/min call/chat)</p>
+            </div>
+
+            <div class="row g-4">
+                <!-- 7 Pandits with Consultation -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="card h-100 shadow text-center p-3">
+                        <img src="images/pandit1.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120">
+                        <h5 class="fw-bold">Pt. Ram Sharma</h5>
+                        <p class="small text-muted">20+ Years • Hindi/Sanskrit/Gujarati</p>
+                        <p class="text-warning fw-bold">⭐ 4.9</p>
+                        <a href="book-pandit.html" class="btn btn-warning rounded-pill px-4 py-2 d-block mb-2">Book Puja</a>
+                        <button class="btn btn-success rounded-pill px-4 me-1" onclick="startConsult('call','Pt. Ram Sharma')">📞 Call</button>
+                        <button class="btn btn-primary rounded-pill px-4" onclick="startConsult('chat','Pt. Ram Sharma')">💬 Chat</button>
+                    </div>
+                </div>
+
+                <!-- Pandit 2 to 7 same tarah bana le (name change kar) -->
+                <!-- Example Pandit 2 -->
+                <div class="col-md-4 col-lg-3">
+                    <div class="card h-100 shadow text-center p-3">
+                        <img src="images/pandit2.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120">
+                        <h5 class="fw-bold">Pt. Mahesh Joshi</h5>
+                        <p class="small text-muted">18 Years • Hindi/Sanskrit</p>
+                        <p class="text-warning fw-bold">⭐ 4.8</p>
+                        <a href="book-pandit.html" class="btn btn-warning rounded-pill px-4 py-2 d-block mb-2">Book Puja</a>
+                        <button class="btn btn-success rounded-pill px-4 me-1" onclick="startConsult('call','Pt. Mahesh Joshi')">📞 Call</button>
+                        <button class="btn btn-primary rounded-pill px-4" onclick="startConsult('chat','Pt. Mahesh Joshi')">💬 Chat</button>
+                    </div>
+                </div>
+
+                <!-- Total 7 pandits bana le -->
+
+            </div>
+
+            <div class="text-center mt-5">
+                <a href="become-pandit.html" class="btn btn-success btn-lg rounded-pill px-5 py-3 fw-bold">Become a Pandit</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function startConsult(type, pandit) {
+            const rate = 19;
+            let minutes = prompt(`How many minutes ${type} with ${pandit}? (₹${rate}/min)`, "5");
+            if (!minutes || minutes < 1) return alert("Minimum 1 minute");
+
+            const amount = rate * minutes * 100; // paise me
+            const panditEarning = 9 * minutes; // ₹9/min pandit
+            const platformCommission = amount / 100 - panditEarning; // baaki platform
+
+            var options = {
+                "key": "rzp_live_RwBuGYKySb2uQY",
+                "amount": amount,
+                "currency": "INR",
+                "name": "BookMyPandit",
+                "description": `${type.toUpperCase()} with ${pandit} - ${minutes} min`,
+                "handler": function (response){
+                    alert(`Payment Success! ${type} starting...`);
+                    alert(`Pandit will earn ₹${panditEarning} | Platform ₹${platformCommission}`);
+                    // Real me call/chat connect + timer start
+                    // Save in my-bookings
+                    window.location.href = 'my-bookings.html';
+                },
+                "prefill": {
+                    "contact": localStorage.getItem('userPhone') || '',
+                    "name": localStorage.getItem('userName') || ''
+                },
+                "theme": {"color": "#FF9933"}
+            };
+
+            var rzp = new Razorpay(options);
+            rzp.open();
+        }
+    </script>
+    <script src="js/auth.js"></script>
+</body>
+</html>
