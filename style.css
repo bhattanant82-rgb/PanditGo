@@ -1,229 +1,240 @@
 /* =====================================================
-   PANDITGO – MOBILE FIRST • PREMIUM • CLEAN
-   Author: Final Fix (No Bakwas)
+   GLOBAL – MOBILE FIRST PREMIUM SPIRITUAL THEME
 ===================================================== */
-
-/* ---------------- RESET ---------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    scroll-behavior: smooth;
-}
-
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fffaf4;
-    color: #333;
-    line-height: 1.6;
+    background: #0a0705;
+    color: #f5e8d3;
     overflow-x: hidden;
+    line-height: 1.6;
 }
 
-/* ---------------- TYPOGRAPHY ---------------- */
 h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
-    color: #7a1c0d;
-}
-
-p {
-    font-size: 0.95rem;
-    color: #555;
+    color: #FF9933;
+    text-shadow: 0 2px 10px rgba(0,0,0,0.7);
 }
 
 /* =====================================================
-   📱 MOBILE FIRST (DEFAULT)
+   NAVBAR – MOBILE FIRST
 ===================================================== */
-
-/* ---------------- NAVBAR ---------------- */
 .navbar {
-    background: #ffffff;
-    padding: 12px 16px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    background: rgba(10,7,5,0.96) !important;
+    backdrop-filter: blur(10px);
+    padding: 12px 15px;
 }
 
 .navbar-brand {
-    font-size: 1.4rem;
+    font-size: 1.6rem;
     font-weight: 700;
-    color: #c0392b !important;
+    color: #FF9933 !important;
 }
 
 .nav-link {
-    font-size: 0.95rem;
-    color: #333 !important;
-}
-
-.navbar .btn {
-    font-size: 0.8rem;
-    padding: 6px 14px;
-    border-radius: 20px;
-}
-
-/* ---------------- HERO ---------------- */
-.hero {
-    padding: 90px 16px 70px;
+    color: #e0d4b8 !important;
+    font-weight: 500;
     text-align: center;
-    background: linear-gradient(135deg,#5b0000,#a11212,#ff6a00);
+    padding: 12px 0;
+    font-size: 1.05rem;
+}
+
+.nav-link:hover {
+    color: #FF9933 !important;
+}
+
+/* Auth Buttons */
+.btn-danger {
+    background: #FF9933;
+    border: none;
+    border-radius: 50px;
+    padding: 8px 20px;
+    font-weight: 600;
+}
+
+.btn-outline-danger {
+    border: 2px solid #FF9933;
+    color: #FF9933;
+    border-radius: 50px;
+    padding: 8px 20px;
+}
+
+/* =====================================================
+   HERO – MOBILE FIRST (IMPROVED FOR MOBILE)
+===================================================== */
+.hero {
+    min-height: 100vh;
+    padding: 100px 20px 60px;
+    background:
+        linear-gradient(rgba(10,7,5,0.85), rgba(10,7,5,0.95)),
+        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1200&q=80')
+        center/cover no-repeat;
+    background-attachment: scroll; /* Mobile pe safe */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .hero h1 {
-    font-size: 2.4rem;
+    font-size: 2.8rem; /* Mobile pe thoda bada aur bold */
+    margin-bottom: 20px;
     line-height: 1.2;
-    margin-bottom: 14px;
-    color: #ffd700;
 }
 
 .hero p {
-    font-size: 0.95rem;
-    color: #f4e8d3;
-    max-width: 95%;
-    margin: 0 auto 25px;
+    font-size: 1.1rem;
+    color: #e0d4b8;
+    margin-bottom: 40px;
+    padding: 0 10px;
+    max-width: 90%;
 }
 
-/* ---------------- HERO BUTTONS ---------------- */
+/* HERO BUTTONS – STACKED ON MOBILE */
 .btn-premium,
 .btn-outline-premium {
     width: 100%;
     max-width: 320px;
-    margin: 8px auto;
-    display: block;
-    padding: 14px 18px;
-    font-size: 0.95rem;
-    border-radius: 40px;
-    text-align: center;
-}
-
-.btn-premium {
-    background: linear-gradient(90deg,#ffb347,#ffcc33);
-    color: #3a1a00;
+    padding: 16px 20px;
+    border-radius: 60px;
+    font-size: 1.15rem;
     font-weight: 600;
-    border: none;
+    margin-bottom: 15px;
+    transition: all 0.3s ease;
 }
 
+/* Premium Filled */
+.btn-premium {
+    background: linear-gradient(90deg, #FF9933, #FFB066);
+    color: #0f0c0a;
+    box-shadow: 0 10px 25px rgba(255,153,51,0.5);
+}
+
+/* Premium Outline */
 .btn-outline-premium {
-    border: 2px solid #ffcc33;
-    color: #ffcc33;
+    border: 2.5px solid #FF9933;
+    color: #FF9933;
     background: transparent;
 }
 
-/* ---------------- SECTIONS ---------------- */
-section {
-    padding: 60px 16px;
+.btn-premium:hover, .btn-outline-premium:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 30px rgba(255,153,51,0.4);
 }
 
-section h2 {
-    font-size: 1.8rem;
-    text-align: center;
-    margin-bottom: 12px;
-}
-
-section .lead {
-    font-size: 0.9rem;
-    text-align: center;
-    color: #666;
-    margin-bottom: 35px;
-}
-
-/* ---------------- CARDS ---------------- */
-.card {
-    background: #ffffff;
-    border-radius: 14px;
-    padding: 18px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-    text-align: center;
-    font-size: 0.9rem;
-}
-
-/* ---------------- HOW IT WORKS ---------------- */
-.how-it-works img {
-    width: 70px;
-    margin-bottom: 10px;
-}
-
-.how-it-works h5 {
-    font-size: 1rem;
-}
-
-/* ---------------- STATS ---------------- */
-.stats h2 {
-    font-size: 1.6rem;
-    color: #ff9800;
-}
-
-.stats p {
-    font-size: 0.8rem;
-}
-
-/* ---------------- FOOTER ---------------- */
-footer {
-    background: #111;
-    color: #ccc;
-    padding: 50px 16px;
-    text-align: center;
-}
-
-footer h5 {
-    font-size: 1.1rem;
-    color: #ffb347;
-}
-
-footer p, footer a {
-    font-size: 0.8rem;
-    color: #aaa;
+/* REMOVE HEAVY EFFECTS ON MOBILE */
+.sparkle {
+    display: none;
 }
 
 /* =====================================================
-   💻 DESKTOP ENHANCEMENTS (768px+)
+   SECTIONS
 ===================================================== */
+section {
+    padding: 70px 20px;
+}
 
-@media (min-width: 768px) {
+.bg-light {
+    background: rgba(255,153,51,0.06) !important;
+}
 
-    body {
-        font-size: 16px;
-    }
+/* CARDS */
+.card {
+    background: rgba(15,12,10,0.85);
+    border: 1px solid rgba(255,153,51,0.25);
+    border-radius: 16px;
+    color: #f5e8d3;
+    padding: 30px 25px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* =====================================================
+   FOOTER – MOBILE FIRST
+===================================================== */
+footer {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+footer h5, footer h3 {
+    color: #FF9933;
+    margin-bottom: 15px;
+}
+
+footer .row > div {
+    margin-bottom: 30px;
+}
+
+footer a {
+    color: #e0d4b8;
+    text-decoration: none;
+}
+
+footer a:hover {
+    color: #FF9933;
+}
+
+/* =====================================================
+   DESKTOP ENHANCEMENTS (ONLY WHEN SCREEN BIG)
+===================================================== */
+@media (min-width: 992px) {
 
     .hero {
-        padding: 140px 40px;
+        background-attachment: fixed;
+        padding: 120px 0;
     }
 
     .hero h1 {
-        font-size: 4.2rem;
+        font-size: 5.5rem;
     }
 
     .hero p {
-        font-size: 1.2rem;
-        max-width: 800px;
+        font-size: 1.4rem;
+        max-width: 900px;
+        margin: 0 auto 50px;
+        padding: 0;
     }
 
-    .btn-premium,
-    .btn-outline-premium {
-        display: inline-block;
+    .hero .btn-premium,
+    .hero .btn-outline-premium {
         width: auto;
-        padding: 16px 42px;
-        font-size: 1.1rem;
-        margin: 0 10px;
+        display: inline-block;
+        padding: 20px 60px;
+        font-size: 1.5rem;
+        margin: 0 15px;
+    }
+
+    .sparkle {
+        display: block;
+        position: absolute;
+        font-size: 3rem;
+        color: #FF9933;
+        opacity: 0.6;
+        animation: twinkle 12s infinite;
+    }
+
+    @keyframes twinkle {
+        0%,100% { opacity: 0.4; transform: scale(0.9); }
+        50% { opacity: 1; transform: scale(1.3); }
     }
 
     section {
         padding: 100px 0;
     }
 
-    section h2 {
-        font-size: 2.6rem;
-    }
-
     .card {
-        font-size: 1rem;
-        padding: 24px;
+        padding: 40px;
+        margin-bottom: 0;
     }
-}
 
-/* ---------------- REMOVE HEAVY FX ON MOBILE ---------------- */
-@media (max-width: 768px) {
-    .sparkle,
-    .glow-overlay {
-        display: none !important;
+    footer {
+        text-align: left;
     }
 }
