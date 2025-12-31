@@ -1,215 +1,229 @@
-/* ===================== RESET ===================== */
+/* =====================================================
+   PANDITGO – MOBILE FIRST • PREMIUM • CLEAN
+   Author: Final Fix (No Bakwas)
+===================================================== */
+
+/* ---------------- RESET ---------------- */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html, body {
-    width: 100%;
-    overflow-x: hidden;
+html {
+    scroll-behavior: smooth;
 }
 
 body {
     font-family: 'Poppins', sans-serif;
-    background: #fff;
-    color: #222;
+    background: #fffaf4;
+    color: #333;
     line-height: 1.6;
+    overflow-x: hidden;
 }
 
-/* ===================== HEADINGS ===================== */
+/* ---------------- TYPOGRAPHY ---------------- */
 h1, h2, h3, h4, h5 {
     font-family: 'Playfair Display', serif;
+    color: #7a1c0d;
 }
 
-/* ===================== NAVBAR (MOBILE FIRST) ===================== */
+p {
+    font-size: 0.95rem;
+    color: #555;
+}
+
+/* =====================================================
+   📱 MOBILE FIRST (DEFAULT)
+===================================================== */
+
+/* ---------------- NAVBAR ---------------- */
 .navbar {
-    background: #fff !important;
-    padding: 10px 14px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    background: #ffffff;
+    padding: 12px 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
 }
 
 .navbar-brand {
     font-size: 1.4rem;
     font-weight: 700;
-    color: #e53935 !important;
-    position: static !important;
-}
-
-.navbar-toggler {
-    border: none;
-}
-
-.navbar-collapse {
-    margin-top: 10px;
-}
-
-.navbar-nav {
-    gap: 8px;
+    color: #c0392b !important;
 }
 
 .nav-link {
-    font-weight: 500;
+    font-size: 0.95rem;
     color: #333 !important;
 }
 
-/* Login / Signup mobile */
 .navbar .btn {
-    font-size: 0.9rem;
-    padding: 8px 18px;
-    border-radius: 30px;
+    font-size: 0.8rem;
+    padding: 6px 14px;
+    border-radius: 20px;
 }
 
-/* ===================== HERO (MOBILE FIRST) ===================== */
+/* ---------------- HERO ---------------- */
 .hero {
-    min-height: auto;
-    padding: 110px 16px 80px;
+    padding: 90px 16px 70px;
     text-align: center;
-    background: linear-gradient(135deg, #4B0000, #8B0000, #FF6A00);
+    background: linear-gradient(135deg,#5b0000,#a11212,#ff6a00);
 }
 
 .hero h1 {
-    font-size: 2.2rem;
-    line-height: 1.25;
-    font-weight: 700;
-    color: #FFD700;
-    margin-bottom: 16px;
+    font-size: 2.4rem;
+    line-height: 1.2;
+    margin-bottom: 14px;
+    color: #ffd700;
 }
 
 .hero p {
     font-size: 0.95rem;
-    color: #f5e8d3;
-    margin-bottom: 26px;
+    color: #f4e8d3;
+    max-width: 95%;
+    margin: 0 auto 25px;
 }
 
-/* Hero buttons */
-.hero .btn-premium,
-.hero .btn-outline-premium {
+/* ---------------- HERO BUTTONS ---------------- */
+.btn-premium,
+.btn-outline-premium {
     width: 100%;
     max-width: 320px;
-    margin: 0 auto;
-    font-size: 1rem;
-    padding: 14px 24px;
+    margin: 8px auto;
+    display: block;
+    padding: 14px 18px;
+    font-size: 0.95rem;
     border-radius: 40px;
+    text-align: center;
 }
 
 .btn-premium {
-    background: #FFB703;
-    color: #111;
-    font-weight: 700;
+    background: linear-gradient(90deg,#ffb347,#ffcc33);
+    color: #3a1a00;
+    font-weight: 600;
     border: none;
 }
 
 .btn-outline-premium {
-    border: 2px solid #FFB703;
-    color: #FFB703;
+    border: 2px solid #ffcc33;
+    color: #ffcc33;
     background: transparent;
 }
 
-/* Button stack */
-.hero .d-flex {
-    flex-direction: column;
-    gap: 14px;
-}
-
-/* ===================== SERVICES ===================== */
+/* ---------------- SECTIONS ---------------- */
 section {
-    padding: 50px 16px;
+    padding: 60px 16px;
 }
 
+section h2 {
+    font-size: 1.8rem;
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+section .lead {
+    font-size: 0.9rem;
+    text-align: center;
+    color: #666;
+    margin-bottom: 35px;
+}
+
+/* ---------------- CARDS ---------------- */
 .card {
+    background: #ffffff;
     border-radius: 14px;
     padding: 18px;
-    background: #fff;
-    border: 1px solid #eee;
-    font-size: 0.95rem;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
     text-align: center;
+    font-size: 0.9rem;
 }
 
-/* ===================== HOW IT WORKS (MOBILE) ===================== */
-.how-it-works,
-#how-it-works {
-    text-align: center;
-}
-
+/* ---------------- HOW IT WORKS ---------------- */
 .how-it-works img {
     width: 70px;
     margin-bottom: 10px;
-}
-
-.how-it-works .arrow {
-    display: none;
 }
 
 .how-it-works h5 {
     font-size: 1rem;
 }
 
-.how-it-works p {
-    font-size: 0.85rem;
+/* ---------------- STATS ---------------- */
+.stats h2 {
+    font-size: 1.6rem;
+    color: #ff9800;
 }
 
-/* ===================== STATS ===================== */
-.stats-box {
-    padding: 20px;
-    border-radius: 16px;
-    background: #fff;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+.stats p {
+    font-size: 0.8rem;
 }
 
-.stats-box h2 {
-    font-size: 1.4rem;
-    color: #FF9800;
-}
-
-/* ===================== FOOTER ===================== */
+/* ---------------- FOOTER ---------------- */
 footer {
+    background: #111;
+    color: #ccc;
+    padding: 50px 16px;
     text-align: center;
-    padding: 40px 16px;
 }
 
 footer h5 {
-    font-size: 1rem;
+    font-size: 1.1rem;
+    color: #ffb347;
 }
 
 footer p, footer a {
-    font-size: 0.85rem;
+    font-size: 0.8rem;
+    color: #aaa;
 }
 
-/* ===================== DESKTOP ENHANCEMENTS ===================== */
-@media (min-width: 992px) {
+/* =====================================================
+   💻 DESKTOP ENHANCEMENTS (768px+)
+===================================================== */
 
-    .navbar {
-        padding: 18px 0;
-    }
+@media (min-width: 768px) {
 
-    .navbar-brand {
-        font-size: 1.8rem;
-        position: absolute !important;
-        left: 20px;
+    body {
+        font-size: 16px;
     }
 
     .hero {
-        min-height: 100vh;
-        padding: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        padding: 140px 40px;
     }
 
     .hero h1 {
-        font-size: 5rem;
+        font-size: 4.2rem;
     }
 
     .hero p {
-        font-size: 1.4rem;
+        font-size: 1.2rem;
+        max-width: 800px;
     }
 
-    .hero .d-flex {
-        flex-direction: row;
+    .btn-premium,
+    .btn-outline-premium {
+        display: inline-block;
+        width: auto;
+        padding: 16px 42px;
+        font-size: 1.1rem;
+        margin: 0 10px;
     }
 
     section {
-        padding: 90px 0;
+        padding: 100px 0;
+    }
+
+    section h2 {
+        font-size: 2.6rem;
+    }
+
+    .card {
+        font-size: 1rem;
+        padding: 24px;
+    }
+}
+
+/* ---------------- REMOVE HEAVY FX ON MOBILE ---------------- */
+@media (max-width: 768px) {
+    .sparkle,
+    .glow-overlay {
+        display: none !important;
     }
 }
