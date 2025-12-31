@@ -114,34 +114,39 @@
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Final Script – Fetch Fix + CORS Compatible
-    const form = document.getElementById('kundliForm');
-    form.addEventListener('submit', async (e) => {
-        e.preventDefault();
+const form = document.getElementById('kundliForm');
 
-        const dob = document.getElementById('dob').value;
-        const tob = document.getElementById('tob').value;
-        const place = document.getElementById('place').value;
+form.addEventListener('submit', (e) => {
+    e.preventDefault();
 
-        document.getElementById('kundliOutput').innerHTML = '<p class="text-center text-warning">Generating Kundli... Please wait 🙏</p>';
-        document.getElementById('kundliOutput').classList.remove('d-none');
+    const dob = document.getElementById('dob').value;
+    const tob = document.getElementById('tob').value;
+    const place = document.getElementById('place').value;
 
-        try {
-            const response = await fetch('http://localhost:5000/generate-kundli', {  # Changed to localhost for fix
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({dob, tob, place})
-            });
+    const output = document.getElementById('kundliOutput');
+    output.classList.remove('d-none');
 
-            const data = await response.json();
+    // ⛔ No backend → Demo Kundli
+    document.getElementById('lagnaChart').innerHTML = `
+        Lagna: Mesh (Aries)<br>
+        Sun: Aries 15°<br>
+        Moon: Taurus 22°<br>
+        Mars: Gemini 10°
+    `;
 
-            document.getElementById('lagnaChart').innerHTML = JSON.stringify(data.positions, null, 2);
-            document.getElementById('navamsaChart').innerHTML = 'Navamsa Placeholder'; // Add logic
-            document.getElementById('dasha').innerHTML = data.dasha;
-        } catch (error) {
-            document.getElementById('kundliOutput').innerHTML = '<p class="text-danger text-center">Error generating Kundli: ' + error.message + '</p>';
-        }
-    });
+    document.getElementById('navamsaChart').innerHTML = `
+        Navamsa Lagna: Virgo<br>
+        Venus: Cancer 5°<br>
+        Mercury: Libra 18°
+    `;
+
+    document.getElementById('dasha').innerHTML = `
+        Mahadasha: Venus (till 2030)<br>
+        Antardasha: Sun (till 2026)<br>
+        Next Dasha: Moon (2030–2040)
+    `;
+});
 </script>
+
 </body>
 </html>
