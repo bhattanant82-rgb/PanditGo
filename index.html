@@ -11,182 +11,397 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Google Fonts – Playfair + Poppins -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <!-- Custom CSS (Yeh wahi dark premium theme jo maine diya tha) -->
+    <!-- Custom CSS – Ye file zaroor link kar -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
 
-<!-- ================= FIXED NAVBAR (MOBILE FRIENDLY) ================= -->
-<nav class="navbar navbar-expand-lg fixed-top">
+<!-- ================= NAVBAR ================= -->
+<!-- Navbar (Logo Extreme Left, Menu Center, Buttons Right – Perfect Spacing) -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3">
     <div class="container">
-        <!-- Logo -->
-        <a class="navbar-brand" href="index.html">PanditGo</a>
+        <!-- Logo - Extreme Left Locked -->
+        <a class="navbar-brand fw-bold fs-3 text-danger position-absolute start-0 ms-4" href="index.html" style="z-index: 10;">PanditGo</a>
 
-        <!-- Toggler -->
+        <!-- Toggler for mobile -->
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" 
-                data-bs-target="#navbarNav" aria-controls="navbarNav" 
-                aria-expanded="false" aria-label="Toggle navigation">
+                data-bs-target="#navbarSupportedContent" 
+                aria-controls="navbarSupportedContent" aria-expanded="false" 
+                aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- Menu Items -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mx-auto"> <!-- mx-auto = center -->
-                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link" href="pandits.html">Pandits</a></li>
-                <li class="nav-item"><a class="nav-link" href="kundli-generator.html">Kundli Generator</a></li>
-                <li class="nav-item"><a class="nav-link" href="puja-types.html">Puja Types</a></li>
-                <li class="nav-item"><a class="nav-link" href="kundli-matching.html">Kundli Matching</a></li>
-                <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-                <li class="nav-item"><a class="nav-link" href="become-pandit.html">Join Pandit</a></li>
+        <!-- Menu Items - Center me properly -->
+        <div class="collapse navbar-collapse justify-content-center" id="navbarSupportedContent">
+            <ul class="navbar-nav mb-2 mb-lg-0 gap-3"> <!-- gap-3 se items me space -->
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="pandits.html">Pandits</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="kundli-generator.html">Kundli Generator</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="puja-types.html">Puja Types</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="kundli-matching.html">Kundli Matching</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="contact.html">Contact</a></li>
+                <li class="nav-item"><a class="nav-link text-dark fw-medium" href="become-pandit.html">join pandit</a></li>
             </ul>
+        </div>
 
-            <!-- Login/Signup Buttons (Mobile pe bhi stack honge) -->
-            <div class="d-flex gap-2 flex-column flex-lg-row">
-                <a href="login.html" class="btn btn-outline-danger rounded-pill px-4">Login</a>
-                <a href="signup.html" class="btn btn-danger rounded-pill px-4">Sign Up</a>
-            </div>
+        <!-- Login/Sign Up - Extreme Right -->
+        <div class="d-flex gap-3 align-items-center position-absolute end-0 me-4" style="z-index: 10;">
+            <a href="login.html" class="btn btn-outline-danger rounded-pill px-4 py-2 fw-medium">Login</a>
+            <a href="signup.html" class="btn btn-danger rounded-pill px-4 py-2 fw-medium">Sign Up</a>
         </div>
     </div>
 </nav>
+<!-- ================= HERO SECTION ================= -->
 
-<!-- ================= HERO SECTION (AB SIRF style.css SE CONTROL) ================= -->
-<section class="hero">
-    <div class="container text-center">
-        <h1>Gateway to <br>Sacred Rituals</h1>
-        <p class="lead">
-            Connect with verified pandits for authentic Vedic ceremonies, havan & divine blessings across India.
-        </p>
-        <div class="d-flex flex-column flex-lg-row gap-3 justify-content-center align-items-center">
-            <a href="book-pandit.html" class="btn btn-premium">Book a Pandit Now</a>
-            <a href="pujas.html" class="btn btn-outline-premium">Explore Pujas</a>
-        </div>
-    </div>
+<!-- ================= SECTION 2: TRUST STRIP ================= -->
+<!-- ================= HERO SECTION ================= -->
+<!-- ================= HERO SECTION ================= -->
+<!-- ================= HERO SECTION – PREMIUM CREATIVE ================= -->
+<!-- ================= HERO SECTION – FINAL DIVINE MAROON-SAFFRON LOOK ================= -->
+<section class="hero vh-100 d-flex align-items-center justify-content-center text-center position-relative overflow-hidden">
+    <!-- Background – Spiritual Maroon-Saffron Gradient + Divine Glow -->
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="
+        background: linear-gradient(135deg, #4B0000 0%, #8B0000 40%, #FF4500 70%, #FF8C00 100%),
+                    radial-gradient(circle at center, rgba(255,215,0,0.08) 0%, transparent 60%);
+        z-index: 1;
+    "></div>
 
-    <!-- Sparkles (Desktop pe dikhega, mobile pe hide – style.css mein control) -->
+    <!-- Subtle Divine Aura Overlay -->
+    <div class="position-absolute inset-0" style="
+        background: radial-gradient(circle at center, rgba(255,215,0,0.12) 0%, transparent 70%);
+        pointer-events: none;
+        z-index: 2;
+        animation: divine-pulse 15s infinite ease-in-out;
+    "></div>
+
+    <!-- Sparkle Particles – Golden Divine Light -->
     <div class="sparkle sparkle-1">✨</div>
     <div class="sparkle sparkle-2">✨</div>
     <div class="sparkle sparkle-3">✨</div>
     <div class="sparkle sparkle-4">✨</div>
-</section>
 
-<!-- ================= SERVICES SECTION ================= -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center display-5 fw-bold mb-5" style="color: #FF9933;">Sacred Services for Every Need</h2>
-        <div class="row g-4 text-center">
-            <div class="col-md-4"><div class="card">🗺️ Pan-India Coverage</div></div>
-            <div class="col-md-4"><div class="card">🗓️ Panchang Calendar</div></div>
-            <div class="col-md-4"><div class="card">👥 Group Pujas</div></div>
-            <div class="col-md-4"><div class="card">📝 Spiritual Blog</div></div>
-            <div class="col-md-4"><div class="card">🔮 Kundli Generator</div></div>
-            <div class="col-md-4"><div class="card">💬 WhatsApp Support</div></div>
-        </div>
-    </div>
-</section>
+    <div class="container position-relative z-3">
+        <h1 class="display-1 fw-bold mb-4" style="
+            font-family: 'Playfair Display', serif;
+            font-size: 5.5rem;
+            color: #FFD700; /* Pure Gold */
+            text-shadow: 0 10px 40px rgba(0,0,0,0.8);
+            letter-spacing: 2px;
+        ">
+            Gateway to <br>Sacred Rituals
+        </h1>
 
-<!-- ================= HOW IT WORKS ================= -->
-<section class="py-5" style="background: rgba(255,153,51,0.08);">
-    <div class="container">
-        <h2 class="text-center display-5 fw-bold mb-4" style="color: #FF9933;">How It Works</h2>
-        <p class="text-center lead mb-5">Simple 4 steps to book your puja with verified pandit</p>
-        <div class="row g-5 text-center">
-            <div class="col-md-3">
-                <img src="https://img.icons8.com/color/96/000000/map-marker.png" alt="Select City" class="mb-3">
-                <h5 class="fw-bold">1. Select City & Puja</h5>
-                <p class="small">Choose your location and required ritual</p>
-            </div>
-            <div class="col-md-3">
-                <img src="https://img.icons8.com/color/96/000000/user-group-man-woman.png" alt="Choose Pandit" class="mb-3">
-                <h5 class="fw-bold">2. Choose Verified Pandit</h5>
-                <p class="small">Compare experience, ratings & languages</p>
-            </div>
-            <div class="col-md-3">
-                <img src="https://img.icons8.com/color/96/000000/calendar.png" alt="Date & Time" class="mb-3">
-                <h5 class="fw-bold">3. Pick Date & Time</h5>
-                <p class="small">Select convenient slot</p>
-            </div>
-            <div class="col-md-3">
-                <img src="https://img.icons8.com/color/96/000000/lock.png" alt="Pay Securely" class="mb-3">
-                <h5 class="fw-bold">4. Pay Securely & Relax</h5>
-                <p class="small">Pandit arrives on time</p>
-            </div>
-        </div>
-        <div class="text-center mt-5">
-            <a href="book-pandit.html" class="btn btn-premium btn-lg">Start Booking Now</a>
-        </div>
-    </div>
-</section>
-
-<!-- ================= PAN INDIA SECTION ================= -->
-<section class="py-5 text-center">
-    <div class="container">
-        <h2 class="display-4 fw-bold mb-4" style="color: #FF9933;">Sacred Rituals Across India</h2>
-        <p class="lead col-lg-8 mx-auto mb-5">
-            From Mumbai to Ahmedabad, Surat to Delhi — verified Pandits at your doorstep.
+        <p class="lead fs-3 mb-5" style="color: #f5e8d3; max-width: 900px; margin: 0 auto; opacity: 0.95;">
+            Connect with verified pandits for authentic Vedic ceremonies, havan & divine blessings across India.
         </p>
-        <div class="row g-4 justify-content-center">
-            <div class="col-6 col-md-4"><div class="card p-4">25+<br><small>Cities Covered</small></div></div>
-            <div class="col-6 col-md-4"><div class="card p-4">500+<br><small>Verified Pandits</small></div></div>
-            <div class="col-6 col-md-4"><div class="card p-4">10,000+<br><small>Pujas Completed</small></div></div>
+
+        <div class="row g-3 justify-content-center mt-4">
+    <div class="col-12 col-lg-auto">
+        <a href="book-pandit.html" class="btn btn-premium">
+            Book a Pandit Now
+        </a>
+    </div>
+    <div class="col-12 col-lg-auto">
+        <a href="pujas.html" class="btn btn-outline-premium">
+            Explore Pujas
+        </a>
+    </div>
+</div>
+
+    </div>
+</section>
+
+<!-- Additional CSS for Premium Divine Look -->
+<style>
+    /* Divine Pulse Animation */
+    @keyframes divine-pulse {
+        0%, 100% { opacity: 0.5; transform: scale(1); }
+        50% { opacity: 0.8; transform: scale(1.05); }
+    }
+
+    /* Sparkle – Golden Divine Light */
+    .sparkle {
+        position: absolute;
+        font-size: 3.5rem;
+        color: #FFD700;
+        opacity: 0.7;
+        pointer-events: none;
+        animation: twinkle 14s infinite ease-in-out;
+    }
+    .sparkle-1 { top: 15%; left: 12%; animation-delay: 0s; }
+    .sparkle-2 { top: 35%; right: 15%; animation-delay: 3.5s; }
+    .sparkle-3 { bottom: 25%; left: 20%; animation-delay: 7s; }
+    .sparkle-4 { bottom: 40%; right: 25%; animation-delay: 10s; }
+
+    @keyframes twinkle {
+        0%, 100% { opacity: 0.5; transform: scale(0.9) rotate(0deg); }
+        50% { opacity: 1; transform: scale(1.3) rotate(20deg); }
+    }
+
+    /* Premium Buttons – Orange with Glow */
+    .btn-premium {
+        background: linear-gradient(90deg, #FF9933, #FFB066);
+        color: #0f0c0a;
+        font-weight: 700;
+        padding: 20px 60px;
+        border-radius: 60px;
+        font-size: 1.5rem;
+        box-shadow: 0 15px 40px rgba(255,153,51,0.6);
+        transition: all 0.5s ease;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-premium:hover {
+        transform: translateY(-10px) scale(1.05);
+        box-shadow: 0 30px 80px rgba(255,153,51,0.8);
+    }
+
+    .btn-outline-premium {
+        border: 3px solid #FF9933;
+        color: #FF9933;
+        background: transparent;
+        padding: 20px 60px;
+        border-radius: 60px;
+        font-size: 1.5rem;
+        font-weight: 600;
+        transition: all 0.4s;
+    }
+
+    .btn-outline-premium:hover {
+        background: #FF9933;
+        color: #0f0c0a;
+        transform: translateY(-8px);
+    }
+</style>
+
+<!-- ================= SECTION 3: SERVICES ================= -->
+<section class="py-5 bg-white">
+    <div class="container">
+        <h2 class="text-center display-5 fw-bold mb-5">Sacred Services for Every Need</h2>
+        <div class="row g-4">
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">🗺️ Pan-India Coverage</div></div>
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">🗓️ Panchang Calendar</div></div>
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">👥 Group Pujas</div></div>
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">📝 Spiritual Blog</div></div>
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">🔮 Kundli Generator</div></div>
+            <div class="col-md-4"><div class="card p-4 text-center shadow-sm h-100">💬 WhatsApp Support</div></div>
         </div>
     </div>
 </section>
 
-<!-- ================= GROUP PUJA ================= -->
+<!-- ================= SECTION 4: HOW IT WORKS ================= -->
+<!-- SECTION 4: How It Works (Premium with Images) -->
+<section class="py-5" style="background-color: rgba(255, 153, 51, 0.08);">
+    <div class="container">
+        <h2 class="text-center display-5 fw-bold text-primary mb-5">How It Works</h2>
+        <p class="text-center lead text-muted mb-5">Simple 4 steps to book your puja with verified pandit</p>
+
+        <div class="row g-5 align-items-center">
+            <!-- Step 1 -->
+            <div class="col-md-3 text-center">
+                <div class="mb-4">
+                    <img src="https://img.icons8.com/color/96/000000/map-marker.png" alt="Select City" class="mb-3">
+                    <div class="fs-1 fw-bold text-warning">1</div>
+                </div>
+                <h5 class="fw-bold">Select City & Puja</h5>
+                <p class="small text-muted">Choose your location and required ritual from our catalogue</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="col-md-1 text-center d-none d-md-block">
+                <img src="https://img.icons8.com/ios-filled/50/FF9933/long-arrow-right.png" alt="arrow">
+            </div>
+
+            <!-- Step 2 -->
+            <div class="col-md-3 text-center">
+                <div class="mb-4">
+                    <img src="https://img.icons8.com/color/96/000000/user-group-man-woman.png" alt="Choose Pandit" class="mb-3">
+                    <div class="fs-1 fw-bold text-warning">2</div>
+                </div>
+                <h5 class="fw-bold">Choose Verified Pandit</h5>
+                <p class="small text-muted">Compare experience, ratings & languages of local pandits</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="col-md-1 text-center d-none d-md-block">
+                <img src="https://img.icons8.com/ios-filled/50/FF9933/long-arrow-right.png" alt="arrow">
+            </div>
+
+            <!-- Step 3 -->
+            <div class="col-md-3 text-center">
+                <div class="mb-4">
+                    <img src="https://img.icons8.com/color/96/000000/calendar.png" alt="Date & Time" class="mb-3">
+                    <div class="fs-1 fw-bold text-warning">3</div>
+                </div>
+                <h5 class="fw-bold">Pick Date & Time</h5>
+                <p class="small text-muted">Select convenient slot as per pandit's availability</p>
+            </div>
+
+            <!-- Arrow -->
+            <div class="col-md-1 text-center d-none d-md-block">
+                <img src="https://img.icons8.com/ios-filled/50/FF9933/long-arrow-right.png" alt="arrow">
+            </div>
+
+            <!-- Step 4 -->
+            <div class="col-md-3 text-center">
+                <div class="mb-4">
+                    <img src="https://img.icons8.com/color/96/000000/lock.png" alt="Pay Securely" class="mb-3">
+                    <div class="fs-1 fw-bold text-warning">4</div>
+                </div>
+                <h5 class="fw-bold">Pay Securely & Relax</h5>
+                <p class="small text-muted">Advance payment via Razorpay • Pandit arrives on time</p>
+            </div>
+        </div>
+
+        <div class="text-center mt-5">
+            <a href="book-pandit.html" class="btn btn-warning btn-lg rounded-pill px-5 py-3 fw-bold">Start Booking Now</a>
+        </div>
+    </div>
+</section>
+
+<!-- ================= SECTION 5: PAN INDIA ================= -->
+<!-- ================= SECTION 5: PAN INDIA (CREATIVE + PREMIUM) ================= -->
+<section class="py-5 text-center" style="background:#FFF7ED;">
+    <div class="container">
+
+        <h2 class="display-4 fw-bold mb-3" style="font-family:'Playfair Display',serif;color:#C2410C;">
+            Sacred Rituals Across India
+        </h2>
+
+        <p class="lead col-lg-8 mx-auto text-muted mb-5">
+            From Mumbai to Ahmedabad, Surat to Delhi — verified Pandits bringing
+            authentic Vedic rituals to your doorstep with trust and discipline.
+        </p>
+
+        <!-- 🔥 SACRED STATS -->
+        <div class="row justify-content-center g-4 mb-5">
+
+            <div class="col-md-3 col-6">
+                <div class="p-4 bg-white rounded-4 shadow-sm">
+                    <h2 class="fw-bold text-warning">25+</h2>
+                    <p class="mb-0 text-muted">Cities Covered</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6">
+                <div class="p-4 bg-white rounded-4 shadow-sm">
+                    <h2 class="fw-bold text-warning">500+</h2>
+                    <p class="mb-0 text-muted">Verified Pandits</p>
+                </div>
+            </div>
+
+            <div class="col-md-3 col-6">
+                <div class="p-4 bg-white rounded-4 shadow-sm">
+                    <h2 class="fw-bold text-warning">10,000+</h2>
+                    <p class="mb-0 text-muted">Pujas Completed</p>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 🪔 SPIRITUAL DIVIDER -->
+        <div class="text-center mt-4">
+            <div style="font-size:42px;">🪔</div>
+            <p class="fst-italic fs-5 mt-3 text-muted col-lg-8 mx-auto">
+                “Where devotion meets discipline, sacred rituals find their true meaning.”
+            </p>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- ================= SECTION 8: GROUP PUJA ================= -->
 <section class="py-5 bg-light text-center">
     <div class="container">
-        <h2 class="display-5 fw-bold mb-4" style="color: #FF9933;">Join Community Group Pujas</h2>
-        <p class="lead col-lg-8 mx-auto">Collective rituals • Lower cost • Higher spiritual energy</p>
-        <a href="#" class="btn btn-premium btn-lg mt-4">Explore Group Pujas</a>
+        <h2 class="display-5 fw-bold mb-4">Join Community Group Pujas</h2>
+        <p class="lead col-lg-8 mx-auto">
+            Collective rituals • Lower cost • Higher spiritual energy
+        </p>
+        <a href="#" class="btn btn-warning btn-lg rounded-pill px-5 py-3 mt-4 fw-bold">
+            Explore Group Pujas
+        </a>
     </div>
 </section>
 
-<!-- ================= FOOTER ================= -->
+<!-- ================= JS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/script.js"></script>
+<!-- Footer -->
 <footer class="bg-dark text-light py-5">
     <div class="container">
         <div class="row">
+            <!-- Left: Brand + Description -->
             <div class="col-lg-4 mb-4">
-                <h3 class="text-warning mb-3">PanditGo</h3>
-                <p class="small">Your trusted platform for authentic Vedic rituals across India.</p>
-                <p class="small">✉️ bhattanant82@gmail.com</p>
+                <h3 class="fw-bold text-warning mb-3">PanditGo</h3>
+                <p class="small text-muted">
+                    Your trusted platform for connecting with verified pandits across India.<br>
+                    Bringing sacred rituals to your doorstep.
+                </p>
+                <p class="small text-muted">
+                    ✉️ bhattanant82@gmail.com
+                </p>
             </div>
+
+            <!-- Quick Links -->
             <div class="col-lg-2 col-md-4 mb-4">
                 <h5 class="text-warning mb-3">Quick Links</h5>
                 <ul class="list-unstyled small">
-                    <li><a href="book-pandit.html" class="text-light">Book a Pandit</a></li>
-                    <li><a href="pandits.html" class="text-light">Pandits</a></li>
-                    <li><a href="pujas.html" class="text-light">Puja Types</a></li>
+                    <li><a href="book-pandit.html" class="text-light text-decoration-none">Book a Pandit</a></li>
+                    <li><a href="pandits.html" class="text-light text-decoration-none">Pandits</a></li>
+                    <li><a href="pujas.html" class="text-light text-decoration-none">Puja Types</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Subscription Plans</a></li>
                 </ul>
             </div>
+
+            <!-- Resources -->
             <div class="col-lg-2 col-md-4 mb-4">
                 <h5 class="text-warning mb-3">Resources</h5>
                 <ul class="list-unstyled small">
-                    <li><a href="#" class="text-light">Blog</a></li>
-                    <li><a href="#" class="text-light">Panchang</a></li>
-                    <li><a href="#" class="text-light">Kundli Generator</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Blog</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Panchang</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Kundli Generator</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Contact Us</a></li>
                 </ul>
             </div>
-            <div class="col-lg-4 text-center text-lg-end">
+
+            <!-- Policies -->
+            <div class="col-lg-2 col-md-4 mb-4">
+                <h5 class="text-warning mb-3">Policies</h5>
+                <ul class="list-unstyled small">
+                    <li><a href="#" class="text-light text-decoration-none">Refund & Cancellation</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Privacy Policy</a></li>
+                    <li><a href="#" class="text-light text-decoration-none">Terms of Service</a></li>
+                </ul>
+            </div>
+
+            <!-- Social -->
+            <div class="col-lg-2 mb-4">
                 <h5 class="text-warning mb-3">Follow Us</h5>
-                <div class="d-flex gap-3 justify-content-center justify-content-lg-end">
+                <div class="d-flex gap-3">
                     <a href="#" class="text-light fs-4"><i class="bi bi-facebook"></i></a>
+                    <a href="#" class="text-light fs-4"><i class="bi bi-twitter"></i></a>
                     <a href="#" class="text-light fs-4"><i class="bi bi-instagram"></i></a>
                     <a href="#" class="text-light fs-4"><i class="bi bi-youtube"></i></a>
                 </div>
             </div>
         </div>
-        <hr class="my-4">
-        <div class="text-center small">
-            © 2025 PanditGo. All rights reserved. | Owner: Anant Bhatt S
+
+        <hr class="my-4 border-secondary">
+
+        <div class="row align-items-center">
+            <div class="col-md-6 text-center text-md-start small">
+                © 2025 PanditGo. All rights reserved.
+            </div>
+            <div class="col-md-6 text-center text-md-end small text-muted">
+                Owner: Anant Bhatt S
+            </div>
         </div>
     </div>
 </footer>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
