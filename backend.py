@@ -1,21 +1,21 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS  # <-- CORS add kiya (error fix ke liye)
+from flask_cors import CORS  # CORS add kiya — frontend connect issue fix
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_moon
+from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, GCRS
 import astropy.units as u
-from datetime import datetime
+from datetime import datetime, timedelta
 import math
 
 app = Flask(__name__)
-CORS(app)  # <-- Ye line add kiya — frontend se call allow karega
+CORS(app)  # CORS enable — ab frontend se call aayega
 
-# Vedic Rashi names
+# Rashi and Nakshatra lists
 RASHIS = [
-    "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
-    "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+    "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
+    "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
+    "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"
 ]
 
-# Nakshatra names
 NAKSHATRAS = [
     "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
     "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
@@ -25,100 +25,78 @@ NAKSHATRAS = [
 ]
 
 def degree_to_rashi(degree):
-    index = int(degree // 30)
-    return RASHIS[index % 12]
+    rashi_index = int(degree // 30)
+    return RASHIS[rashi_index % 12]
 
-def degree_to_nakshatra(degree):
-    index = int(degree // (360 / 27))
-    return NAKSHATRAS[index % 27]
+def get_nakshatra(degree):
+    nak_index = int(degree // (360 / 27))
+    return NAKSHATRAS[nak_index % 27]
 
-def get_lagna(birth_time, loc):
-    # Real Lagna calculation using AltAz frame
-    frame = AltAz(obstime=birth_time, location=loc)
-    sun = get_body('sun', birth_time, loc)
-    altaz = sun.transform_to(frame)
-    # Lagna is the point on ecliptic rising on eastern horizon
-    # Approximate using sidereal time
-    sidereal_time = birth_time.sidereal_time('mean', loc.lon)
-    lagna_deg = (sidereal_time.degree - 180) % 360
-    return lagna_deg
+def approximate_vimshottari_dasha(moon_degree):
+    nak_index = int(moon_degree // (360 / 27))
+    dasha_lords = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"]
+    dasha_periods = [7, 20, 6, 10, 7, 18, 16, 19, 17]  # years
+    lord = dasha_lords[nak_index % 9]
+    return f"Current Dasha: {lord} (approx {dasha_periods[nak_index % 9]} years remaining)"
 
 @app.route('/generate-kundli', methods=['POST'])
 def generate_kundli():
-    try:
-        data = request.json
-        dob = data['dob']  # DD/MM/YYYY
-        tob = data['tob']  # HH:MM:SS
-        place_str = data['place']  # "lat,long"
+    data = request.json
+    dob = data.get('dob')  # DD/MM/YYYY
+    tob = data.get('tob')  # HH:MM:SS
+    place_str = data.get('place')  # "lat,long"
 
-        # Parse date time
+    if not dob or not tob or not place_str:
+        return jsonify({"error": "All fields are required"}), 400
+
+    try:
+        # Step 1: Input Parse
         day, month, year = map(int, dob.split('/'))
         hour, minute, second = map(int, tob.split(':'))
         birth_dt = datetime(year, month, day, hour, minute, second)
         birth_time = Time(birth_dt)
 
-        # Parse location
+        # Location
         lat, lon = map(float, place_str.split(','))
-        loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=50*u.m)
+        loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
 
-        # Get planet positions
+        # Step 2: Astronomical Data Fetch
         with solar_system_ephemeris.set('builtin'):
             planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
             positions = {}
             for planet in planets:
-                body = get_body(planet, birth_time, loc)
-                ra = body.ra.degree
-                # Apply Lahiri Ayanamsa (approx 24° for 2025)
-                sidereal = (ra - 24.0) % 360
-                positions[planet] = {
-                    "degree": round(sidereal, 2),
-                    "rashi": degree_to_rashi(sidereal),
-                    "nakshatra": degree_to_nakshatra(sidereal)
-                }
+                pos = get_body(planet, birth_time, loc).transform_to(GCRS(obstime=birth_time))
+                ra_deg = pos.ra.degree
+                positions[planet] = ra_deg
 
-            # Rahu/Ketu (mean node approximation)
-            moon = get_body('moon', birth_time, loc)
-            rahu = (moon.ra.degree + 180) % 360 - 24.0
-            rahu = rahu % 360
-            ketu = (rahu + 180) % 360
+        # Step 3: Sidereal Adjustment
+        ayanamsa = 24.0
+        sidereal_positions = {p: (ra - ayanamsa) % 360 for p, ra in positions.items()}
 
-            positions['rahu'] = {
-                "degree": round(rahu, 2),
-                "rashi": degree_to_rashi(rahu),
-                "nakshatra": degree_to_nakshatra(rahu)
-            }
-            positions['ketu'] = {
-                "degree": round(ketu, 2),
-                "rashi": degree_to_rashi(ketu),
-                "nakshatra": degree_to_nakshatra(ketu)
-            }
+        # Step 4: Lagna (Ascendant) Calculation
+        frame = AltAz(obstime=birth_time, location=loc)
+        lagna = get_body('sun', birth_time, loc).transform_to(frame)
+        lagna_deg = (lagna.az.degree - ayanamsa) % 360  # Adjusted Lagna
 
-        # Lagna calculation
-        lagna_deg = get_lagna(birth_time, loc)
-        lagna_deg = (lagna_deg - 24.0) % 360  # Sidereal
+        # Step 5: Nakshatra, Pada (using Moon)
+        moon_deg = sidereal_positions['moon']
+        nakshatra = get_nakshatra(moon_deg)
 
-        # Basic Vimshottari Dasha (based on Moon Nakshatra)
-        moon_deg = positions['moon']['degree']
-        nak_index = int(moon_deg // (360 / 27))
-        dasha_lords = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"]
-        current_dasha = dasha_lords[nak_index % 9]
+        # Step 6: Dasha / Yog / Dosh
+        dasha = approximate_vimshottari_dasha(moon_deg)
 
-        # Final result
+        # Result
         result = {
-            "lagna": {
-                "degree": round(lagna_deg, 2),
-                "rashi": degree_to_rashi(lagna_deg),
-                "nakshatra": degree_to_nakshatra(lagna_deg)
-            },
-            "planets": positions,
-            "current_dasha": current_dasha,
-            "note": "Accurate Vedic Kundli using Lahiri Ayanamsa and astronomical data"
+            'positions': {p: {"degree": round(deg, 2), "rashi": degree_to_rashi(deg), "nakshatra": get_nakshatra(deg)} for p, deg in sidereal_positions.items()},
+            'lagna': {"degree": round(lagna_deg, 2), "rashi": degree_to_rashi(lagna_deg)},
+            'nakshatra': nakshatra,
+            'dasha': dasha
         }
 
         return jsonify(result)
 
     except Exception as e:
-        return jsonify({"error": "Invalid input or calculation error: " + str(e)}), 400
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
