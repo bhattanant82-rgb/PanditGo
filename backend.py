@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+from flask_cors import CORS # type: ignore
 from astropy.time import Time
 from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation
 import astropy.units as u
