@@ -126,35 +126,89 @@
         <p>© 2025 PanditGo. All rights reserved. Owner: Anant Bhatt S</p>
     </div>
 </footer>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    // Kundli Form Submit Handler
+    // Kundli Form Submit Handler – Premium Version
     const form = document.getElementById('kundliForm');
+    const outputDiv = document.getElementById('kundliOutput');
+
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        const dob = document.getElementById('dob').value;
-        const tob = document.getElementById('tob').value;
-        const place = document.getElementById('place').value;
+        // Input values
+        const dob = document.getElementById('dob').value.trim();
+        const tob = document.getElementById('tob').value.trim();
+        const place = document.getElementById('place').value.trim();
 
-        document.getElementById('kundliOutput').innerHTML = '<p class="text-center text-warning">Generating Kundli... Please wait 🙏</p>';
-        document.getElementById('kundliOutput').classList.remove('d-none');
+        // Basic validation
+        if (!dob || !tob || !place) {
+            outputDiv.innerHTML = '<p class="text-danger text-center">Sabhi fields bharo bhai 🙏</p>';
+            outputDiv.classList.remove('d-none');
+            return;
+        }
+
+        // Loading state
+        outputDiv.innerHTML = `
+            <div class="text-center">
+                <div class="spinner-border text-warning" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-warning">Kundli generate ho rahi hai... Please wait 🙏</p>
+            </div>
+        `;
+        outputDiv.classList.remove('d-none');
 
         try {
             const response = await fetch('http://127.0.0.1:5000/generate-kundli', {
                 method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({dob, tob, place})
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ dob, tob, place })
             });
+
+            if (!response.ok) {
+                throw new Error(`Backend se error: ${response.status} ${response.statusText}`);
+            }
 
             const data = await response.json();
 
-            document.getElementById('lagnaChart').innerHTML = JSON.stringify(data.positions, null, 2);
-            document.getElementById('navamsaChart').innerHTML = 'Navamsa Placeholder'; // Add logic
-            document.getElementById('dasha').innerHTML = data.dasha;
+            // Output format – Premium look
+            outputDiv.innerHTML = `
+                <h3 class="text-center fw-bold mb-4" style="color: #FF9933;">Your Janam Kundli</h3>
+                <div class="row g-4">
+                    <div class="col-md-6">
+                        <h5 class="text-warning">Lagna Chart</h5>
+                        <pre class="bg-dark text-light p-3 rounded" style="font-size: 0.9rem;">
+${JSON.stringify(data.lagna || data.positions || 'No Lagna Data', null, 2)}
+                        </pre>
+                    </div>
+                    <div class="col-md-6">
+                        <h5 class="text-warning">Navamsa Chart</h5>
+                        <pre class="bg-dark text-light p-3 rounded" style="font-size: 0.9rem;">
+${JSON.stringify(data.navamsa || 'Navamsa Placeholder – Full Logic Coming Soon', null, 2)}
+                        </pre>
+                    </div>
+                    <div class="col-12">
+                        <h5 class="text-warning">Current Dasha</h5>
+                        <pre class="bg-dark text-light p-3 rounded" style="font-size: 0.9rem;">
+${JSON.stringify(data.dasha || 'Dasha Placeholder', null, 2)}
+                        </pre>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button class="btn btn-warning btn-sm me-2">Download PDF</button>
+                    <button class="btn btn-success btn-sm">Share on WhatsApp</button>
+                </div>
+            `;
         } catch (error) {
-            document.getElementById('kundliOutput').innerHTML = '<p class="text-danger text-center">Error generating Kundli: ' + error.message + '</p>';
+            console.error('Kundli Error:', error); // Console me detail dikhega (F12 → Console)
+            outputDiv.innerHTML = `
+                <p class="text-danger text-center fw-bold">
+                    Error generating Kundli: ${error.message} <br>
+                    <small>(Backend chal raha hai? CMD check karo)</small>
+                </p>
+            `;
         }
     });
 </script>
