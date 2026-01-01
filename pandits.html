@@ -3,161 +3,249 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pandits - PanditGo</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <title>Pandits - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #FF9933;
+            --dark: #1a252f;
+            --gold: #FFD700;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(to bottom, #f8f9fa, #fffaf0);
+            color: #333;
+        }
+        .navbar {
+            background: var(--dark);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .navbar-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            color: var(--primary) !important;
+        }
+        .card-pandit {
+            border: none;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            transition: all 0.4s ease;
+            background: white;
+        }
+        .card-pandit:hover {
+            transform: translateY(-12px);
+            box-shadow: 0 20px 50px rgba(255,153,51,0.25);
+        }
+        .pandit-img {
+            width: 140px;
+            height: 140px;
+            object-fit: cover;
+            border: 5px solid var(--primary);
+            border-radius: 50%;
+            margin: -60px auto 20px;
+            background: white;
+            padding: 5px;
+        }
+        .badge-verified {
+            background: linear-gradient(45deg, #28a745, #34d058);
+            font-size: 0.9rem;
+            padding: 6px 14px;
+        }
+        .btn-book {
+            background: var(--primary);
+            border: none;
+            border-radius: 50px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        .btn-book:hover {
+            background: #e68a00;
+            transform: scale(1.05);
+        }
+        .no-pandit-msg {
+            font-size: 1.4rem;
+            color: #6c757d;
+            padding: 60px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
 </head>
 <body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-dark shadow-lg py-3 fixed-top">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-3 text-warning" href="index.html">PanditGo</a>
+        <a class="navbar-brand fw-bold" href="index.html">BookMyPandit</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-            <ul class="navbar-nav gap-4">
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="index.html">Home</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium active" href="pandits.html">Pandits</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="kundli-generator.html">Kundli Generator</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="puja-types.html">Puja Types</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="kundli-matching.html">Kundli Matching</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="contact.html">Contact</a></li>
-                <li class="nav-item"><a class="nav-link text-light fw-medium" href="become-pandit.html">Join Pandit</a></li>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mx-auto">
+                <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                <li class="nav-item"><a class="nav-link active" href="pandits.html">Pandits</a></li>
+                <li class="nav-item"><a class="nav-link" href="kundli-generator.html">Kundli</a></li>
+                <li class="nav-item"><a class="nav-link" href="puja-types.html">Pujas</a></li>
+                <li class="nav-item"><a class="nav-link" href="become-pandit.html">Become Pandit</a></li>
             </ul>
-        </div>
-        <div class="d-flex gap-3">
-            <a href="login.html" class="btn btn-outline-warning rounded-pill px-4 py-2">Login</a>
-            <a href="signup.html" class="btn btn-warning rounded-pill px-4 py-2">Sign Up</a>
+            <div class="d-flex gap-2">
+                <a href="login.html" class="btn btn-outline-light btn-sm">Login</a>
+                <a href="signup.html" class="btn btn-warning btn-sm">Sign Up</a>
+            </div>
         </div>
     </div>
 </nav>
 
-<!-- Pandit List Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <h2 class="text-center fw-bold mb-5" style="color: #FF9933;">Select Verified Pandit</h2>
-        <div class="row g-4">
-            <!-- Pandit 1 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit1.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Ram Sharma</h5>
-                    <p class="small text-muted">20+ Years • Hindi/Sanskrit/Gujarati</p>
-                    <p class="text-warning">⭐ 4.9</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Ram Sharma')">Select</button>
-                </div>
-            </div>
+<!-- Main Section -->
+<section class="py-5 mt-5">
+    <div class="container pt-5">
+        <div class="text-center mb-5">
+            <h1 class="display-5 fw-bold" style="color: var(--dark);">Our Verified Pandits 🙏</h1>
+            <p class="lead text-muted">Trusted, experienced & verified pandits for your sacred rituals</p>
+        </div>
 
-            <!-- Pandit 2 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit2.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Mahesh Joshi</h5>
-                    <p class="small text-muted">18 Years • Hindi/Sanskrit</p>
-                    <p class="text-warning">⭐ 4.8</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Mahesh Joshi')">Select</button>
-                </div>
-            </div>
-
-            <!-- Pandit 3 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit3.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Vikram Patel</h5>
-                    <p class="small text-muted">25 Years • Gujarati/Hindi</p>
-                    <p class="text-warning">⭐ 5.0</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Vikram Patel')">Select</button>
-                </div>
-            </div>
-
-            <!-- Pandit 4 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit4.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Anil Trivedi</h5>
-                    <p class="small text-muted">15 Years • Hindi/Sanskrit</p>
-                    <p class="text-warning">⭐ 4.7</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Anil Trivedi')">Select</button>
-                </div>
-            </div>
-
-            <!-- Pandit 5 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit5.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Rajesh Dubey</h5>
-                    <p class="small text-muted">22 Years • Hindi/Sanskrit</p>
-                    <p class="text-warning">⭐ 4.9</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Rajesh Dubey')">Select</button>
-                </div>
-            </div>
-
-            <!-- Pandit 6 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit6.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Sanjay Mishra</h5>
-                    <p class="small text-muted">17 Years • Hindi</p>
-                    <p class="text-warning">⭐ 4.8</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Sanjay Mishra')">Select</button>
-                </div>
-            </div>
-
-            <!-- Pandit 7 -->
-            <div class="col-md-4">
-                <div class="card text-center p-3 shadow">
-                    <img src="images/pandit7.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                    <h5>Pt. Kishan Shastri</h5>
-                    <p class="small text-muted">30 Years • Sanskrit/Hindi/Gujarati</p>
-                    <p class="text-warning">⭐ 5.0</p>
-                    <button type="button" class="btn btn-primary rounded-pill select-pandit" onclick="startConsult('Consultation', 'Pt. Kishan Shastri')">Select</button>
-                </div>
-            </div>
+        <div class="row g-4 justify-content-center" id="panditsList">
+            <!-- Dynamically + static fallback load honge -->
         </div>
 
         <div class="text-center mt-5">
-            <a href="become-pandit.html" class="btn btn-success btn-lg rounded-pill px-5 py-3 fw-bold">Become a Pandit</a>
+            <a href="become-pandit.html" class="btn btn-success btn-lg rounded-pill px-5 py-3 fw-bold">
+                <i class="bi bi-person-plus-fill me-2"></i> Become a Pandit
+            </a>
         </div>
     </div>
 </section>
 
-<!-- Razorpay Script -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script>
-    function startConsult(type, pandit) {
-        const rate = 19; // ₹19/min
-        let minutes = prompt(`How many minutes ${type} with ${pandit}? (₹${rate}/min)`, "5");
-        if (!minutes || minutes < 1) return alert("Minimum 1 minute");
-
-        const amount = rate * minutes * 100; // paise me
-        const panditEarning = 9 * minutes; // ₹9/min pandit
-        const platformCommission = amount / 100 - panditEarning;
-
-        var options = {
-            "key": "rzp_live_RwBuGYKySb2uQY", // Tera Razorpay key
-            "amount": amount,
-            "currency": "INR",
-            "name": "PanditGo",
-            "description": `${type.toUpperCase()} with ${pandit} - ${minutes} min`,
-            "handler": function (response){
-                alert(`Payment Success! ${type} starting...`);
-                alert(`Pandit will earn ₹${panditEarning} | Platform ₹${platformCommission}`);
-                window.location.href = 'my-bookings.html';
-            },
-            "prefill": {
-                "contact": localStorage.getItem('userPhone') || '',
-                "name": localStorage.getItem('userName') || ''
-            },
-            "theme": {"color": "#FF9933"}
-        };
-
-        var rzp = new Razorpay(options);
-        rzp.open();
+// 5 Built-in Verified Pandits (hardcoded fallback + demo ke liye)
+const builtInPandits = [
+    {
+        id: "PT001",
+        name: "Pt. Ram Sharma",
+        city: "Ahmedabad",
+        exp: 20,
+        lang: "Hindi, Sanskrit, Gujarati",
+        pujas: "Griha Pravesh, Satyanarayan Katha, Rudrabhishek",
+        photo: "https://via.placeholder.com/150/FF9933/FFFFFF?text=Ram",
+        status: "Verified"
+    },
+    {
+        id: "PT002",
+        name: "Pt. Mahesh Joshi",
+        city: "Surat",
+        exp: 18,
+        lang: "Hindi, Gujarati",
+        pujas: "Marriage Puja, Namkaran, Annaprashan",
+        photo: "https://via.placeholder.com/150/FF9933/FFFFFF?text=Mahesh",
+        status: "Verified"
+    },
+    {
+        id: "PT003",
+        name: "Pt. Vikram Patel",
+        city: "Mumbai",
+        exp: 25,
+        lang: "Hindi, Marathi, Sanskrit",
+        pujas: "Vastu Puja, Ganesh Yagya, Navgrah Shanti",
+        photo: "https://via.placeholder.com/150/FF9933/FFFFFF?text=Vikram",
+        status: "Verified"
+    },
+    {
+        id: "PT004",
+        name: "Pt. Anil Trivedi",
+        city: "Jaipur",
+        exp: 15,
+        lang: "Hindi, Rajasthani",
+        pujas: "Laxmi Puja, Durga Saptashati, Kali Puja",
+        photo: "https://via.placeholder.com/150/FF9933/FFFFFF?text=Anil",
+        status: "Verified"
+    },
+    {
+        id: "PT005",
+        name: "Pt. Sanjay Mishra",
+        city: "Delhi",
+        exp: 22,
+        lang: "Hindi, Sanskrit, English",
+        pujas: "Kaal Sarp Dosh Nivaran, Pitra Dosha Shanti, Maha Mrityunjaya",
+        photo: "https://via.placeholder.com/150/FF9933/FFFFFF?text=Sanjay",
+        status: "Verified"
     }
+];
+
+// Load pandits from localStorage + merge with built-in if not present
+function loadVerifiedPandits() {
+    let appData = JSON.parse(localStorage.getItem('appData')) || { pandits: [] };
+
+    // Built-in pandits ko add karo agar nahi hain
+    builtInPandits.forEach(built => {
+        if (!appData.pandits.some(p => p.id === built.id)) {
+            appData.pandits.push(built);
+        }
+    });
+
+    // Save back (optional, but safe)
+    localStorage.setItem('appData', JSON.stringify(appData));
+
+    // Sirf Verified filter karo
+    const verified = appData.pandits.filter(p => p.status === 'Verified');
+
+    const container = document.getElementById('panditsList');
+    container.innerHTML = '';
+
+    if (verified.length === 0) {
+        container.innerHTML = `
+            <div class="col-12 text-center no-pandit-msg">
+                <i class="bi bi-emoji-frown fs-1 text-warning mb-3 d-block"></i>
+                No verified pandits available yet.<br>
+                <small>Admin is reviewing applications. Check back soon! 🙏</small>
+            </div>
+        `;
+        return;
+    }
+
+    verified.forEach(p => {
+        container.innerHTML += `
+            <div class="col-lg-4 col-md-6">
+                <div class="card-pandit text-center p-4">
+                    <img src="${p.photo}" class="pandit-img" alt="${p.name}">
+                    <h5 class="fw-bold mb-2">${p.name}</h5>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-geo-alt-fill me-1"></i> ${p.city}
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-clock-history me-1"></i> ${p.exp}+ Years
+                    </p>
+                    <p class="text-muted small mb-3">
+                        <i class="bi bi-translate me-1"></i> ${p.lang}
+                    </p>
+                    <p class="mb-3">
+                        <span class="badge-verified">VERIFIED</span>
+                        <span class="badge bg-warning ms-2">⭐ 4.9</span>
+                    </p>
+                    <p class="text-muted small mb-4">
+                        <strong>Specializes in:</strong> ${p.pujas}
+                    </p>
+                    <button class="btn btn-book text-white" 
+                            onclick="startBooking('${p.name}', '${p.id}')">
+                        Book Now
+                    </button>
+                </div>
+            </div>
+        `;
+    });
+}
+
+function startBooking(name, id) {
+    alert(`Booking started for Pandit ${name} (ID: ${id})!\n\nNext steps: Puja select → Date/Time → Payment`);
+    // Yahan real booking page redirect kar sakta hai
+}
+
+window.onload = loadVerifiedPandits;
 </script>
-<script src="js/auth.js"></script>
 </body>
 </html>
