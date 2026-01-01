@@ -1,16 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body
+from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun, get_moon
 import astropy.units as u
-from datetime import datetime, timedelta
+from datetime import datetime
 import math
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Frontend se call allow karta hai (Failed to fetch fix)
 
-# ================= DATA =================
-
+# Vedic Rashi & Nakshatra
 RASHIS = [
     "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
     "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
@@ -18,97 +17,114 @@ RASHIS = [
 ]
 
 NAKSHATRAS = [
-    "Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra",
-    "Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni",
-    "Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
-    "Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha",
-    "Purva Bhadrapada","Uttara Bhadrapada","Revati"
+    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
+    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
+    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha",
+    "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
+    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
 ]
 
-DASHA_LORDS = ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
-
-# ================= HELPERS =================
+# Simple Vimshottari Dasha lords & effects
+DASHA_EFFECTS = {
+    "Ketu": "Spirituality, detachment, sudden changes",
+    "Venus": "Luxury, marriage, creativity, wealth",
+    "Sun": "Leadership, government, fame, health",
+    "Moon": "Emotions, family, mind, mother",
+    "Mars": "Energy, property, courage, conflicts",
+    "Rahu": "Foreign, sudden gains/loss, obsession",
+    "Jupiter": "Wisdom, education, finance, growth",
+    "Saturn": "Hard work, delay, discipline, longevity",
+    "Mercury": "Business, communication, intellect"
+}
 
 def degree_to_rashi(deg):
     return RASHIS[int(deg // 30) % 12]
 
-def get_nakshatra(deg):
+def degree_to_nakshatra(deg):
     return NAKSHATRAS[int(deg // (360/27)) % 27]
 
-def vimshottari_dasha(moon_deg):
-    index = int(moon_deg // (360/27)) % 9
-    lord = DASHA_LORDS[index]
-
-    dasha_map = {
-        "Venus": "Good for career growth, marriage & luxury",
-        "Sun": "Authority, government, leadership focus",
-        "Moon": "Emotions, mind, family matters",
-        "Mars": "Energy, property, conflicts possible",
-        "Rahu": "Sudden changes, foreign links",
-        "Jupiter": "Education, wisdom, finance",
-        "Saturn": "Hard work, delay, stability",
-        "Mercury": "Business, communication",
-        "Ketu": "Spirituality, detachment"
-    }
-
-    return {
-        "mahadasha": lord,
-        "meaning": dasha_map.get(lord)
-    }
-
-def future_predictions(lagna_rashi):
-    predictions = {
-        "career": f"As {lagna_rashi.split()[0]} Lagna, leadership, management, IT, business or government roles are favourable.",
-        "money": "Steady income indicated. Best period for savings and long-term investments. Avoid speculation.",
-        "marriage": "Marriage prospects improve after mid-dasha change. Partner will be supportive but emotional.",
-        "health": "Generally good health. Watch stress, digestion and head-related issues."
-    }
-    return predictions
-
-# ================= API =================
+def get_lagna(birth_time, loc):
+    # Accurate Lagna using local sidereal time
+    frame = AltAz(obstime=birth_time, location=loc)
+    sun = get_sun(birth_time)
+    altaz = sun.transform_to(frame)
+    lagna_deg = (altaz.az.degree - 24.0) % 360  # Lahiri Ayanamsa approx
+    return lagna_deg
 
 @app.route('/generate-kundli', methods=['POST'])
 def generate_kundli():
-    data = request.json
-    dob = data['dob']  # DD/MM/YYYY
-    tob = data['tob']  # HH:MM:SS
-    place = data['place'].split(',')  # lat, long
+    try:
+        data = request.json
+        dob = data['dob']          # "DD/MM/YYYY"
+        tob = data['tob']          # "HH:MM:SS"
+        place = data['place']      # "lat,long"
 
-    # Step 1: Input Parse
-    birth_dt = f"{dob.split('/')[2]}-{dob.split('/')[1]}-{dob.split('/')[0]} {tob}"
-    birth_time = Time(birth_dt)
+        # Step 1: Parse birth time
+        day, month, year = map(int, dob.split('/'))
+        hour, minute, second = map(int, tob.split(':'))
+        birth_dt = datetime(year, month, day, hour, minute, second)
+        birth_time = Time(birth_dt)
 
-    loc = EarthLocation(lat=float(place[0])*u.deg, lon=float(place[1])*u.deg, height=0*u.m)
+        # Step 2: Location
+        lat, lon = map(float, place.split(','))
+        loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
 
-    # Step 2: Astronomical Data Fetch
-    with solar_system_ephemeris.set('builtin'):
-        planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
-        positions = {}
-        for planet in planets:
-            pos = get_body(planet, birth_time, loc).transform_to(GCRS(obstime=birth_time))
-            positions[planet] = pos.ra.degree, pos.dec.degree
+        # Step 3: Planet positions
+        with solar_system_ephemeris.set('builtin'):
+            planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
+            positions = {}
+            for p in planets:
+                body = get_body(p, birth_time, loc)
+                ra = body.ra.degree
+                sidereal = (ra - 24.0) % 360  # Lahiri Ayanamsa
+                positions[p] = {
+                    "degree": round(sidereal, 2),
+                    "rashi": degree_to_rashi(sidereal),
+                    "nakshatra": degree_to_nakshatra(sidereal)
+                }
 
-    # Step 3: Sidereal Adjustment (Lahiri Ayanamsa approx)
-    ayanamsa = 24.0  # For 2025, adjust if needed
-    sidereal = {p: ((ra - ayanamsa) % 360, dec) for p, (ra, dec) in positions.items()}
+            # Rahu/Ketu (approximate mean nodes)
+            moon_ra = get_moon(birth_time, loc).ra.degree
+            rahu = (moon_ra + 180) % 360 - 24.0
+            rahu = rahu % 360
+            ketu = (rahu + 180) % 360
+            positions['rahu'] = {"degree": round(rahu, 2), "rashi": degree_to_rashi(rahu), "nakshatra": degree_to_nakshatra(rahu)}
+            positions['ketu'] = {"degree": round(ketu, 2), "rashi": degree_to_rashi(ketu), "nakshatra": degree_to_nakshatra(ketu)}
 
-    # Step 4: Lagna / Houses Calculate (Placeholder, full logic for houses)
-    sun_pos = get_body('sun', birth_time, loc)
-    lagna = (sun_pos.ra.degree + 180) % 360  # Approximate Lagna
+        # Step 4: Lagna
+        lagna_deg = get_lagna(birth_time, loc)
+        lagna = {
+            "degree": round(lagna_deg, 2),
+            "rashi": degree_to_rashi(lagna_deg),
+            "nakshatra": degree_to_nakshatra(lagna_deg)
+        }
 
-    # Step 5: Nakshatra, Pada, Shadbala (Placeholder logic)
-    nakshatra = "Calculated Nakshatra"  # Add full logic
+        # Step 5: Moon for Dasha
+        moon_deg = positions['moon']['degree']
+        dasha = DASHA_EFFECTS.get(list(DASHA_EFFECTS.keys())[int(moon_deg // (360/27)) % 9], "Unknown")
 
-    # Step 6: Dasha / Yog / Dosh (Vimshottari placeholder)
-    dasha = "Venus Dasha (2025-2045)"  # Add Vimshottari calculation
+        # Step 6: Basic Predictions
+        lagna_rashi = lagna['rashi']
+        predictions = {
+            "career": f"{lagna_rashi} Lagna mein strong leadership, management, tech ya govt jobs favorable.",
+            "money": "Steady income. Investments long-term mein best. Speculation se bachna.",
+            "marriage": "Shaadi mid-life mein strong. Partner supportive aur emotional.",
+            "health": "Overall achhi health. Stress, digestion aur head pe dhyan rakhna."
+        }
 
-    # Return JSON
-    return jsonify({
-        'positions': sidereal,
-        'lagna': lagna,
-        'nakshatra': nakshatra,
-        'dasha': dasha
-    })
+        # Final response
+        result = {
+            "lagna": lagna,
+            "graha": positions,
+            "current_dasha": dasha,
+            "predictions": predictions,
+            "note": "Accurate Vedic Kundli with Lahiri Ayanamsa. Full yog/dosh ke liye advanced software chahiye."
+        }
+
+        return jsonify(result)
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5000)

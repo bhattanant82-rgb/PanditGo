@@ -36,7 +36,6 @@
     <a href="#pandits"><i class="bi bi-people me-2"></i> Pandit Management</a>
     <a href="#payments"><i class="bi bi-currency-rupee me-2"></i> Payments & Refunds</a>
     <a href="#users"><i class="bi bi-person-badge me-2"></i> Users Management</a>
-    <a href="#reviews"><i class="bi bi-star me-2"></i> Reviews & Ratings</a>
     <a href="#logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </nav>
 
@@ -60,7 +59,7 @@
             <div class="metrics-card p-4 text-center">
                 <i class="bi bi-people fs-3 text-warning mb-3"></i>
                 <h6>Active Pandits</h6>
-                <h3 id="activePandits">42</h3>
+                <h3 id="activePandits">0</h3>
             </div>
         </div>
         <div class="col-md-3">
@@ -111,78 +110,63 @@
 <script>
     // Automatic Data Fetch & Real-time Update
     async function loadDashboardData() {
-        // Real backend API call (replace with your API endpoint)
-        // For now using dummy data + auto update logic
-        const dummyData = {
-            totalBookings: 45,
-            activePandits: 42,
-            revenue: 15000,
-            pendingRefunds: 2,
-            bookings: [
-                { id: 1, user: "Rahul Sharma", puja: "Griha Pravesh", pandit: "Pt. Ram Sharma", datetime: "01/01/2026 10:00 AM", amount: 2500, status: "Pending" },
-                { id: 2, user: "Priya Mehta", puja: "Marriage Puja", pandit: "Pt. Vikram Patel", datetime: "05/01/2026 09:00 AM", amount: 3500, status: "Confirmed" },
-                { id: 3, user: "Amit Patel", puja: "Satyanarayan Katha", pandit: "Pt. Mahesh Joshi", datetime: "10/01/2026 11:00 AM", amount: 1800, status: "Completed" }
-            ]
-        };
+        try {
+            const response = await fetch('http://127.0.0.1:5000/admin-data');
+            const data = await response.json();
 
-        // Update KPI Cards
-        document.getElementById('totalBookings').textContent = dummyData.totalBookings;
-        document.getElementById('activePandits').textContent = dummyData.activePandits;
-        document.getElementById('revenue').textContent = '₹' + dummyData.revenue;
-        document.getElementById('pendingRefunds').textContent = dummyData.pendingRefunds;
+            // Update KPI Cards
+            document.getElementById('totalBookings').textContent = data.totalBookings;
+            document.getElementById('activePandits').textContent = data.activePandits;
+            document.getElementById('revenue').textContent = '₹' + data.revenue;
+            document.getElementById('pendingRefunds').textContent = data.pendingRefunds;
 
-        // Update Bookings Table
-        const tableBody = document.getElementById('bookingsTable');
-        tableBody.innerHTML = '';
-        dummyData.bookings.forEach(b => {
-            const row = `
-                <tr>
-                    <td>${b.id}</td>
-                    <td>${b.user}</td>
-                    <td>${b.puja}</td>
-                    <td>${b.pandit}</td>
-                    <td>${b.datetime}</td>
-                    <td>₹${b.amount}</td>
-                    <td>${b.status}</td>
-                    <td>
-                        <button class="btn btn-success btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Approve')">Approve</button>
-                        <button class="btn btn-warning btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Cancel')">Cancel</button>
-                        <button class="btn btn-danger btn-sm btn-action" onclick="handleAction(${b.id}, 'Refund')">Refund</button>
-                    </td>
-                </tr>
-            `;
-            tableBody.innerHTML += row;
-        });
-
-        // Revenue Chart
-        const ctx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Revenue (₹)',
-                    data: [0, 2000, 5000, 8000, 12000, 15000],
-                    borderColor: '#FF9933',
-                    backgroundColor: 'rgba(255,153,51,0.2)',
-                    tension: 0.4
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
+            // Update Bookings Table
+            const tableBody = document.getElementById('bookingsTable');
+            tableBody.innerHTML = '';
+            data.bookings.forEach(b => {
+                const row = `
+                    <tr>
+                        <td>${b.id}</td>
+                        <td>${b.user}</td>
+                        <td>${b.puja}</td>
+                        <td>${b.pandit}</td>
+                        <td>${b.datetime}</td>
+                        <td>₹${b.amount}</td>
+                        <td>${b.status}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Approve')">Approve</button>
+                            <button class="btn btn-warning btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Cancel')">Cancel</button>
+                            <button class="btn btn-danger btn-sm btn-action" onclick="handleAction(${b.id}, 'Refund')">Refund</button>
+                        </td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+        } catch (error) {
+            console.error('Admin data load error:', error);
+        }
     }
 
     // Action Buttons (Approve/Cancel/Refund)
-    function handleAction(id, action) {
-        alert(`Action: ${action} for Booking ID ${id}`);
-        // Real backend call here (status update + revenue/refund auto calculate)
-        // After success → loadDashboardData() call kar ke auto update
-        loadDashboardData(); // Demo ke liye auto refresh
+    async function handleAction(id, action) {
+        if (!confirm(`Sure to ${action} booking ID ${id}?`)) return;
+
+        try {
+            await fetch('http://127.0.0.1:5000/admin-action', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ id, action })
+            });
+            loadDashboardData(); // Auto refresh after action
+            alert(`${action} successful!`);
+        } catch (error) {
+            alert('Action failed: ' + error.message);
+        }
     }
 
-    // Load data on page load + auto update every 30 sec
+    // Load data on page load + auto update every 10 sec
     loadDashboardData();
-    setInterval(loadDashboardData, 30000); // Real-time feel
+    setInterval(loadDashboardData, 10000); // Real-time feel
 </script>
 </body>
 </html>
