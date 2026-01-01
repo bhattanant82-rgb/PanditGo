@@ -44,7 +44,7 @@ def degree_to_nakshatra(deg):
     return NAKSHATRAS[int(deg // (360/27)) % 27]
 
 def get_lagna(birth_time, loc):
-    # Accurate Lagna using local sidereal time
+    # Accurate Lagna using local sidereal time + horizon
     frame = AltAz(obstime=birth_time, location=loc)
     sun = get_sun(birth_time)
     altaz = sun.transform_to(frame)
@@ -101,9 +101,14 @@ def generate_kundli():
 
         # Step 5: Moon for Dasha
         moon_deg = positions['moon']['degree']
-        dasha = DASHA_EFFECTS.get(list(DASHA_EFFECTS.keys())[int(moon_deg // (360/27)) % 9], "Unknown")
+        dasha_index = int(moon_deg // (360/27)) % 9
+        dasha_lord = list(DASHA_EFFECTS.keys())[dasha_index]
+        dasha = {
+            "lord": dasha_lord,
+            "effect": DASHA_EFFECTS[dasha_lord]
+        }
 
-        # Step 6: Basic Predictions
+        # Step 6: Basic Predictions (lagna rashi ke base pe)
         lagna_rashi = lagna['rashi']
         predictions = {
             "career": f"{lagna_rashi} Lagna mein strong leadership, management, tech ya govt jobs favorable.",
@@ -124,7 +129,7 @@ def generate_kundli():
         return jsonify(result)
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": f"Invalid input ya calculation error: {str(e)}"}), 400
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

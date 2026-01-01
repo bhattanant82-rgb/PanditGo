@@ -25,18 +25,19 @@
 </head>
 <body>
 
-<!-- Sidebar -->
+<!-- Sidebar (Sab buttons clickable) -->
 <nav class="sidebar">
     <div class="text-center mb-5">
         <h4 class="text-warning fw-bold">BookMyPandit Admin</h4>
         <small class="text-muted">CEO Anant Bhatt 👑</small>
     </div>
-    <a href="#dashboard" class="active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
-    <a href="#bookings"><i class="bi bi-calendar-check me-2"></i> Bookings Management</a>
-    <a href="#pandits"><i class="bi bi-people me-2"></i> Pandit Management</a>
-    <a href="#payments"><i class="bi bi-currency-rupee me-2"></i> Payments & Refunds</a>
-    <a href="#users"><i class="bi bi-person-badge me-2"></i> Users Management</a>
-    <a href="#logout"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
+    <a href="#" class="active"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a>
+    <a href="#"><i class="bi bi-calendar-check me-2"></i> Bookings Management</a>
+    <a href="#"><i class="bi bi-people me-2"></i> Pandit Management</a>
+    <a href="#"><i class="bi bi-currency-rupee me-2"></i> Payments & Refunds</a>
+    <a href="#"><i class="bi bi-person-badge me-2"></i> Users Management</a>
+    <a href="#"><i class="bi bi-star me-2"></i> Reviews & Ratings</a>
+    <a href="#"><i class="bi bi-box-arrow-right me-2"></i> Logout</a>
 </nav>
 
 <!-- Main Content -->
@@ -48,32 +49,46 @@
 
     <!-- KPI Cards (Auto-update) -->
     <div class="row g-4 mb-5">
-        <div class="col-md-3">
+        <div class="col-md-2">
             <div class="metrics-card p-4 text-center">
                 <i class="bi bi-calendar-check fs-3 text-warning mb-3"></i>
                 <h6>Total Bookings</h6>
                 <h3 id="totalBookings">0</h3>
             </div>
         </div>
-        <div class="col-md-3">
+        <div class="col-md-2">
+            <div class="metrics-card p-4 text-center">
+                <i class="bi bi-currency-rupee fs-3 text-warning mb-3"></i>
+                <h6>Total Revenue</h6>
+                <h3 id="totalRevenue">₹0</h3>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="metrics-card p-4 text-center">
+                <i class="bi bi-clock fs-3 text-warning mb-3"></i>
+                <h6>Today's Sales</h6>
+                <h3 id="todaySales">₹0</h3>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="metrics-card p-4 text-center">
+                <i class="bi bi-graph-up fs-3 text-warning mb-3"></i>
+                <h6>This Month Sales</h6>
+                <h3 id="monthSales">₹0</h3>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="metrics-card p-4 text-center">
+                <i class="bi bi-hourglass-split fs-3 text-warning mb-3"></i>
+                <h6>Pending Pujas</h6>
+                <h3 id="pendingPujas">0</h3>
+            </div>
+        </div>
+        <div class="col-md-2">
             <div class="metrics-card p-4 text-center">
                 <i class="bi bi-people fs-3 text-warning mb-3"></i>
                 <h6>Active Pandits</h6>
                 <h3 id="activePandits">0</h3>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="metrics-card p-4 text-center">
-                <i class="bi bi-currency-rupee fs-3 text-warning mb-3"></i>
-                <h6>Revenue (Advance)</h6>
-                <h3 id="revenue">₹0</h3>
-            </div>
-        </div>
-        <div class="col-md-3">
-            <div class="metrics-card p-4 text-center">
-                <i class="bi bi-arrow-return-left fs-3 text-warning mb-3"></i>
-                <h6>Pending Refunds</h6>
-                <h3 id="pendingRefunds">0</h3>
             </div>
         </div>
     </div>
@@ -85,8 +100,8 @@
     </div>
 
     <!-- Recent Bookings Table -->
-    <div class="metrics-card p-4">
-        <h5>Recent Bookings (Real Data – Auto Update)</h5>
+    <div class="metrics-card p-4 mb-5">
+        <h5>Recent Bookings (Real & Auto Update)</h5>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -100,31 +115,67 @@
                     <th>Action</th>
                 </tr>
             </thead>
-            <tbody id="bookingsTable">
-                <!-- Data JS se auto fill hoga -->
-            </tbody>
+            <tbody id="bookingsTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Pending Refunds Section -->
+    <div class="metrics-card p-4 mb-5">
+        <h5>Pending Refunds (Auto Update)</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>User</th>
+                    <th>Amount</th>
+                    <th>Reason</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="refundsTable"></tbody>
+        </table>
+    </div>
+
+    <!-- Pending Pandit Approvals -->
+    <div class="metrics-card p-4">
+        <h5>Pending Pandit Approvals</h5>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Experience</th>
+                    <th>Language</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody id="pendingPandits"></tbody>
         </table>
     </div>
 </div>
 
 <script>
-    // Automatic Data Fetch & Real-time Update
-    async function loadDashboardData() {
+    // Real-time Data Fetch
+    async function loadDashboard() {
         try {
-            const response = await fetch('http://127.0.0.1:5000/admin-data');
-            const data = await response.json();
+            const res = await fetch('http://127.0.0.1:5000/admin-dashboard');
+            const data = await res.json();
 
-            // Update KPI Cards
+            // KPI Cards
             document.getElementById('totalBookings').textContent = data.totalBookings;
+            document.getElementById('totalRevenue').textContent = '₹' + data.totalRevenue;
+            document.getElementById('todaySales').textContent = '₹' + data.todaySales;
+            document.getElementById('monthSales').textContent = '₹' + data.monthSales;
+            document.getElementById('pendingPujas').textContent = data.pendingPujas;
             document.getElementById('activePandits').textContent = data.activePandits;
-            document.getElementById('revenue').textContent = '₹' + data.revenue;
-            document.getElementById('pendingRefunds').textContent = data.pendingRefunds;
 
-            // Update Bookings Table
-            const tableBody = document.getElementById('bookingsTable');
-            tableBody.innerHTML = '';
+            // Bookings Table
+            const bookingsTable = document.getElementById('bookingsTable');
+            bookingsTable.innerHTML = '';
             data.bookings.forEach(b => {
-                const row = `
+                bookingsTable.innerHTML += `
                     <tr>
                         <td>${b.id}</td>
                         <td>${b.user}</td>
@@ -134,39 +185,75 @@
                         <td>₹${b.amount}</td>
                         <td>${b.status}</td>
                         <td>
-                            <button class="btn btn-success btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Approve')">Approve</button>
-                            <button class="btn btn-warning btn-sm btn-action me-1" onclick="handleAction(${b.id}, 'Cancel')">Cancel</button>
-                            <button class="btn btn-danger btn-sm btn-action" onclick="handleAction(${b.id}, 'Refund')">Refund</button>
+                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('approve', ${b.id})">Approve</button>
+                            <button class="btn btn-warning btn-sm btn-action me-1" onclick="action('cancel', ${b.id})">Cancel</button>
+                            <button class="btn btn-danger btn-sm btn-action" onclick="action('refund', ${b.id})">Refund</button>
                         </td>
                     </tr>
                 `;
-                tableBody.innerHTML += row;
             });
-        } catch (error) {
-            console.error('Admin data load error:', error);
+
+            // Refunds Table
+            const refundsTable = document.getElementById('refundsTable');
+            refundsTable.innerHTML = '';
+            data.refunds.forEach(r => {
+                refundsTable.innerHTML += `
+                    <tr>
+                        <td>${r.bookingId}</td>
+                        <td>${r.user}</td>
+                        <td>₹${r.amount}</td>
+                        <td>${r.reason}</td>
+                        <td>${r.status}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('refund-approve', ${r.bookingId})">Approve Refund</button>
+                            <button class="btn btn-danger btn-sm btn-action" onclick="action('refund-reject', ${r.bookingId})">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            // Pending Pandits
+            const pendingPandits = document.getElementById('pendingPandits');
+            pendingPandits.innerHTML = '';
+            data.pendingPandits.forEach(p => {
+                pendingPandits.innerHTML += `
+                    <tr>
+                        <td>${p.name}</td>
+                        <td>${p.city}</td>
+                        <td>${p.experience}</td>
+                        <td>${p.language}</td>
+                        <td>${p.status}</td>
+                        <td>
+                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('pandit-approve', ${p.id})">Approve</button>
+                            <button class="btn btn-danger btn-sm btn-action" onclick="action('pandit-reject', ${p.id})">Reject</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        } catch (e) {
+            console.error('Dashboard load error:', e);
         }
     }
 
-    // Action Buttons (Approve/Cancel/Refund)
-    async function handleAction(id, action) {
-        if (!confirm(`Sure to ${action} booking ID ${id}?`)) return;
-
+    // Action Buttons
+    async function action(type, id) {
+        if (!confirm(`Sure to ${type} ID ${id}?`)) return;
         try {
             await fetch('http://127.0.0.1:5000/admin-action', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ id, action })
+                body: JSON.stringify({type, id})
             });
-            loadDashboardData(); // Auto refresh after action
-            alert(`${action} successful!`);
-        } catch (error) {
-            alert('Action failed: ' + error.message);
+            loadDashboard(); // Auto refresh
+            alert(`${type} successful!`);
+        } catch (e) {
+            alert('Action failed');
         }
     }
 
-    // Load data on page load + auto update every 10 sec
-    loadDashboardData();
-    setInterval(loadDashboardData, 10000); // Real-time feel
+    // Load + Auto Update
+    loadDashboard();
+    setInterval(loadDashboard, 15000); // Every 15 sec
 </script>
 </body>
 </html>
