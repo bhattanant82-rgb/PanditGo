@@ -1,120 +1,114 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, GCRS
+from astropy.coordinates import solar_system_ephemeris, get_body
 import astropy.units as u
 from datetime import datetime, timedelta
 import math
 
 app = Flask(__name__)
+CORS(app)
 
-# Rashi list (Vedic sidereal)
+# ================= DATA =================
+
 RASHIS = [
     "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
     "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
     "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"
 ]
 
-# Approximate Nakshatra list (full logic add kar sakte hain baad me)
 NAKSHATRAS = [
-    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
-    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
-    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha",
-    "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
-    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+    "Ashwini","Bharani","Krittika","Rohini","Mrigashira","Ardra",
+    "Punarvasu","Pushya","Ashlesha","Magha","Purva Phalguni","Uttara Phalguni",
+    "Hasta","Chitra","Swati","Vishakha","Anuradha","Jyeshtha",
+    "Mula","Purva Ashadha","Uttara Ashadha","Shravana","Dhanishta","Shatabhisha",
+    "Purva Bhadrapada","Uttara Bhadrapada","Revati"
 ]
 
-def degree_to_rashi(degree):
-    """Convert degree (0-360) to Rashi name"""
-    rashi_index = int(degree // 30)
-    return RASHIS[rashi_index % 12]
+DASHA_LORDS = ["Ketu","Venus","Sun","Moon","Mars","Rahu","Jupiter","Saturn","Mercury"]
 
-def get_nakshatra(degree):
-    """Approximate Nakshatra (13°20' each)"""
-    nak_index = int(degree // (360 / 27))
-    return NAKSHATRAS[nak_index % 27]
+# ================= HELPERS =================
 
-def approximate_vimshottari_dasha(moon_degree):
-    """Simple Vimshottari Dasha approximation based on Moon Nakshatra"""
-    nak_index = int(moon_degree // (360 / 27))
-    dasha_lords = ["Ketu", "Venus", "Sun", "Moon", "Mars", "Rahu", "Jupiter", "Saturn", "Mercury"]
-    dasha_periods = [7, 20, 6, 10, 7, 18, 16, 19, 17]  # years
-    lord = dasha_lords[nak_index % 9]
-    return f"Current Dasha: {lord} (approx {dasha_periods[nak_index % 9]} years remaining)"
+def degree_to_rashi(deg):
+    return RASHIS[int(deg // 30) % 12]
+
+def get_nakshatra(deg):
+    return NAKSHATRAS[int(deg // (360/27)) % 27]
+
+def vimshottari_dasha(moon_deg):
+    index = int(moon_deg // (360/27)) % 9
+    lord = DASHA_LORDS[index]
+
+    dasha_map = {
+        "Venus": "Good for career growth, marriage & luxury",
+        "Sun": "Authority, government, leadership focus",
+        "Moon": "Emotions, mind, family matters",
+        "Mars": "Energy, property, conflicts possible",
+        "Rahu": "Sudden changes, foreign links",
+        "Jupiter": "Education, wisdom, finance",
+        "Saturn": "Hard work, delay, stability",
+        "Mercury": "Business, communication",
+        "Ketu": "Spirituality, detachment"
+    }
+
+    return {
+        "mahadasha": lord,
+        "meaning": dasha_map.get(lord)
+    }
+
+def future_predictions(lagna_rashi):
+    predictions = {
+        "career": f"As {lagna_rashi.split()[0]} Lagna, leadership, management, IT, business or government roles are favourable.",
+        "money": "Steady income indicated. Best period for savings and long-term investments. Avoid speculation.",
+        "marriage": "Marriage prospects improve after mid-dasha change. Partner will be supportive but emotional.",
+        "health": "Generally good health. Watch stress, digestion and head-related issues."
+    }
+    return predictions
+
+# ================= API =================
 
 @app.route('/generate-kundli', methods=['POST'])
 def generate_kundli():
     data = request.json
-    dob = data.get('dob')  # DD/MM/YYYY
-    tob = data.get('tob')  # HH:MM:SS
-    place_str = data.get('place')  # "lat,long"
+    dob = data['dob']  # DD/MM/YYYY
+    tob = data['tob']  # HH:MM:SS
+    place = data['place'].split(',')  # lat, long
 
-    if not all([dob, tob, place_str]):
-        return jsonify({"error": "Missing required fields"}), 400
+    # Step 1: Input Parse
+    birth_dt = f"{dob.split('/')[2]}-{dob.split('/')[1]}-{dob.split('/')[0]} {tob}"
+    birth_time = Time(birth_dt)
 
-    try:
-        # Step 1: Parse Input
-        day, month, year = map(int, dob.split('/'))
-        hour, minute, second = map(int, tob.split(':'))
-        birth_dt = datetime(year, month, day, hour, minute, second)
+    loc = EarthLocation(lat=float(place[0])*u.deg, lon=float(place[1])*u.deg, height=0*u.m)
 
-        # Location parse
-        lat, lon = map(float, place_str.split(','))
-        loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
+    # Step 2: Astronomical Data Fetch
+    with solar_system_ephemeris.set('builtin'):
+        planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
+        positions = {}
+        for planet in planets:
+            pos = get_body(planet, birth_time, loc).transform_to(GCRS(obstime=birth_time))
+            positions[planet] = pos.ra.degree, pos.dec.degree
 
-        # Birth time in UTC (assume local time is IST, adjust if needed)
-        birth_time = Time(birth_dt)
+    # Step 3: Sidereal Adjustment (Lahiri Ayanamsa approx)
+    ayanamsa = 24.0  # For 2025, adjust if needed
+    sidereal = {p: ((ra - ayanamsa) % 360, dec) for p, (ra, dec) in positions.items()}
 
-        # Step 2: Astronomical Data Fetch (Sun, Moon, Planets)
-        with solar_system_ephemeris.set('builtin'):
-            planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
-            positions = {}
-            for planet in planets:
-                pos = get_body(planet, birth_time, loc).transform_to(GCRS(obstime=birth_time))
-                ra_deg = pos.ra.degree
-                positions[planet] = {
-                    "ra": ra_deg,
-                    "dec": pos.dec.degree
-                }
+    # Step 4: Lagna / Houses Calculate (Placeholder, full logic for houses)
+    sun_pos = get_body('sun', birth_time, loc)
+    lagna = (sun_pos.ra.degree + 180) % 360  # Approximate Lagna
 
-        # Step 3: Sidereal Adjustment (Lahiri Ayanamsa approx 24° for 2025)
-        ayanamsa = 24.0  # Adjust for exact date if needed
-        sidereal_positions = {}
-        for p, pos in positions.items():
-            sidereal_ra = (pos["ra"] - ayanamsa) % 360
-            sidereal_positions[p] = {
-                "degree": sidereal_ra,
-                "rashi": degree_to_rashi(sidereal_ra),
-                "nakshatra": get_nakshatra(sidereal_ra)
-            }
+    # Step 5: Nakshatra, Pada, Shadbala (Placeholder logic)
+    nakshatra = "Calculated Nakshatra"  # Add full logic
 
-        # Step 4: Lagna (Ascendant) Approximate (Sun + 180° shift)
-        sun_ra = positions['sun']['ra']
-        lagna_degree = (sun_ra + 180) % 360  # Very rough, real me sidereal lagna calculation
-        lagna_rashi = degree_to_rashi(lagna_degree)
+    # Step 6: Dasha / Yog / Dosh (Vimshottari placeholder)
+    dasha = "Venus Dasha (2025-2045)"  # Add Vimshottari calculation
 
-        # Step 5: Nakshatra, Pada, Shadbala (Placeholder)
-        moon_degree = sidereal_positions.get('moon', {}).get('degree', 0)
-        nakshatra = get_nakshatra(moon_degree)
-
-        # Step 6: Dasha / Yog / Dosh (Basic Vimshottari)
-        dasha = approximate_vimshottari_dasha(moon_degree)
-
-        # Final Output
-        result = {
-            "lagna": {
-                "degree": lagna_degree,
-                "rashi": lagna_rashi
-            },
-            "graha_positions": sidereal_positions,
-            "nakshatra": nakshatra,
-            "dasha": dasha,
-            "note": "This is accurate astronomical calculation with Lahiri Ayanamsa. Full houses/yog/dosh need advanced library."
-        }
-
-        return jsonify(result)
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # Return JSON
+    return jsonify({
+        'positions': sidereal,
+        'lagna': lagna,
+        'nakshatra': nakshatra,
+        'dasha': dasha
+    })
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    app.run(debug=True)
