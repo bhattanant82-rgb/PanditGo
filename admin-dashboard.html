@@ -6,28 +6,88 @@
     <title>Admin Dashboard - BookMyPandit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { background: linear-gradient(to bottom, #4B0000, #8B0000); color: #f5e8d3; font-family: 'Poppins', sans-serif; }
-        .sidebar { background: #2A1A14; width: 250px; height: 100vh; position: fixed; padding-top: 20px; overflow-y: auto; }
-        .sidebar a { color: #f5e8d3; padding: 15px 20px; display: block; text-decoration: none; transition: 0.3s; }
-        .sidebar a:hover, .sidebar a.active { color: #FF9933; background: rgba(255,153,51,0.1); }
-        .main-content { margin-left: 250px; padding: 30px; }
-        .metrics-card { background: rgba(255,153,51,0.1); border: none; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.4); transition: transform 0.3s; }
-        .metrics-card:hover { transform: translateY(-5px); }
-        .table { background: rgba(10,5,0,0.8); color: #f5e8d3; border-radius: 10px; overflow: hidden; }
-        .table thead { background: rgba(255,153,51,0.2); }
-        .btn-action { border-radius: 20px; font-size: 0.9rem; padding: 6px 12px; }
-        .divine-glow { position: absolute; inset: 0; background: radial-gradient(circle, rgba(255,215,0,0.08), transparent); animation: glow-pulse 12s infinite; }
-        @keyframes glow-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 0.8; } }
+        body { 
+            background: #f8f9fa; 
+            color: #333; 
+            font-family: 'Poppins', sans-serif; 
+            animation: fadeIn 1s ease-in-out; 
+        }
+        .sidebar { 
+            background: linear-gradient(to bottom, #2c3e50, #1a252f); 
+            width: 250px; 
+            height: 100vh; 
+            position: fixed; 
+            padding-top: 20px; 
+            overflow-y: auto; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2); 
+            animation: slideInLeft 0.8s ease-out; 
+        }
+        .sidebar a { 
+            color: #ecf0f1; 
+            padding: 15px 20px; 
+            display: block; 
+            text-decoration: none; 
+            transition: all 0.3s; 
+            border-radius: 0 30px 30px 0; 
+        }
+        .sidebar a:hover, .sidebar a.active { 
+            color: #FF9933; 
+            background: rgba(255,153,51,0.1); 
+            transform: translateX(10px); 
+        }
+        .main-content { 
+            margin-left: 250px; 
+            padding: 40px 30px; 
+            animation: fadeInUp 1s ease-out; 
+        }
+        .metrics-card { 
+            background: #fff; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+            transition: all 0.3s ease; 
+            overflow: hidden; 
+        }
+        .metrics-card:hover { 
+            transform: translateY(-8px); 
+            box-shadow: 0 12px 30px rgba(0,0,0,0.12); 
+        }
+        .card-icon { 
+            font-size: 2.5rem; 
+            color: #FF9933; 
+            opacity: 0.9; 
+        }
+        .table { 
+            background: #fff; 
+            border-radius: 12px; 
+            overflow: hidden; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08); 
+        }
+        .btn-action { 
+            border-radius: 20px; 
+            font-size: 0.85rem; 
+            padding: 6px 14px; 
+            transition: all 0.3s; 
+        }
+        .btn-action:hover { 
+            transform: scale(1.05); 
+        }
+        .alert { 
+            animation: fadeIn 0.6s; 
+            border-radius: 10px; 
+        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideInLeft { from { transform: translateX(-100%); } to { transform: translateX(0); } }
     </style>
 </head>
 <body>
 
-<!-- Sidebar (Sab buttons clickable) -->
+<!-- Sidebar (Saare buttons clickable) -->
 <nav class="sidebar">
-    <div class="text-center mb-5">
+    <div class="text-center mb-5 pt-4">
         <h4 class="text-warning fw-bold">BookMyPandit Admin</h4>
         <small class="text-muted">CEO Anant Bhatt 👑</small>
     </div>
@@ -41,67 +101,75 @@
 </nav>
 
 <!-- Main Content -->
-<div class="main-content position-relative">
-    <div class="divine-glow"></div>
+<div class="main-content">
+    <h2 class="fw-bold mb-4" style="color: #4B0000;">Analytics</h2>
+    <p class="mb-4 text-muted">Check the sales, value and bounce rate by country.</p>
 
-    <h2 class="fw-bold mb-3" style="color: #FF9933;">Welcome CEO Anant Bhatt 👑</h2>
-    <p class="mb-5 text-light">Yeh tera full control room hai – business manage kar!</p>
-
-    <!-- KPI Cards (Auto-update) -->
+    <!-- KPI Cards -->
     <div class="row g-4 mb-5">
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="metrics-card p-4 text-center">
-                <i class="bi bi-calendar-check fs-3 text-warning mb-3"></i>
-                <h6>Total Bookings</h6>
-                <h3 id="totalBookings">0</h3>
+                <i class="bi bi-calendar-check card-icon mb-3"></i>
+                <h6>Bookings</h6>
+                <h3 id="totalBookings">281</h3>
+                <p class="small text-success">+55% than last week</p>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="metrics-card p-4 text-center">
-                <i class="bi bi-currency-rupee fs-3 text-warning mb-3"></i>
-                <h6>Total Revenue</h6>
-                <h3 id="totalRevenue">₹0</h3>
+                <i class="bi bi-people card-icon mb-3"></i>
+                <h6>Today's Users</h6>
+                <h3 id="todayUsers">2,300</h3>
+                <p class="small text-success">+3% than last month</p>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="metrics-card p-4 text-center">
-                <i class="bi bi-clock fs-3 text-warning mb-3"></i>
-                <h6>Today's Sales</h6>
-                <h3 id="todaySales">₹0</h3>
+                <i class="bi bi-currency-rupee card-icon mb-3"></i>
+                <h6>Revenue</h6>
+                <h3 id="revenue">$34,000</h3>
+                <p class="small text-success">+35% than last month</p>
             </div>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-3">
             <div class="metrics-card p-4 text-center">
-                <i class="bi bi-graph-up fs-3 text-warning mb-3"></i>
-                <h6>This Month Sales</h6>
-                <h3 id="monthSales">₹0</h3>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="metrics-card p-4 text-center">
-                <i class="bi bi-hourglass-split fs-3 text-warning mb-3"></i>
-                <h6>Pending Pujas</h6>
-                <h3 id="pendingPujas">0</h3>
-            </div>
-        </div>
-        <div class="col-md-2">
-            <div class="metrics-card p-4 text-center">
-                <i class="bi bi-people fs-3 text-warning mb-3"></i>
-                <h6>Active Pandits</h6>
-                <h3 id="activePandits">0</h3>
+                <i class="bi bi-people-fill card-icon mb-3"></i>
+                <h6>Followers</h6>
+                <h3 id="followers">+2,910</h3>
+                <p class="small text-muted">Just updated</p>
             </div>
         </div>
     </div>
 
-    <!-- Revenue Chart -->
-    <div class="metrics-card p-4 mb-5">
-        <h5>Revenue Trend (Last 30 Days)</h5>
-        <canvas id="revenueChart" height="120"></canvas>
+    <!-- Charts Row -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="metrics-card p-4">
+                <h6>Sales by Age</h6>
+                <canvas id="salesByAge" height="180"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metrics-card p-4">
+                <h6>Revenue Trend</h6>
+                <canvas id="revenueTrend" height="180"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="metrics-card p-4">
+                <h6>Sales by Country</h6>
+                <table class="table table-sm">
+                    <tbody id="salesByCountry">
+                        <!-- Auto fill -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <!-- Recent Bookings Table -->
-    <div class="metrics-card p-4 mb-5">
-        <h5>Recent Bookings (Real & Auto Update)</h5>
+    <!-- Recent Bookings -->
+    <div class="metrics-card p-4">
+        <h6>Recent Bookings</h6>
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -119,59 +187,69 @@
         </table>
     </div>
 
-    <!-- Pending Refunds Section -->
-    <div class="metrics-card p-4 mb-5">
-        <h5>Pending Refunds (Auto Update)</h5>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>User</th>
-                    <th>Amount</th>
-                    <th>Reason</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="refundsTable"></tbody>
-        </table>
-    </div>
-
-    <!-- Pending Pandit Approvals -->
-    <div class="metrics-card p-4">
-        <h5>Pending Pandit Approvals</h5>
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>City</th>
-                    <th>Experience</th>
-                    <th>Language</th>
-                    <th>Status</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody id="pendingPandits"></tbody>
-        </table>
+    <!-- Alerts Section -->
+    <div class="metrics-card p-4 mt-4">
+        <h6>Alerts & Notifications</h6>
+        <div id="alertsContainer" class="mt-3"></div>
     </div>
 </div>
 
 <script>
-    // Real-time Data Fetch
+    // Data Fetch & Update
     async function loadDashboard() {
         try {
-            const res = await fetch('http://127.0.0.1:5000/admin-dashboard');
+            const res = await fetch('http://127.0.0.1:5000/admin-data');
             const data = await res.json();
 
             // KPI Cards
             document.getElementById('totalBookings').textContent = data.totalBookings;
-            document.getElementById('totalRevenue').textContent = '₹' + data.totalRevenue;
-            document.getElementById('todaySales').textContent = '₹' + data.todaySales;
-            document.getElementById('monthSales').textContent = '₹' + data.monthSales;
-            document.getElementById('pendingPujas').textContent = data.pendingPujas;
-            document.getElementById('activePandits').textContent = data.activePandits;
+            document.getElementById('todayUsers').textContent = data.todayUsers;
+            document.getElementById('revenue').textContent = data.revenue;
+            document.getElementById('followers').textContent = data.followers;
 
-            // Bookings Table
+            // Sales by Age Chart
+            new Chart('salesByAge', {
+                type: 'bar',
+                data: {
+                    labels: data.salesByAge.labels,
+                    datasets: [{
+                        data: data.salesByAge.data,
+                        backgroundColor: ['#007bff', '#6610f2', '#6f42c1', '#e83e8c', '#dc3545', '#fd7e14', '#ffc107']
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+
+            // Revenue Trend Chart
+            new Chart('revenueTrend', {
+                type: 'line',
+                data: {
+                    labels: data.revenueTrend.labels,
+                    datasets: [{
+                        label: 'Revenue',
+                        data: data.revenueTrend.data,
+                        borderColor: '#FF9933',
+                        backgroundColor: 'rgba(255,153,51,0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: { scales: { y: { beginAtZero: true } } }
+            });
+
+            // Sales by Country
+            const countryTable = document.getElementById('salesByCountry');
+            countryTable.innerHTML = '';
+            data.salesByCountry.forEach(c => {
+                countryTable.innerHTML += `
+                    <tr>
+                        <td><img src="${c.flag}" width="20" class="me-2">${c.country}</td>
+                        <td>${c.sales}</td>
+                        <td>${c.bounce}</td>
+                    </tr>
+                `;
+            });
+
+            // Recent Bookings
             const bookingsTable = document.getElementById('bookingsTable');
             bookingsTable.innerHTML = '';
             data.bookings.forEach(b => {
@@ -182,78 +260,36 @@
                         <td>${b.puja}</td>
                         <td>${b.pandit}</td>
                         <td>${b.datetime}</td>
-                        <td>₹${b.amount}</td>
+                        <td>${b.amount}</td>
                         <td>${b.status}</td>
                         <td>
-                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('approve', ${b.id})">Approve</button>
-                            <button class="btn btn-warning btn-sm btn-action me-1" onclick="action('cancel', ${b.id})">Cancel</button>
-                            <button class="btn btn-danger btn-sm btn-action" onclick="action('refund', ${b.id})">Refund</button>
+                            <button class="btn btn-primary btn-sm btn-action me-1">Approve</button>
+                            <button class="btn btn-warning btn-sm btn-action me-1">Cancel</button>
+                            <button class="btn btn-danger btn-sm btn-action">Refund</button>
                         </td>
                     </tr>
                 `;
             });
 
-            // Refunds Table
-            const refundsTable = document.getElementById('refundsTable');
-            refundsTable.innerHTML = '';
-            data.refunds.forEach(r => {
-                refundsTable.innerHTML += `
-                    <tr>
-                        <td>${r.bookingId}</td>
-                        <td>${r.user}</td>
-                        <td>₹${r.amount}</td>
-                        <td>${r.reason}</td>
-                        <td>${r.status}</td>
-                        <td>
-                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('refund-approve', ${r.bookingId})">Approve Refund</button>
-                            <button class="btn btn-danger btn-sm btn-action" onclick="action('refund-reject', ${r.bookingId})">Reject</button>
-                        </td>
-                    </tr>
-                `;
-            });
-
-            // Pending Pandits
-            const pendingPandits = document.getElementById('pendingPandits');
-            pendingPandits.innerHTML = '';
-            data.pendingPandits.forEach(p => {
-                pendingPandits.innerHTML += `
-                    <tr>
-                        <td>${p.name}</td>
-                        <td>${p.city}</td>
-                        <td>${p.experience}</td>
-                        <td>${p.language}</td>
-                        <td>${p.status}</td>
-                        <td>
-                            <button class="btn btn-success btn-sm btn-action me-1" onclick="action('pandit-approve', ${p.id})">Approve</button>
-                            <button class="btn btn-danger btn-sm btn-action" onclick="action('pandit-reject', ${p.id})">Reject</button>
-                        </td>
-                    </tr>
+            // Alerts
+            const alerts = document.getElementById('alertsContainer');
+            alerts.innerHTML = '';
+            data.alerts.forEach(a => {
+                alerts.innerHTML += `
+                    <div class="alert alert-${a.type} alert-dismissible fade show" role="alert">
+                        ${a.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
                 `;
             });
         } catch (e) {
-            console.error('Dashboard load error:', e);
+            console.error('Data load error', e);
         }
     }
 
-    // Action Buttons
-    async function action(type, id) {
-        if (!confirm(`Sure to ${type} ID ${id}?`)) return;
-        try {
-            await fetch('http://127.0.0.1:5000/admin-action', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({type, id})
-            });
-            loadDashboard(); // Auto refresh
-            alert(`${type} successful!`);
-        } catch (e) {
-            alert('Action failed');
-        }
-    }
-
-    // Load + Auto Update
+    // Load data
     loadDashboard();
-    setInterval(loadDashboard, 15000); // Every 15 sec
+    setInterval(loadDashboard, 30000); // Auto update every 30 sec
 </script>
 </body>
 </html>

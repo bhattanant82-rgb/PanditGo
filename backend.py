@@ -7,7 +7,7 @@ from datetime import datetime
 import math
 
 app = Flask(__name__)
-CORS(app)  # Frontend se call allow karta hai (Failed to fetch fix)
+CORS(app)  # Sab frontend se call allow (localhost:5500, Netlify wagairah)
 
 # Vedic Rashi & Nakshatra
 RASHIS = [
@@ -24,7 +24,7 @@ NAKSHATRAS = [
     "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
 ]
 
-# Simple Vimshottari Dasha lords & effects
+# Dasha effects
 DASHA_EFFECTS = {
     "Ketu": "Spirituality, detachment, sudden changes",
     "Venus": "Luxury, marriage, creativity, wealth",
@@ -44,46 +44,41 @@ def degree_to_nakshatra(deg):
     return NAKSHATRAS[int(deg // (360/27)) % 27]
 
 def get_lagna(birth_time, loc):
-    # Accurate Lagna using local sidereal time + horizon
     frame = AltAz(obstime=birth_time, location=loc)
     sun = get_sun(birth_time)
     altaz = sun.transform_to(frame)
-    lagna_deg = (altaz.az.degree - 24.0) % 360  # Lahiri Ayanamsa approx
+    lagna_deg = (altaz.az.degree - 24.0) % 360  # Lahiri Ayanamsa
     return lagna_deg
 
 @app.route('/generate-kundli', methods=['POST'])
 def generate_kundli():
     try:
         data = request.json
-        dob = data['dob']          # "DD/MM/YYYY"
-        tob = data['tob']          # "HH:MM:SS"
-        place = data['place']      # "lat,long"
+        dob = data['dob']
+        tob = data['tob']
+        place = data['place']
 
-        # Step 1: Parse birth time
         day, month, year = map(int, dob.split('/'))
         hour, minute, second = map(int, tob.split(':'))
         birth_dt = datetime(year, month, day, hour, minute, second)
         birth_time = Time(birth_dt)
 
-        # Step 2: Location
         lat, lon = map(float, place.split(','))
         loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
 
-        # Step 3: Planet positions
         with solar_system_ephemeris.set('builtin'):
             planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
             positions = {}
             for p in planets:
                 body = get_body(p, birth_time, loc)
                 ra = body.ra.degree
-                sidereal = (ra - 24.0) % 360  # Lahiri Ayanamsa
+                sidereal = (ra - 24.0) % 360
                 positions[p] = {
                     "degree": round(sidereal, 2),
                     "rashi": degree_to_rashi(sidereal),
                     "nakshatra": degree_to_nakshatra(sidereal)
                 }
 
-            # Rahu/Ketu (approximate mean nodes)
             moon_ra = get_moon(birth_time, loc).ra.degree
             rahu = (moon_ra + 180) % 360 - 24.0
             rahu = rahu % 360
@@ -91,7 +86,6 @@ def generate_kundli():
             positions['rahu'] = {"degree": round(rahu, 2), "rashi": degree_to_rashi(rahu), "nakshatra": degree_to_nakshatra(rahu)}
             positions['ketu'] = {"degree": round(ketu, 2), "rashi": degree_to_rashi(ketu), "nakshatra": degree_to_nakshatra(ketu)}
 
-        # Step 4: Lagna
         lagna_deg = get_lagna(birth_time, loc)
         lagna = {
             "degree": round(lagna_deg, 2),
@@ -99,7 +93,6 @@ def generate_kundli():
             "nakshatra": degree_to_nakshatra(lagna_deg)
         }
 
-        # Step 5: Moon for Dasha
         moon_deg = positions['moon']['degree']
         dasha_index = int(moon_deg // (360/27)) % 9
         dasha_lord = list(DASHA_EFFECTS.keys())[dasha_index]
@@ -108,7 +101,6 @@ def generate_kundli():
             "effect": DASHA_EFFECTS[dasha_lord]
         }
 
-        # Step 6: Basic Predictions (lagna rashi ke base pe)
         lagna_rashi = lagna['rashi']
         predictions = {
             "career": f"{lagna_rashi} Lagna mein strong leadership, management, tech ya govt jobs favorable.",
@@ -117,19 +109,54 @@ def generate_kundli():
             "health": "Overall achhi health. Stress, digestion aur head pe dhyan rakhna."
         }
 
-        # Final response
         result = {
             "lagna": lagna,
             "graha": positions,
             "current_dasha": dasha,
             "predictions": predictions,
-            "note": "Accurate Vedic Kundli with Lahiri Ayanamsa. Full yog/dosh ke liye advanced software chahiye."
+            "note": "Accurate Vedic Kundli with Lahiri Ayanamsa."
         }
 
         return jsonify(result)
 
     except Exception as e:
-        return jsonify({"error": f"Invalid input ya calculation error: {str(e)}"}), 400
+        return jsonify({"error": str(e)}), 400
+
+
+# ================= ADMIN DASHBOARD ENDPOINTS =================
+
+@app.route('/admin-dashboard', methods=['GET'])
+def admin_dashboard():
+    # Dummy data for demo (real me SQLite/DB se fetch kar)
+    data = {
+        "totalBookings": 45,
+        "totalRevenue": 150000,
+        "todaySales": 5000,
+        "monthSales": 75000,
+        "pendingPujas": 8,
+        "activePandits": 42,
+        "bookings": [
+            {"id": 1, "user": "Rahul Sharma", "puja": "Griha Pravesh", "pandit": "Pt. Ram Sharma", "datetime": "01/01/2026 10:00", "amount": 2500, "status": "Pending"},
+            {"id": 2, "user": "Priya Mehta", "puja": "Marriage Puja", "pandit": "Pt. Vikram Patel", "datetime": "05/01/2026 09:00", "amount": 3500, "status": "Confirmed"}
+        ],
+        "refunds": [
+            {"bookingId": 3, "user": "Amit Patel", "amount": 1800, "reason": "Pandit not available", "status": "Pending"}
+        ],
+        "pendingPandits": [
+            {"id": 1, "name": "Pt. Sanjay Mishra", "city": "Surat", "experience": "17 Years", "language": "Hindi", "status": "Pending"}
+        ]
+    }
+    return jsonify(data)
+
+@app.route('/admin-action', methods=['POST'])
+def admin_action():
+    data = request.json
+    action = data['type']
+    id = data['id']
+    # Real me DB update kar (status change, refund logic)
+    # Demo ke liye dummy response
+    return jsonify({"message": f"{action} successful for ID {id}", "success": True})
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
