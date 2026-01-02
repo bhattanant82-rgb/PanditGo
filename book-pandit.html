@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Book a Pandit - PanditGo</title>
+    <title>Book a Pandit - BookMyPandit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
-    <!-- Razorpay Checkout Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         /* Progress Bar */
@@ -34,7 +33,7 @@
         }
         .step-content {
             display: none;
-            min-height: 500px; /* Blank screen fix */
+            min-height: 500px;
         }
         .step-content.active {
             display: block;
@@ -42,7 +41,6 @@
         .bg-warning.bg-opacity-10 {
             background-color: rgba(255, 153, 51, 0.1) !important;
         }
-        /* Card fix */
         .card.shadow-lg {
             background: white !important;
         }
@@ -150,7 +148,7 @@
                                     <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Ram Sharma">Select</button>
                                 </div>
                             </div>
-                            <!-- ... weitere Pandits wie in deinem Original ... -->
+                            <!-- ... Baaki pandits same rahenge ... -->
                         </div>
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
@@ -232,6 +230,9 @@
                                 <button type="button" id="razorpayBtn" class="btn btn-warning btn-lg rounded-pill px-5 py-3 fw-bold w-100">
                                     Confirm Booking & Pay ₹1
                                 </button>
+                                <button type="button" id="requestRefundBtn" class="btn btn-danger btn-lg rounded-pill px-5 py-3 fw-bold w-100 mt-3" style="display:none;">
+                                    Cancel & Refund Advance ₹1
+                                </button>
                                 <small class="d-block mt-3 text-muted">UPI • Card • NetBanking • Secure with Razorpay</small>
                             </div>
                         </div>
@@ -252,6 +253,7 @@
         const circles = document.querySelectorAll('.circle');
         let currentStep = 0;
         let bookingData = {};
+        let paymentId = null; // Razorpay payment ID store karne ke liye
 
         function showStep(n) {
             steps.forEach((step, i) => step.classList.toggle('active', i === n));
@@ -333,9 +335,9 @@
             }
         });
 
-        // Razorpay – Advance nur 1 ₹
+        // Razorpay – Advance sirf 1 ₹
         document.getElementById('razorpayBtn').addEventListener('click', function(e) {
-            const advanceAmount = 100; // 1 Rupaye = 100 Paise
+            const advanceAmount = 100; // 1 ₹ = 100 paise
 
             const options = {
                 "key": "rzp_live_RwBuGYKySb2uQY",
@@ -345,17 +347,20 @@
                 "description": "Advance Payment - Puja Booking",
                 "image": "images/logo.jpg",
                 "handler": function (response){
-                    // Payment successful – booking confirm kar
+                    paymentId = response.razorpay_payment_id;
                     alert('Payment Successful! Booking Confirmed 🙏');
-                    alert('Pandit assigned. Payment ID: ' + response.razorpay_payment_id);
+                    alert('Advance ₹1 paid. Payment ID: ' + paymentId);
                     
-                    // Save booking info
+                    // Refund button visible kar do
+                    document.getElementById('requestRefundBtn').style.display = 'block';
+
                     localStorage.setItem('bookingConfirmed', 'true');
                     localStorage.setItem('bookingPuja', bookingData.puja);
                     localStorage.setItem('bookingPandit', bookingData.pandit);
                     localStorage.setItem('bookingDateTime', bookingData.date + ' at ' + bookingData.time);
                     localStorage.setItem('bookingCity', bookingData.city);
                     localStorage.setItem('bookingPhone', bookingData.phone);
+                    localStorage.setItem('paymentId', paymentId);
 
                     window.location.href = 'current-booking.html';
                 },
@@ -373,6 +378,16 @@
             });
             rzp.open();
             e.preventDefault();
+        });
+
+        // Refund Request (Advance ₹1 refund)
+        document.getElementById('requestRefundBtn').addEventListener('click', function() {
+            if (confirm("Sure to cancel booking & refund advance ₹1?")) {
+                alert('Refund request sent! Amount ₹1 will be refunded in 5-7 working days.');
+                // Real me Razorpay refund API call yahan se kar sakta hai (backend se)
+                // Abhi demo alert
+                // Backend endpoint call kar sakta hai: fetch('/request-refund', ...)
+            }
         });
 
         showStep(currentStep);
