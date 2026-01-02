@@ -8,13 +8,15 @@ import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import requests
+from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
-CORS(app)  # Sab frontend se call allow (localhost:5500, Netlify wagairah)
+CORS(app)  # Sab frontend se call allow
 
-# Gmail SMTP Setup - Tera Email + App Password
+# Gmail SMTP Setup
 EMAIL_ADDRESS = "bhattanant82@gmail.com"
-EMAIL_PASSWORD = "dfnm civm jmih uoqb"  # Tera app password (space ke saath daal diya)
+EMAIL_PASSWORD = "dfnm civm jmih uoqb"
 
 def send_admin_email(subject, body):
     try:
@@ -28,12 +30,48 @@ def send_admin_email(subject, body):
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, msg.as_string())
-        print(f"✅ Email sent to {EMAIL_ADDRESS}: {subject}")
+        print(f"✅ Email sent: {subject}")
     except Exception as e:
         print(f"❌ Email failed: {e}")
 
-# ================= KUNDLI LOGIC (Tera Same Code) =================
+# Razorpay Real Refund
+RAZORPAY_KEY = "rzp_live_RvnLDFb7F45oWy"
+RAZORPAY_SECRET = "ZT3sVSgcQhSyR9yr36vJqn0I"
 
+@app.route('/refund', methods=['POST'])
+def refund():
+    try:
+        data = request.json
+        payment_id = data.get('payment_id')
+        amount = data.get('amount', 100)  # 1 ₹ = 100 paise
+
+        if not payment_id:
+            return jsonify({"success": False, "error": "Payment ID missing"}), 400
+
+        url = f"https://api.razorpay.com/v1/payments/{payment_id}/refund"
+        auth = HTTPBasicAuth(RAZORPAY_KEY, RAZORPAY_SECRET)
+        payload = {"amount": amount}
+
+        response = requests.post(url, auth=auth, json=payload)
+        refund_data = response.json()
+
+        if response.status_code == 201:
+            # Refund success hone pe admin ko email
+            send_admin_email(
+                "Refund Processed - ₹1",
+                f"Refund of ₹{amount/100} processed for payment {payment_id}\n\nUser refunded advance."
+            )
+            return jsonify({"success": True, "message": "Refund processed successfully"})
+        else:
+            return jsonify({"success": False, "error": refund_data.get('error', {}).get('description', 'Refund failed')}), 400
+
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+
+# ================= TERA PURA CODE (kundli + notifications + admin) =================
+
+# Vedic Rashi & Nakshatra
 RASHIS = [
     "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
     "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
@@ -146,8 +184,6 @@ def generate_kundli():
         return jsonify({"error": str(e)}), 400
 
 
-# ================= ADMIN NOTIFICATION SYSTEM =================
-
 @app.route('/become-pandit', methods=['POST'])
 def become_pandit():
     try:
@@ -159,10 +195,8 @@ def become_pandit():
         experience = data.get('experience')
         languages = data.get('languages')
 
-        # Demo save (real me DB me save karna)
         print(f"New Pandit: {name}, {phone}, {email}, {city}, {experience} years, {languages}")
 
-        # Email notification to admin (tera email)
         subject = "New Pandit Registration - Pending Approval"
         body = f"""
         New pandit join request received!
@@ -197,10 +231,8 @@ def book_puja():
         time = data.get('time')
         amount = data.get('amount', 2500)
 
-        # Demo save
         print(f"New Booking: {user_name}, {puja}, {pandit}, {date} {time}, ₹{amount}")
 
-        # Email to admin
         subject = f"New Booking Received - ₹{amount}"
         body = f"""
         New booking received!
@@ -231,10 +263,8 @@ def request_refund():
         reason = data.get('reason')
         amount = data.get('amount')
 
-        # Demo refund request
         print(f"Refund Request: Booking #{booking_id}, Reason: {reason}, Amount: ₹{amount}")
 
-        # Email to admin
         subject = f"Refund Request - Booking #{booking_id}"
         body = f"""
         Refund request received!
@@ -255,7 +285,6 @@ def request_refund():
 
 @app.route('/admin-dashboard', methods=['GET'])
 def admin_dashboard():
-    # Dummy data for demo (real me DB se fetch kar)
     data = {
         "totalBookings": 45,
         "totalRevenue": 150000,
@@ -282,8 +311,6 @@ def admin_action():
     data = request.json
     action = data['type']
     id = data['id']
-    # Real me DB update kar (status change, refund logic)
-    # Demo ke liye dummy response
     return jsonify({"message": f"{action} successful for ID {id}", "success": True})
 
 

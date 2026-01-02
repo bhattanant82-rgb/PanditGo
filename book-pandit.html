@@ -44,6 +44,17 @@
         .card.shadow-lg {
             background: white !important;
         }
+        #paymentStatus, #refundStatus {
+            display: none;
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+        }
+        #paymentStatus { background: #d4edda; color: #155724; }
+        #refundStatus { background: #d4edda; color: #155724; }
     </style>
 </head>
 <body>
@@ -148,7 +159,7 @@
                                     <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Ram Sharma">Select</button>
                                 </div>
                             </div>
-                            <!-- ... Baaki pandits same rahenge ... -->
+                            <!-- Baaki pandits ke cards tere original code se copy kar lena -->
                         </div>
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
@@ -194,7 +205,7 @@
                         </div>
                     </div>
 
-                    <!-- Step 6: Summary + Razorpay -->
+                    <!-- Step 6: Summary + Razorpay + Real Success Message + Refund -->
                     <div class="step-content" id="step6">
                         <h3 class="text-center mb-5 fw-bold">Booking Summary</h3>
                         <div class="card shadow p-4">
@@ -231,8 +242,10 @@
                                     Confirm Booking & Pay ₹1
                                 </button>
                                 <button type="button" id="requestRefundBtn" class="btn btn-danger btn-lg rounded-pill px-5 py-3 fw-bold w-100 mt-3" style="display:none;">
-                                    Cancel & Refund Advance ₹1
+                                    Cancel Booking & Refund ₹1
                                 </button>
+                                <div id="paymentStatus" class="text-success fw-bold text-center"></div>
+                                <div id="refundStatus" class="text-success fw-bold text-center"></div>
                                 <small class="d-block mt-3 text-muted">UPI • Card • NetBanking • Secure with Razorpay</small>
                             </div>
                         </div>
@@ -253,7 +266,7 @@
         const circles = document.querySelectorAll('.circle');
         let currentStep = 0;
         let bookingData = {};
-        let paymentId = null; // Razorpay payment ID store karne ke liye
+        let paymentId = null;
 
         function showStep(n) {
             steps.forEach((step, i) => step.classList.toggle('active', i === n));
@@ -313,7 +326,7 @@
             });
         });
 
-        // Demo OTP
+        // Demo OTP (real OTP baad me add kar sakte hain)
         document.getElementById('sendOtp').addEventListener('click', () => {
             const phone = document.getElementById('phone').value.trim();
             if (phone.length !== 10 || !phone.match(/^[6-9]\d{9}$/)) {
@@ -335,12 +348,14 @@
             }
         });
 
-        // Razorpay – Advance sirf 1 ₹
+        // Razorpay Real Payment - ₹1
         document.getElementById('razorpayBtn').addEventListener('click', function(e) {
+            e.preventDefault();
+
             const advanceAmount = 100; // 1 ₹ = 100 paise
 
             const options = {
-                "key": "rzp_live_RwBuGYKySb2uQY",
+                "key": "rzp_live_RvnLDFb7F45oWy",
                 "amount": advanceAmount,
                 "currency": "INR",
                 "name": "BookMyPandit",
@@ -348,24 +363,21 @@
                 "image": "images/logo.jpg",
                 "handler": function (response){
                     paymentId = response.razorpay_payment_id;
-                    alert('Payment Successful! Booking Confirmed 🙏');
-                    alert('Advance ₹1 paid. Payment ID: ' + paymentId);
-                    
+
+                    // Real success message screen pe dikhado
+                    document.getElementById('paymentStatus').innerHTML = '✅ Booking Confirmed! Payment Successful (₹1 Paid)';
+                    document.getElementById('paymentStatus').style.display = 'block';
+
                     // Refund button visible kar do
                     document.getElementById('requestRefundBtn').style.display = 'block';
 
-                    localStorage.setItem('bookingConfirmed', 'true');
-                    localStorage.setItem('bookingPuja', bookingData.puja);
-                    localStorage.setItem('bookingPandit', bookingData.pandit);
-                    localStorage.setItem('bookingDateTime', bookingData.date + ' at ' + bookingData.time);
-                    localStorage.setItem('bookingCity', bookingData.city);
-                    localStorage.setItem('bookingPhone', bookingData.phone);
+                    // Save for refund
                     localStorage.setItem('paymentId', paymentId);
-
-                    window.location.href = 'current-booking.html';
                 },
                 "prefill": {
-                    "contact": bookingData.phone,
+                    "name": "Anant Bhatt",
+                    "email": "bhattanant82@gmail.com",
+                    "contact": "9635920705"
                 },
                 "theme": {
                     "color": "#FF9933"
@@ -377,17 +389,35 @@
                 alert('Payment Failed: ' + response.error.description);
             });
             rzp.open();
-            e.preventDefault();
         });
 
-        // Refund Request (Advance ₹1 refund)
+        // Refund Request (₹1 real refund)
         document.getElementById('requestRefundBtn').addEventListener('click', function() {
-            if (confirm("Sure to cancel booking & refund advance ₹1?")) {
-                alert('Refund request sent! Amount ₹1 will be refunded in 5-7 working days.');
-                // Real me Razorpay refund API call yahan se kar sakta hai (backend se)
-                // Abhi demo alert
-                // Backend endpoint call kar sakta hai: fetch('/request-refund', ...)
-            }
+            if (!confirm("Sure to cancel booking & refund advance ₹1?")) return;
+
+            const payment_id = localStorage.getItem('paymentId');
+            if (!payment_id) return alert("Payment ID not found. Pay first.");
+
+            fetch('http://127.0.0.1:5000/refund', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    payment_id: payment_id,
+                    amount: 100  // 1 ₹ in paise
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('refundStatus').innerHTML = '✅ Refund Processed! ₹1 Refunded Successfully';
+                    document.getElementById('refundStatus').style.display = 'block';
+                    document.getElementById('requestRefundBtn').disabled = true;
+                    document.getElementById('requestRefundBtn').textContent = 'Refund Done';
+                } else {
+                    alert('Refund failed: ' + (data.error || 'Unknown error'));
+                }
+            })
+            .catch(err => alert('Refund error: ' + err.message));
         });
 
         showStep(currentStep);
