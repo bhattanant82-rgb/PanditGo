@@ -5,11 +5,35 @@ from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation,
 import astropy.units as u
 from datetime import datetime
 import math
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 app = Flask(__name__)
 CORS(app)  # Sab frontend se call allow (localhost:5500, Netlify wagairah)
 
-# Vedic Rashi & Nakshatra
+# Gmail SMTP Setup - Tera Email + App Password
+EMAIL_ADDRESS = "bhattanant82@gmail.com"
+EMAIL_PASSWORD = "dfnm civm jmih uoqb"  # Tera app password (space ke saath daal diya)
+
+def send_admin_email(subject, body):
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = EMAIL_ADDRESS
+        msg['Subject'] = subject
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP('smtp.gmail.com', 587) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, msg.as_string())
+        print(f"✅ Email sent to {EMAIL_ADDRESS}: {subject}")
+    except Exception as e:
+        print(f"❌ Email failed: {e}")
+
+# ================= KUNDLI LOGIC (Tera Same Code) =================
+
 RASHIS = [
     "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
     "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
@@ -24,7 +48,6 @@ NAKSHATRAS = [
     "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
 ]
 
-# Dasha effects
 DASHA_EFFECTS = {
     "Ketu": "Spirituality, detachment, sudden changes",
     "Venus": "Luxury, marriage, creativity, wealth",
@@ -123,11 +146,116 @@ def generate_kundli():
         return jsonify({"error": str(e)}), 400
 
 
-# ================= ADMIN DASHBOARD ENDPOINTS =================
+# ================= ADMIN NOTIFICATION SYSTEM =================
+
+@app.route('/become-pandit', methods=['POST'])
+def become_pandit():
+    try:
+        data = request.json
+        name = data.get('name')
+        phone = data.get('phone')
+        email = data.get('email')
+        city = data.get('city')
+        experience = data.get('experience')
+        languages = data.get('languages')
+
+        # Demo save (real me DB me save karna)
+        print(f"New Pandit: {name}, {phone}, {email}, {city}, {experience} years, {languages}")
+
+        # Email notification to admin (tera email)
+        subject = "New Pandit Registration - Pending Approval"
+        body = f"""
+        New pandit join request received!
+
+        Name: {name}
+        Phone: {phone}
+        Email: {email}
+        City: {city}
+        Experience: {experience} years
+        Languages: {languages}
+
+        Please review in admin dashboard.
+        """
+        send_admin_email(subject, body)
+
+        return jsonify({"message": "Application submitted! Admin will review soon.", "success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/book-puja', methods=['POST'])
+def book_puja():
+    try:
+        data = request.json
+        user_name = data.get('user_name')
+        phone = data.get('phone')
+        email = data.get('email')
+        puja = data.get('puja')
+        pandit = data.get('pandit')
+        date = data.get('date')
+        time = data.get('time')
+        amount = data.get('amount', 2500)
+
+        # Demo save
+        print(f"New Booking: {user_name}, {puja}, {pandit}, {date} {time}, ₹{amount}")
+
+        # Email to admin
+        subject = f"New Booking Received - ₹{amount}"
+        body = f"""
+        New booking received!
+
+        User: {user_name}
+        Phone: {phone}
+        Email: {email}
+        Puja: {puja}
+        Pandit: {pandit}
+        Date/Time: {date} {time}
+        Amount: ₹{amount}
+
+        Please confirm in admin dashboard.
+        """
+        send_admin_email(subject, body)
+
+        return jsonify({"message": "Booking submitted! Admin will confirm soon.", "success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/request-refund', methods=['POST'])
+def request_refund():
+    try:
+        data = request.json
+        booking_id = data.get('booking_id')
+        reason = data.get('reason')
+        amount = data.get('amount')
+
+        # Demo refund request
+        print(f"Refund Request: Booking #{booking_id}, Reason: {reason}, Amount: ₹{amount}")
+
+        # Email to admin
+        subject = f"Refund Request - Booking #{booking_id}"
+        body = f"""
+        Refund request received!
+
+        Booking ID: {booking_id}
+        Reason: {reason}
+        Amount: ₹{amount}
+
+        Please review and approve/reject in dashboard.
+        """
+        send_admin_email(subject, body)
+
+        return jsonify({"message": "Refund request submitted! Admin will review.", "success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
 
 @app.route('/admin-dashboard', methods=['GET'])
 def admin_dashboard():
-    # Dummy data for demo (real me SQLite/DB se fetch kar)
+    # Dummy data for demo (real me DB se fetch kar)
     data = {
         "totalBookings": 45,
         "totalRevenue": 150000,
@@ -147,6 +275,7 @@ def admin_dashboard():
         ]
     }
     return jsonify(data)
+
 
 @app.route('/admin-action', methods=['POST'])
 def admin_action():
