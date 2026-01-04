@@ -1,170 +1,168 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroVeda Pro | 9 Grah Final Analysis</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --gold: #D4AF37; --deep-red: #800000; --orange: #FF8C00;
-            --bg: #0F0F0F; --card-bg: #1A1A1A; --cream: #FFFDF5;
-            --weak: #FF4B4B; --strong: #4CAF50;
-        }
+<meta charset="UTF-8">
+<title>AstroVeda Pro | Semi-Real Kundli Engine</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
 
-        body { font-family: 'Outfit', sans-serif; background-color: var(--bg); color: #E0E0E0; margin: 0; padding: 20px; }
-        .container { max-width: 1100px; margin: auto; }
-        .header { text-align: center; padding: 30px 0; border-bottom: 2px solid var(--gold); }
-        .header h1 { color: var(--gold); font-size: 2.5rem; margin: 0; }
+<style>
+:root{
+ --gold:#D4AF37;--deep-red:#800000;--orange:#FF8C00;
+ --bg:#0F0F0F;--card:#1A1A1A;--cream:#FFFDF5;
+ --weak:#FF4B4B;--strong:#4CAF50;
+}
+body{background:var(--bg);color:#eee;font-family:Outfit;margin:0;padding:20px}
+.container{max-width:1100px;margin:auto}
+.header{text-align:center;border-bottom:2px solid var(--gold);padding:25px}
+.header h1{color:var(--gold)}
 
-        .input-panel {
-            background: var(--card-bg); padding: 25px; border-radius: 15px;
-            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px; margin: 20px 0; border: 1px solid #333;
-        }
+.input-panel{
+background:var(--card);padding:20px;border-radius:12px;
+display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:15px
+}
+input,select{padding:12px;background:#222;color:white;border:1px solid var(--gold);border-radius:8px}
 
-        input, select { padding: 12px; background: #252525; border: 1px solid var(--gold); color: white; border-radius: 8px; }
+.gen-btn{
+grid-column:1/-1;padding:15px;
+background:linear-gradient(45deg,var(--deep-red),var(--orange));
+border:none;color:white;font-weight:bold;cursor:pointer;border-radius:8px
+}
 
-        .gen-btn {
-            grid-column: 1 / -1; padding: 18px; background: linear-gradient(45deg, var(--deep-red), var(--orange));
-            color: white; border: none; font-weight: bold; font-size: 1.1rem; cursor: pointer; border-radius: 8px;
-        }
+.section-title{display:none;text-align:center;color:var(--gold);margin:40px 0}
 
-        #chart-container {
-            display: none; background: var(--cream); padding: 20px; border-radius: 10px;
-            border: 8px double var(--deep-red); margin: 30px auto; text-align: center; color: var(--deep-red); max-width: 450px;
-        }
+.dashboard,.grah-grid{display:none;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
 
-        .kundli-svg { width: 100%; height: auto; border: 2px solid var(--deep-red); }
-        .ganesha-img { width: 50px; margin-bottom: 10px; }
+.card,.grah-card{
+background:var(--card);padding:20px;border-radius:12px;
+border-left:5px solid var(--gold);cursor:pointer
+}
+.card:hover,.grah-card:hover{background:#222}
 
-        .section-title { display: none; color: var(--gold); text-align: center; margin: 40px 0 20px; font-size: 1.8rem; border-bottom: 1px solid #333; padding-bottom: 10px; }
+.card-strong{border-left-color:var(--strong)}
+.card-weak{border-left-color:var(--weak)}
 
-        .dashboard, .grah-grid { display: none; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.result-box,.solution-box{display:none;margin-top:10px}
+.active .result-box,.active .solution-box{display:block}
 
-        .card, .grah-card { background: var(--card-bg); padding: 20px; border-radius: 12px; border-left: 5px solid var(--gold); cursor: pointer; transition: 0.3s; }
-        .card:hover, .grah-card:hover { transform: translateY(-5px); background: #222; }
-        
-        .card-strong { border-left-color: var(--strong); }
-        .card-weak { border-left-color: var(--weak); }
-
-        .result-box, .solution-box { margin-top: 15px; padding: 12px; background: rgba(255, 140, 0, 0.05); border-radius: 8px; display: none; font-size: 0.95rem; line-height: 1.6; }
-        .active .result-box, .active .solution-box { display: block; }
-
-        .status-badge { font-weight: bold; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; float: right; }
-        .status-strong { color: var(--strong); background: rgba(76, 175, 80, 0.1); }
-        .status-weak { color: var(--weak); background: rgba(255, 75, 75, 0.1); }
-    </style>
+.status-badge{
+float:right;font-size:0.8rem;font-weight:bold;padding:3px 8px;border-radius:4px
+}
+.status-strong{color:var(--strong)}
+.status-weak{color:var(--weak)}
+</style>
 </head>
+
 <body>
-
 <div class="container">
-    <div class="header">
-        <h1>✨ ASTROVEDA PRO</h1>
-        <p>9 Grah Detailed Analysis & Practical Solutions</p>
-    </div>
 
-    <div class="input-panel">
-        <input type="text" id="name" placeholder="Full Name">
-        <input type="date" id="dob">
-        <input type="time" id="tob">
-        <select id="gender"><option value="Male">Male</option><option value="Female">Female</option></select>
-        <button class="gen-btn" onclick="generateCompleteAnalysis()">GENERATE FULL NAVGRAHA REPORT</button>
-    </div>
+<div class="header">
+<h1>✨ ASTROVEDA PRO</h1>
+<p>Semi-Real Kundli • Rashi + Lagna Logic</p>
+</div>
 
-    <div id="chart-container">
-        <img src="https://cdn-icons-png.flaticon.com/512/1126/1126685.png" class="ganesha-img">
-        <h2 id="chart-user-name">Lagna Chart</h2>
-        <svg viewBox="0 0 400 400" class="kundli-svg">
-            <rect width="400" height="400" fill="none" stroke="#800000" stroke-width="4"/>
-            <line x1="0" y1="0" x2="400" y2="400" stroke="#800000" stroke-width="2"/>
-            <line x1="400" y1="0" x2="0" y2="400" stroke="#800000" stroke-width="2"/>
-            <polygon points="200,0 400,200 200,400 0,200" fill="none" stroke="#800000" stroke-width="2"/>
-            <text x="180" y="160" font-size="16" font-weight="bold" fill="#800000" id="h1-p"></text>
-            <text x="80" y="80" font-size="16" font-weight="bold" fill="#800000" id="h2-p"></text>
-            <text x="280" y="80" font-size="16" font-weight="bold" fill="#800000" id="h12-p"></text>
-            <text x="180" y="270" font-size="16" font-weight="bold" fill="#800000" id="h7-p"></text>
-        </svg>
-    </div>
+<div class="input-panel">
+<input id="name" placeholder="Full Name">
+<input type="date" id="dob">
+<input type="time" id="tob">
+<select id="gender"><option>Male</option><option>Female</option></select>
+<button class="gen-btn" onclick="generate()">GENERATE REPORT</button>
+</div>
 
-    <h2 class="section-title">📌 Life Predictions</h2>
-    <div class="dashboard" id="dashboard">
-        <div class="card" onclick="this.classList.toggle('active')">
-            <h3>💼 Career <div id="career-badge"></div></h3>
-            <div class="result-box" id="res-career"></div>
-        </div>
-        <div class="card" onclick="this.classList.toggle('active')">
-            <h3>💰 Wealth <div id="wealth-badge"></div></h3>
-            <div class="result-box" id="res-money"></div>
-        </div>
-        <div class="card" onclick="this.classList.toggle('active')">
-            <h3>💍 Marriage <div id="love-badge"></div></h3>
-            <div class="result-box" id="res-love"></div>
-        </div>
-    </div>
+<h2 class="section-title">📌 Life Predictions</h2>
+<div class="dashboard" id="dashboard">
+<div class="card" onclick="this.classList.toggle('active')">
+<h3>💼 Career</h3><div class="result-box" id="career"></div>
+</div>
+<div class="card" onclick="this.classList.toggle('active')">
+<h3>💰 Wealth</h3><div class="result-box" id="money"></div>
+</div>
+<div class="card" onclick="this.classList.toggle('active')">
+<h3>💍 Marriage</h3><div class="result-box" id="love"></div>
+</div>
+</div>
 
-    <h2 class="section-title">🪐 Navgraha: Detailed Analysis & Future Effects</h2>
-    <div class="grah-grid" id="grah-results"></div>
+<h2 class="section-title">🪐 Navgraha Analysis</h2>
+<div class="grah-grid" id="grah"></div>
+
 </div>
 
 <script>
-    const navgrahaData = [
-        { name: "Surya (Sun)", tag: "Power & Confidence", strong: "Leadership, Govt authority, High energy.", weak: "Low confidence, Father issues, Fear.", sol: ["15m Sunlight", "Routine", "Respect Father"] },
-        { name: "Chandra (Moon)", tag: "Mind & Emotions", strong: "Calmness, Stability, Creativity.", weak: "Overthinking, Anxiety, Mood swings.", sol: ["Fixed Sleep", "Water intake", "Meditation"] },
-        { name: "Mangal (Mars)", tag: "Energy & Courage", strong: "Physical strength, Action taker.", weak: "Laziness, Anger, Low stamina.", sol: ["Workout", "Anger control", "Small Risks"] },
-        { name: "Budh (Mercury)", tag: "Brain & Speech", strong: "Business skills, Tech-savvy.", weak: "Confusion, Learning issues, Bad speech.", sol: ["Daily Reading", "Journaling", "Skill-up"] },
-        { name: "Guru (Jupiter)", tag: "Wisdom & Growth", strong: "Moral compass, Educational success.", weak: "Wrong decisions, Lack of direction.", sol: ["Learn from mentors", "No Shortcuts", "Charity"] },
-        { name: "Shukra (Venus)", tag: "Love & Luxury", strong: "Charisma, Relationship success.", weak: "Money leakage, Addiction, Disputes.", sol: ["Clean life", "Respect Women", "No Addictions"] },
-        { name: "Shani (Saturn)", tag: "Karma & Discipline", strong: "Respect after struggle, Stability.", weak: "Depression, Slow progress, Delay.", sol: ["Patience", "Hard work", "Value Time"] },
-        { name: "Rahu (North Node)", tag: "Desire & Tech", strong: "Sudden fame, Digital success.", weak: "Shortcut mindset, Addictions, Chaos.", sol: ["Reality Check", "Legal path", "Digital detox"] },
-        { name: "Ketu (South Node)", tag: "Spirituality", strong: "Inner peace, Deep focus.", weak: "Isolation, Directionless, Escapism.", sol: ["Meditation", "Clear Purpose", "Active life"] }
-    ];
+const rashis=[
+"Aries","Taurus","Gemini","Cancer","Leo","Virgo",
+"Libra","Scorpio","Sagittarius","Capricorn","Aquarius","Pisces"
+];
 
-    function generateCompleteAnalysis() {
-        const name = document.getElementById('name').value;
-        const dob = document.getElementById('dob').value;
-        if (!name || !dob) { alert("Bhai details toh bharo!"); return; }
+const grahMap=[
+{name:"Surya",good:["Leo","Aries"],bad:["Libra"]},
+{name:"Chandra",good:["Cancer","Taurus"],bad:["Scorpio"]},
+{name:"Mangal",good:["Aries","Scorpio"],bad:["Cancer"]},
+{name:"Budh",good:["Gemini","Virgo"],bad:["Pisces"]},
+{name:"Guru",good:["Sagittarius","Pisces"],bad:["Gemini"]},
+{name:"Shukra",good:["Taurus","Libra"],bad:["Virgo"]},
+{name:"Shani",good:["Capricorn","Aquarius"],bad:["Cancer"]},
+{name:"Rahu",good:["Aquarius","Gemini"],bad:["Cancer"]},
+{name:"Ketu",good:["Scorpio","Pisces"],bad:["Taurus"]}
+];
 
-        const date = new Date(dob);
-        const d = date.getDate();
-        const m = date.getMonth() + 1;
+function getRashi(d){
+const days=[31,28,31,30,31,30,31,31,30,31,30,31];
+let sum=0;
+for(let i=0;i<d.getMonth();i++)sum+=days[i];
+sum+=d.getDate();
+return rashis[sum%12];
+}
 
-        document.getElementById('chart-container').style.display = 'block';
-        document.getElementById('dashboard').style.display = 'grid';
-        document.getElementById('grah-results').style.display = 'grid';
-        document.querySelectorAll('.section-title').forEach(el => el.style.display = 'block');
-        document.getElementById('chart-user-name').innerText = name + "'s Birth Chart";
+function getLagna(h){
+return rashis[Math.floor(h/2)%12];
+}
 
-        // Simple Chart Logic
-        document.getElementById('h1-p').textContent = d % 2 === 0 ? "Sun, Mer" : "Jup, Ven";
-        document.getElementById('h2-p').textContent = m < 6 ? "Mon" : "Sat";
-        document.getElementById('h7-p').textContent = d > 15 ? "Mar" : "Rah";
+function generate(){
+const name=document.getElementById("name").value;
+const dob=document.getElementById("dob").value;
+const tob=document.getElementById("tob").value;
 
-        // Dashboard Logic
-        document.getElementById('res-career').innerHTML = `🚀 Best field: ${d % 2 === 0 ? 'IT/Business' : 'Govt/Arts'}. Growth age: ${23 + (d % 6)}.`;
-        document.getElementById('res-money').innerHTML = `💸 Wealth: ${m % 3 === 0 ? 'Rich yog' : 'Steady growth'}. Avoid loans in 2027.`;
-        document.getElementById('res-love').innerHTML = `💍 Marriage: ${d > 20 ? 'Love' : 'Arranged'}. Ideal age: ${25 + (m % 4)}.`;
+if(!name||!dob||!tob){alert("Details bharo");return;}
 
-        // Navgraha Logic
-        let grahHtml = "";
-        navgrahaData.forEach((g, i) => {
-            const isStrong = (d + m + i) % 2 === 0;
-            grahHtml += `
-                <div class="grah-card ${isStrong ? 'card-strong' : 'card-weak'}" onclick="this.classList.toggle('active')">
-                    <span class="status-badge ${isStrong ? 'status-strong' : 'status-weak'}">${isStrong ? 'STRONG' : 'WEAK'}</span>
-                    <h3>🪐 ${g.name}</h3>
-                    <p style="font-size:0.8rem; color:var(--gold)">Domain: ${g.tag}</p>
-                    <div class="solution-box">
-                        <b>🔮 Future Effect:</b> ${isStrong ? g.strong : g.weak}<br><br>
-                        <b>✅ Real Solution:</b>
-                        <ul>${g.sol.map(s => `<li>${s}</li>`).join('')}</ul>
-                    </div>
-                </div>
-            `;
-        });
-        document.getElementById('grah-results').innerHTML = grahHtml;
-        window.scrollTo({ top: 500, behavior: 'smooth' });
-    }
+const d=new Date(dob+"T"+tob);
+const rashi=getRashi(d);
+const lagna=getLagna(d.getHours());
+
+document.querySelectorAll(".section-title").forEach(x=>x.style.display="block");
+document.getElementById("dashboard").style.display="grid";
+document.getElementById("grah").style.display="grid";
+
+document.getElementById("career").innerHTML=
+`Rashi: <b>${rashi}</b><br>Lagna: <b>${lagna}</b><br>Best fields: IT, Management, Self-Business`;
+
+document.getElementById("money").innerHTML=
+`Stable income after age ${24+d.getMonth()%5}. Avoid risky loans before 2027.`;
+
+document.getElementById("love").innerHTML=
+lagna==="Libra"||rashi==="Taurus"?
+"Strong love marriage yog after 25.":
+"Family involvement in marriage likely.";
+
+let html="";
+grahMap.forEach(g=>{
+let strong=g.good.includes(rashi);
+html+=`
+<div class="grah-card ${strong?"card-strong":"card-weak"}"
+onclick="this.classList.toggle('active')">
+<span class="status-badge ${strong?"status-strong":"status-weak"}">
+${strong?"STRONG":"WEAK"}
+</span>
+<h3>${g.name}</h3>
+<div class="solution-box">
+${strong?
+"Positive results, growth, confidence.":
+"Delay, mental pressure, discipline required."}
+</div>
+</div>`;
+});
+
+document.getElementById("grah").innerHTML=html;
+}
 </script>
 </body>
 </html>
