@@ -1,10 +1,10 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun, get_moon
+from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun
+from astropy.coordinates import get_moon  # <-- Ye alag se import karna padta hai
 import astropy.units as u
 from datetime import datetime
-import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -12,7 +12,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
-CORS(app)  # Frontend se calls allow (localhost, Netlify, etc.)
+CORS(app)
 
 # Gmail SMTP Setup
 EMAIL_ADDRESS = "bhattanant82@gmail.com"
