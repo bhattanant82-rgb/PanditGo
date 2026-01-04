@@ -1,11 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun
-from astropy.coordinates import get_moon
-import astropy.units as u
 from datetime import datetime
-import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -80,187 +75,73 @@ def refund():
 
 # ================= Kundli Generation (Vedic) =================
 
-RASHIS = [
-    "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
-    "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
-    "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"
-]
+# ================= Kundli Generation (REAL – Prokerala) =================
 
-NAKSHATRAS = [
-    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
-    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
-    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha",
-    "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
-    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
-]
+PROKERALA_CLIENT_ID = "PASTE_YOUR_CLIENT_ID"
+PROKERALA_CLIENT_SECRET = "PASTE_YOUR_CLIENT_SECRET"
 
-DASHA_EFFECTS = {
-    "Ketu": "Spirituality, detachment, sudden changes",
-    "Venus": "Luxury, marriage, creativity, wealth",
-    "Sun": "Leadership, government, fame, health",
-    "Moon": "Emotions, family, mind, mother",
-    "Mars": "Energy, property, courage, conflicts",
-    "Rahu": "Foreign, sudden gains/loss, obsession",
-    "Jupiter": "Wisdom, education, finance, growth",
-    "Saturn": "Hard work, delay, discipline, longevity",
-    "Mercury": "Business, communication, intellect"
-}
+def get_prokerala_token():
+    url = "https://api.prokerala.com/token"
+    payload = {
+        "grant_type": "client_credentials",
+        "client_id": PROKERALA_CLIENT_ID,
+        "client_secret": PROKERALA_CLIENT_SECRET
+    }
+    res = requests.post(url, data=payload)
+    data = res.json()
+    return data.get("access_token")
 
-def degree_to_rashi(deg):
-    return RASHIS[int(deg // 30) % 12]
-
-def degree_to_nakshatra(deg):
-    return NAKSHATRAS[int(deg // (360/27)) % 27]
-
-def get_lagna(birth_time, loc):
-    frame = AltAz(obstime=birth_time, location=loc)
-    sun = get_sun(birth_time)
-    altaz = sun.transform_to(frame)
-    lagna_deg = (altaz.az.degree - 24.0) % 360  # Lahiri Ayanamsa
-    return lagna_deg
 
 @app.route('/generate-kundli', methods=['POST'])
 def generate_kundli():
     try:
         data = request.json
-        dob = data['dob']
-        tob = data['tob']
-        place = data['place']
 
-        day, month, year = map(int, dob.split('/'))
-        hour, minute, second = map(int, tob.split(':'))
-        birth_dt = datetime(year, month, day, hour, minute, second)
-        birth_time = Time(birth_dt)
+        dob = data.get('dob')    # YYYY-MM-DD
+        tob = data.get('tob')    # HH:MM
+        place = data.get('place')  # City name (future use)
 
-        lat, lon = map(float, place.split(','))
-        loc = EarthLocation(lat=lat*u.deg, lon=lon*u.deg, height=0*u.m)
+        if not dob or not tob:
+            return jsonify({"error": "DOB or TOB missing"}), 400
 
-        with solar_system_ephemeris.set('builtin'):
-            planets = ['sun', 'moon', 'mercury', 'venus', 'mars', 'jupiter', 'saturn']
-            positions = {}
-            for p in planets:
-                body = get_body(p, birth_time, loc)
-                ra = body.ra.degree
-                sidereal = (ra - 24.0) % 360
-                positions[p] = {
-                    "degree": round(sidereal, 2),
-                    "rashi": degree_to_rashi(sidereal),
-                    "nakshatra": degree_to_nakshatra(sidereal)
-                }
+        # Temporary static coordinates (Ahmedabad)
+        coordinates = "23.0225,72.5714"
 
-            moon_ra = get_moon(birth_time, loc).ra.degree
-            rahu = (moon_ra + 180) % 360 - 24.0
-            rahu = rahu % 360
-            ketu = (rahu + 180) % 360
-            positions['rahu'] = {"degree": round(rahu, 2), "rashi": degree_to_rashi(rahu), "nakshatra": degree_to_nakshatra(rahu)}
-            positions['ketu'] = {"degree": round(ketu, 2), "rashi": degree_to_rashi(ketu), "nakshatra": degree_to_nakshatra(ketu)}
+        # ISO datetime (IST)
+        datetime_str = f"{dob}T{tob}:00+05:30"
 
-        lagna_deg = get_lagna(birth_time, loc)
-        lagna = {
-            "degree": round(lagna_deg, 2),
-            "rashi": degree_to_rashi(lagna_deg),
-            "nakshatra": degree_to_nakshatra(lagna_deg)
+        token = get_prokerala_token()
+        if not token:
+            return jsonify({"error": "Failed to get Prokerala token"}), 500
+
+        url = (
+            "https://api.prokerala.com/v2/astrology/kundli"
+            f"?datetime={datetime_str}"
+            f"&coordinates={coordinates}"
+            "&ayanamsa=1"
+        )
+
+        headers = {
+            "Authorization": f"Bearer {token}"
         }
 
-        moon_deg = positions['moon']['degree']
-        dasha_index = int(moon_deg // (360/27)) % 9
-        dasha_lord = list(DASHA_EFFECTS.keys())[dasha_index]
-        dasha = {
-            "lord": dasha_lord,
-            "effect": DASHA_EFFECTS[dasha_lord]
-        }
+        response = requests.get(url, headers=headers)
+        kundli_data = response.json()
 
-        lagna_rashi = lagna['rashi']
-        predictions = {
-            "career": f"{lagna_rashi} Lagna mein strong leadership, management, tech ya govt jobs favorable.",
-            "money": "Steady income. Investments long-term mein best. Speculation se bachna.",
-            "marriage": "Shaadi mid-life mein strong. Partner supportive aur emotional.",
-            "health": "Overall achhi health. Stress, digestion aur head pe dhyan rakhna."
-        }
+        if kundli_data.get("status") != "ok":
+            return jsonify({
+                "error": "Kundli API error",
+                "raw": kundli_data
+            }), 400
 
-        result = {
-            "lagna": lagna,
-            "graha": positions,
-            "current_dasha": dasha,
-            "predictions": predictions,
-            "note": "Accurate Vedic Kundli with Lahiri Ayanamsa."
-        }
-
-        return jsonify(result)
+        # Send ONLY useful data to frontend
+        return jsonify({
+            "status": "ok",
+            "data": kundli_data.get("data")
+        })
 
     except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
-@app.route('/become-pandit', methods=['POST'])
-def become_pandit():
-    try:
-        data = request.json
-        name = data.get('name')
-        phone = data.get('phone')
-        email = data.get('email')
-        city = data.get('city')
-        experience = data.get('experience')
-        languages = data.get('languages')
-
-        print(f"New Pandit Registration: {name}, {phone}, {email}, {city}, {experience} years, {languages}")
-
-        subject = "New Pandit Registration - Pending Approval"
-        body = f"""
-        New pandit join request received!
-
-        Name: {name}
-        Phone: {phone}
-        Email: {email}
-        City: {city}
-        Experience: {experience} years
-        Languages: {languages}
-
-        Please review in admin dashboard.
-        """
-        send_admin_email(subject, body)
-
-        return jsonify({"message": "Application submitted! Admin will review soon.", "success": True})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
-
-
-@app.route('/book-puja', methods=['POST'])
-def book_puja():
-    try:
-        data = request.json
-        user_name = data.get('user_name')
-        phone = data.get('phone')
-        email = data.get('email')
-        puja = data.get('puja')
-        pandit = data.get('pandit')
-        date = data.get('date')
-        time = data.get('time')
-        amount = data.get('amount', 2500)
-
-        print(f"New Booking: {user_name}, {puja}, {pandit}, {date} {time}, ₹{amount}")
-
-        subject = f"New Booking Received - ₹{amount}"
-        body = f"""
-        New booking received!
-
-        User: {user_name}
-        Phone: {phone}
-        Email: {email}
-        Puja: {puja}
-        Pandit: {pandit}
-        Date/Time: {date} {time}
-        Amount: ₹{amount}
-
-        Please confirm in admin dashboard.
-        """
-        send_admin_email(subject, body)
-
-        return jsonify({"message": "Booking submitted! Admin will confirm soon.", "success": True})
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 400
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route('/request-refund', methods=['POST'])
