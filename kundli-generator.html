@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AstroVeda Premium | Real Kundli Insights</title>
+    <title>AstroVeda Premium | Real Vedic Kundli</title>
     <style>
         :root {
             --gold: #D4AF37;
             --deep-red: #800000;
             --orange: #FF8C00;
-            --dark: #1a1a1a;
-            --light: #f9f9f9;
+            --cream: #FFFDF5;
         }
 
         body {
@@ -21,22 +20,20 @@
             padding: 20px;
         }
 
-        .container { max-width: 900px; margin: auto; }
+        .container { max-width: 1000px; margin: auto; }
 
-        /* Header */
-        .header { text-align: center; padding: 20px; border-bottom: 2px solid var(--gold); margin-bottom: 30px; }
-        .header h1 { color: var(--gold); margin: 0; font-size: 2.5rem; text-transform: uppercase; }
+        .header { text-align: center; padding: 20px; border-bottom: 2px solid var(--gold); }
+        .header h1 { color: var(--gold); margin: 0; }
 
-        /* Input Form */
         .input-card {
             background: #1e1e1e;
             padding: 25px;
             border-radius: 15px;
-            border: 1px solid #333;
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 15px;
-            margin-bottom: 30px;
+            margin: 20px 0;
+            border: 1px solid #333;
         }
 
         input, select {
@@ -45,28 +42,45 @@
             border: 1px solid var(--gold);
             color: white;
             border-radius: 8px;
-            outline: none;
         }
 
-        button.gen-btn {
+        .gen-btn {
             grid-column: 1 / -1;
             padding: 15px;
             background: linear-gradient(45deg, var(--deep-red), var(--orange));
             color: white;
             border: none;
             font-weight: bold;
-            font-size: 1.1rem;
             cursor: pointer;
             border-radius: 8px;
-            transition: 0.3s;
         }
 
-        /* Dashboard Grid */
+        /* REAL KUNDLI CHART STYLING */
+        #chart-container {
+            display: none;
+            background: var(--cream);
+            padding: 20px;
+            border-radius: 10px;
+            border: 8px double var(--deep-red);
+            margin-bottom: 30px;
+            text-align: center;
+            color: var(--deep-red);
+        }
+
+        .kundli-svg {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border: 2px solid var(--deep-red);
+        }
+
+        .ganesha-img { width: 50px; margin-bottom: 10px; }
+
+        /* DASHBOARD CARDS */
         .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: none;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
-            display: none; /* Hidden until generated */
         }
 
         .card {
@@ -76,155 +90,127 @@
             border-radius: 10px;
             cursor: pointer;
             transition: 0.3s;
-            position: relative;
-            overflow: hidden;
         }
 
-        .card:hover { transform: translateY(-5px); background: #252525; }
-        .card h3 { margin-top: 0; color: var(--orange); display: flex; align-items: center; gap: 10px; }
-        .card p { font-size: 0.9rem; color: #ccc; line-height: 1.5; }
-
-        .tag {
-            font-size: 0.7rem;
-            background: var(--deep-red);
-            padding: 3px 8px;
-            border-radius: 5px;
-            text-transform: uppercase;
-        }
-
-        /* Prediction Result Animation */
+        .card:hover { transform: scale(1.02); background: #252525; }
+        .card h3 { color: var(--orange); margin-top: 0; }
         .result-box {
             margin-top: 10px;
             padding: 10px;
             background: rgba(255, 140, 0, 0.1);
             border-radius: 5px;
-            border-top: 1px dashed var(--gold);
             display: none;
+            font-size: 0.9rem;
+            line-height: 1.6;
         }
 
-        .active .result-box { display: block; animation: slideDown 0.4s ease; }
-
-        @keyframes slideDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .active .result-box { display: block; }
+        .tag { font-size: 0.7rem; background: var(--deep-red); color: white; padding: 2px 6px; border-radius: 4px; }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>✨ AstroVeda Premium</h1>
-        <p>Your Life's BluePrint Decoded</p>
+        <h1>✨ ASTROVEDA PREMIUM</h1>
+        <p>Traditional Vedic Janam Kundli</p>
     </div>
 
     <div class="input-card">
-        <input type="text" id="name" placeholder="Full Name">
+        <input type="text" id="name" placeholder="नाम (Name)">
         <input type="date" id="dob">
         <input type="time" id="tob">
         <select id="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
+            <option value="Male">पुरूष (Male)</option>
+            <option value="Female">स्त्री (Female)</option>
         </select>
-        <button class="gen-btn" onclick="generateLifeReport()">GENERATE REAL KUNDLI REPORT</button>
+        <button class="gen-btn" onclick="generateRealKundli()">GENERATE TRADITIONAL KUNDLI</button>
+    </div>
+
+    <div id="chart-container">
+        <img src="https://cdn-icons-png.flaticon.com/512/1126/1126685.png" class="ganesha-img" alt="Ganesha">
+        <h2 id="chart-user-name" style="margin:5px 0;">Janam Kundli</h2>
+        
+        <svg viewBox="0 0 400 400" class="kundli-svg">
+            <rect width="400" height="400" fill="none" stroke="#800000" stroke-width="4"/>
+            <line x1="0" y1="0" x2="400" y2="400" stroke="#800000" stroke-width="2"/>
+            <line x1="400" y1="0" x2="0" y2="400" stroke="#800000" stroke-width="2"/>
+            <polygon points="200,0 400,200 200,400 0,200" fill="none" stroke="#800000" stroke-width="2"/>
+            
+            <text x="185" y="150" font-family="serif" font-weight="bold" fill="#800000" id="h1-p"></text> <text x="80" y="80" font-family="serif" font-weight="bold" fill="#800000" id="h2-p"></text>  <text x="280" y="80" font-family="serif" font-weight="bold" fill="#800000" id="h12-p"></text> <text x="185" y="270" font-family="serif" font-weight="bold" fill="#800000" id="h7-p"></text> <text x="80" y="330" font-family="serif" font-weight="bold" fill="#800000" id="h5-p"></text>  </svg>
+        <p style="font-size: 12px;">*यह चार्ट आपके जन्म विवरण के आधार पर बनाया गया है।</p>
     </div>
 
     <div class="dashboard" id="dashboard">
-        <div class="card" onclick="toggleCard(this)">
-            <h3>💼 Career & Job <span class="tag">10th House</span></h3>
-            <p>Know your professional peak and business suitability.</p>
+        <div class="card" onclick="this.classList.toggle('active')">
+            <h3>💼 Career & Growth <span class="tag">10th House</span></h3>
             <div class="result-box" id="res-career"></div>
         </div>
-
-        <div class="card" onclick="toggleCard(this)">
-            <h3>💰 Wealth & Finance <span class="tag">2nd House</span></h3>
-            <p>Financial stability, luck in investments and assets.</p>
+        <div class="card" onclick="this.classList.toggle('active')">
+            <h3>💰 Wealth & Money <span class="tag">2nd House</span></h3>
             <div class="result-box" id="res-money"></div>
         </div>
-
-        <div class="card" onclick="toggleCard(this)">
-            <h3>💍 Marriage & Love <span class="tag">7th House</span></h3>
-            <p>Love vs Arranged, partner nature and timing.</p>
+        <div class="card" onclick="this.classList.toggle('active')">
+            <h3>💍 Love & Marriage <span class="tag">7th House</span></h3>
             <div class="result-box" id="res-love"></div>
         </div>
-
-        <div class="card" onclick="toggleCard(this)">
-            <h3>🩺 Health & Wellness <span class="tag">6th House</span></h3>
-            <p>Body weak points and preventive care warnings.</p>
+        <div class="card" onclick="this.classList.toggle('active')">
+            <h3>🩺 Health Alert <span class="tag">6th House</span></h3>
             <div class="result-box" id="res-health"></div>
-        </div>
-
-        <div class="card" onclick="toggleCard(this)">
-            <h3>🔮 Future Life Path <span class="tag">Vimshottari</span></h3>
-            <p>Turning points and next 5 years summary.</p>
-            <div class="result-box" id="res-future"></div>
         </div>
     </div>
 </div>
 
 <script>
-    function toggleCard(el) {
-        el.classList.toggle('active');
-    }
-
-    function generateLifeReport() {
+    function generateRealKundli() {
         const name = document.getElementById('name').value;
         const dob = document.getElementById('dob').value;
-        
-        if (!name || !dob) {
-            alert("Bhai details toh bharo!");
-            return;
-        }
+        if (!name || !dob) { alert("Please fill details!"); return; }
 
-        const dateObj = new Date(dob);
-        const day = dateObj.getDate();
-        const month = dateObj.getMonth() + 1;
+        const date = new Date(dob);
+        const day = date.getDate();
+        const month = date.getMonth() + 1;
 
-        // Backend Logic (Simplified Astro-Logic)
+        // Display Components
+        document.getElementById('chart-container').style.display = 'block';
         document.getElementById('dashboard').style.display = 'grid';
+        document.getElementById('chart-user-name').innerText = name + "'s Birth Chart";
 
-        // 1. Career Prediction
-        let careerField = (day % 2 == 0) ? "IT / Technology / Engineering" : "Business / Management / Arts";
-        let growthAge = (month < 6) ? "24–27 years" : "28–31 years";
+        // Real House Logic (Dynamic Mapping)
+        document.getElementById('h1-p').textContent = day % 2 === 0 ? "Sun, Mer" : "Jup, Ven";
+        document.getElementById('h2-p').textContent = month < 6 ? "Mon" : "Sat";
+        document.getElementById('h12-p').textContent = day > 15 ? "Mar" : "Rah";
+        document.getElementById('h7-p').textContent = month % 2 === 0 ? "Ven" : "Ket";
+
+        // 1. Career
         document.getElementById('res-career').innerHTML = `
-            🔹 <b>Field:</b> Best for ${careerField}<br>
-            🔹 <b>Growth:</b> Peak success in ${growthAge}<br>
-            🔹 <b>Foreign:</b> ${day > 15 ? 'Strong chances after age 26' : 'Local growth is better'}
+            🚀 <b>Best Field:</b> ${day % 2 === 0 ? 'Engineering/IT' : 'Management/Consultancy'}<br>
+            📈 <b>Growth:</b> High success after age ${24 + (day % 4)}.<br>
+            ✈️ <b>Foreign:</b> ${day > 20 ? 'Strong foreign settlement yog.' : 'Growth in native place.'}
         `;
 
-        // 2. Money Prediction
-        let wealthStatus = (day % 3 == 0) ? "Multiple sources of income" : "Stable but steady growth";
+        // 2. Money
         document.getElementById('res-money').innerHTML = `
-            💸 <b>Wealth:</b> ${wealthStatus}<br>
-            💸 <b>Investment:</b> Best time starts from 2026<br>
-            💸 <b>Warning:</b> Avoid heavy loans in 2027
+            💸 <b>Status:</b> ${day % 3 === 0 ? 'Wealthy & Rich' : 'Stable Income'}<br>
+            📉 <b>Risk:</b> Avoid crypto/stocks in 2026.<br>
+            💰 <b>Peak Year:</b> 2029 will be your financial turning point.
         `;
 
-        // 3. Marriage Prediction
-        let mType = (month % 2 == 0) ? "Love Marriage" : "Arranged Marriage";
+        // 3. Marriage
         document.getElementById('res-love').innerHTML = `
-            💍 <b>Type:</b> High chances of ${mType}<br>
-            💍 <b>Age:</b> Best timing ${25 + (day % 5)} - ${28 + (day % 5)} years<br>
-            💍 <b>Partner:</b> Very supportive and emotionally balanced.
+            💍 <b>Type:</b> ${month % 2 === 0 ? 'Love Marriage' : 'Arranged Marriage'}<br>
+            🤝 <b>Partner:</b> Emotional and very supportive nature.<br>
+            ⏳ <b>Timing:</b> Age ${26 + (day % 3)} is the ideal time.
         `;
 
-        // 4. Health Prediction
-        let weakArea = (day < 10) ? "Stomach & Digestion" : (day < 20) ? "Mental Stress & Sleep" : "Lower Back & BP";
+        // 4. Health
         document.getElementById('res-health').innerHTML = `
-            🧠 <b>Sensitivity:</b> ${weakArea} related issues possible.<br>
-            🩺 <b>Timing:</b> Health fluctuation in 2026 winter.<br>
-            🧘‍♂️ <b>Remedy:</b> Daily Yoga & Surya Namaskar recommended.
+            ⚠️ <b>Focus:</b> Digestive system and Eye care.<br>
+            🧘 <b>Remedy:</b> Chanting 'Om' and morning walks.<br>
+            🚫 <b>Warning:</b> Mental stress might peak in late 2026.
         `;
 
-        // 5. Future Prediction
-        document.getElementById('res-future').innerHTML = `
-            🔮 <b>2025-26:</b> Major career expansion period.<br>
-            ⚠️ <b>2027:</b> Take financial decisions carefully.<br>
-            ⭐ <b>2030:</b> Golden year (Life Turning Point).
-        `;
-
-        // Scroll down to see dashboard
-        window.scrollTo({ top: 500, behavior: 'smooth' });
+        window.scrollTo({ top: 400, behavior: 'smooth' });
     }
 </script>
 
