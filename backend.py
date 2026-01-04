@@ -1,8 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun
-from astropy.coordinates import get_moon
+from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun, get_moon
 import astropy.units as u
 from datetime import datetime
 import math
@@ -13,8 +12,9 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
-CORS(app)
+CORS(app)  # Frontend se calls allow (localhost, Netlify, etc.)
 
+# Gmail SMTP Setup
 EMAIL_ADDRESS = "bhattanant82@gmail.com"
 EMAIL_PASSWORD = "dfnm civm jmih uoqb"
 
@@ -25,6 +25,7 @@ def send_admin_email(subject, body):
         msg['To'] = EMAIL_ADDRESS
         msg['Subject'] = subject
         msg.attach(MIMEText(body, 'plain'))
+
         with smtplib.SMTP('smtp.gmail.com', 587) as server:
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
@@ -33,6 +34,7 @@ def send_admin_email(subject, body):
     except Exception as e:
         print(f"❌ Email failed: {e}")
 
+# Razorpay Real Refund
 RAZORPAY_KEY = "rzp_live_RvnLDFb7F45oWy"
 RAZORPAY_SECRET = "ZT3sVSgcQhSyR9yr36vJqn0I"
 
@@ -41,25 +43,58 @@ def refund():
     try:
         data = request.json
         payment_id = data.get('payment_id')
-        amount = data.get('amount', 100)
+        amount = data.get('amount', 100)  # 1 ₹ = 100 paise
+
         if not payment_id:
             return jsonify({"success": False, "error": "Payment ID missing"}), 400
+
         url = f"https://api.razorpay.com/v1/payments/{payment_id}/refund"
         auth = HTTPBasicAuth(RAZORPAY_KEY, RAZORPAY_SECRET)
         payload = {"amount": amount}
+
         response = requests.post(url, auth=auth, json=payload)
         refund_data = response.json()
+
         if response.status_code == 201:
-            send_admin_email("Refund Processed", f"₹{amount/100} refunded for {payment_id}")
-            return jsonify({"success": True, "message": "Refund done"})
+            send_admin_email(
+                "Refund Processed - ₹1",
+                f"Refund of ₹{amount/100} processed for payment {payment_id}\n\nUser refunded advance."
+            )
+            return jsonify({"success": True, "message": "Refund processed successfully"})
         else:
-            return jsonify({"success": False, "error": "Refund failed"}), 400
+            return jsonify({"success": False, "error": refund_data.get('error', {}).get('description', 'Refund failed')}), 400
+
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
-RASHIS = ["Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)", "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)", "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"]
-NAKSHATRAS = ["Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra", "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni", "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha", "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha", "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"]
-DASHA_EFFECTS = {"Ketu": "Spirituality, detachment, sudden changes", "Venus": "Luxury, marriage, creativity, wealth", "Sun": "Leadership, government, fame, health", "Moon": "Emotions, family, mind, mother", "Mars": "Energy, property, courage, conflicts", "Rahu": "Foreign, sudden gains/loss, obsession", "Jupiter": "Wisdom, education, finance, growth", "Saturn": "Hard work, delay, discipline, longevity", "Mercury": "Business, communication, intellect"}
+
+# ================= TERA PURA CODE (kundli + notifications + admin) =================
+
+RASHIS = [
+    "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
+    "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
+    "Dhanu (Sagittarius)", "Makara (Capricorn)", "Kumbha (Aquarius)", "Meena (Pisces)"
+]
+
+NAKSHATRAS = [
+    "Ashwini", "Bharani", "Krittika", "Rohini", "Mrigashira", "Ardra",
+    "Punarvasu", "Pushya", "Ashlesha", "Magha", "Purva Phalguni", "Uttara Phalguni",
+    "Hasta", "Chitra", "Swati", "Vishakha", "Anuradha", "Jyeshtha",
+    "Mula", "Purva Ashadha", "Uttara Ashadha", "Shravana", "Dhanishta", "Shatabhisha",
+    "Purva Bhadrapada", "Uttara Bhadrapada", "Revati"
+]
+
+DASHA_EFFECTS = {
+    "Ketu": "Spirituality, detachment, sudden changes",
+    "Venus": "Luxury, marriage, creativity, wealth",
+    "Sun": "Leadership, government, fame, health",
+    "Moon": "Emotions, family, mind, mother",
+    "Mars": "Energy, property, courage, conflicts",
+    "Rahu": "Foreign, sudden gains/loss, obsession",
+    "Jupiter": "Wisdom, education, finance, growth",
+    "Saturn": "Hard work, delay, discipline, longevity",
+    "Mercury": "Business, communication, intellect"
+}
 
 def degree_to_rashi(deg):
     return RASHIS[int(deg // 30) % 12]
@@ -71,7 +106,7 @@ def get_lagna(birth_time, loc):
     frame = AltAz(obstime=birth_time, location=loc)
     sun = get_sun(birth_time)
     altaz = sun.transform_to(frame)
-    lagna_deg = (altaz.az.degree - 24.0) % 360
+    lagna_deg = (altaz.az.degree - 24.0) % 360  # Lahiri Ayanamsa
     return lagna_deg
 
 @app.route('/generate-kundli', methods=['POST'])
@@ -133,18 +168,20 @@ def generate_kundli():
             "health": "Overall achhi health. Stress, digestion aur head pe dhyan rakhna."
         }
 
-        return jsonify({
+        result = {
             "lagna": lagna,
             "graha": positions,
             "current_dasha": dasha,
             "predictions": predictions,
             "note": "Accurate Vedic Kundli with Lahiri Ayanamsa."
-        })
+        }
+
+        return jsonify(result)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# Baaki features same
+
 @app.route('/become-pandit', methods=['POST'])
 def become_pandit():
     try:
@@ -160,16 +197,16 @@ def become_pandit():
 
         subject = "New Pandit Registration - Pending Approval"
         body = f"""
-New pandit join request received!
+        New pandit join request received!
 
-Name: {name}
-Phone: {phone}
-Email: {email}
-City: {city}
-Experience: {experience} years
-Languages: {languages}
+        Name: {name}
+        Phone: {phone}
+        Email: {email}
+        City: {city}
+        Experience: {experience} years
+        Languages: {languages}
 
-Please review in admin dashboard.
+        Please review in admin dashboard.
         """
         send_admin_email(subject, body)
 
@@ -178,7 +215,102 @@ Please review in admin dashboard.
     except Exception as e:
         return jsonify({"error": str(e)}), 400
 
-# ... baaki code same jaise refund, book-puja, request-refund, admin-dashboard
+
+@app.route('/book-puja', methods=['POST'])
+def book_puja():
+    try:
+        data = request.json
+        user_name = data.get('user_name')
+        phone = data.get('phone')
+        email = data.get('email')
+        puja = data.get('puja')
+        pandit = data.get('pandit')
+        date = data.get('date')
+        time = data.get('time')
+        amount = data.get('amount', 2500)
+
+        print(f"New Booking: {user_name}, {puja}, {pandit}, {date} {time}, ₹{amount}")
+
+        subject = f"New Booking Received - ₹{amount}"
+        body = f"""
+        New booking received!
+
+        User: {user_name}
+        Phone: {phone}
+        Email: {email}
+        Puja: {puja}
+        Pandit: {pandit}
+        Date/Time: {date} {time}
+        Amount: ₹{amount}
+
+        Please confirm in admin dashboard.
+        """
+        send_admin_email(subject, body)
+
+        return jsonify({"message": "Booking submitted! Admin will confirm soon.", "success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/request-refund', methods=['POST'])
+def request_refund():
+    try:
+        data = request.json
+        booking_id = data.get('booking_id')
+        reason = data.get('reason')
+        amount = data.get('amount')
+
+        print(f"Refund Request: Booking #{booking_id}, Reason: {reason}, Amount: ₹{amount}")
+
+        subject = f"Refund Request - Booking #{booking_id}"
+        body = f"""
+        Refund request received!
+
+        Booking ID: {booking_id}
+        Reason: {reason}
+        Amount: ₹{amount}
+
+        Please review and approve/reject in dashboard.
+        """
+        send_admin_email(subject, body)
+
+        return jsonify({"message": "Refund request submitted! Admin will review.", "success": True})
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route('/admin-dashboard', methods=['GET'])
+def admin_dashboard():
+    data = {
+        "totalBookings": 45,
+        "totalRevenue": 150000,
+        "todaySales": 5000,
+        "monthSales": 75000,
+        "pendingPujas": 8,
+        "activePandits": 42,
+        "bookings": [
+            {"id": 1, "user": "Rahul Sharma", "puja": "Griha Pravesh", "pandit": "Pt. Ram Sharma", "datetime": "01/01/2026 10:00", "amount": 2500, "status": "Pending"},
+            {"id": 2, "user": "Priya Mehta", "puja": "Marriage Puja", "pandit": "Pt. Vikram Patel", "datetime": "05/01/2026 09:00", "amount": 3500, "status": "Confirmed"}
+        ],
+        "refunds": [
+            {"bookingId": 3, "user": "Amit Patel", "amount": 1800, "reason": "Pandit not available", "status": "Pending"}
+        ],
+        "pendingPandits": [
+            {"id": 1, "name": "Pt. Sanjay Mishra", "city": "Surat", "experience": "17 Years", "language": "Hindi", "status": "Pending"}
+        ]
+    }
+    return jsonify(data)
+
+
+@app.route('/admin-action', methods=['POST'])
+def admin_action():
+    data = request.json
+    action = data['type']
+    id = data['id']
+    return jsonify({"message": f"{action} successful for ID {id}", "success": True})
+
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

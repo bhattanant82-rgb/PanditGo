@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Janam Kundli Generator - BookMyPandit</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Janam Kundli Generator - BookMyPandit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
@@ -42,8 +42,8 @@
                         <input type="text" class="form-control" id="tob" placeholder="12:00" required>
                     </div>
                     <div class="col-md-4">
-                        <label for="place" class="form-label">Place (City)</label>
-                        <input type="text" class="form-control" id="place" placeholder="Ahmedabad" required>
+                        <label for="place" class="form-label">Place (lat,long)</label>
+                        <input type="text" class="form-control" id="place" placeholder="23.0225,72.5714" required>
                     </div>
                 </div>
                 <div class="text-center mt-4">
@@ -76,7 +76,11 @@
             const place = document.getElementById("place").value;
 
             try {
-                const res = await fetch(`kundli_api.php?dob=${encodeURIComponent(dob)}&tob=${encodeURIComponent(tob)}&place=${encodeURIComponent(place)}`);
+                const res = await fetch('http://127.0.0.1:5000/generate-kundli', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({dob, tob, place})
+                });
 
                 const json = await res.json();
 
@@ -85,33 +89,31 @@
                     return;
                 }
 
-                // Real Prokerala data show
-                const d = json.response || {};
                 result.innerHTML = `<div class="card">
                     <h4>Lagna</h4>
-                    <p>Rashi: ${d.lagna?.rashi || 'N/A'}</p>
-                    <p>Nakshatra: ${d.lagna?.nakshatra || 'N/A'}</p>
-                    <p>Degree: ${d.lagna?.degree || 'N/A'}</p>
+                    <p>Rashi: ${json.lagna.rashi}</p>
+                    <p>Nakshatra: ${json.lagna.nakshatra}</p>
+                    <p>Degree: ${json.lagna.degree}</p>
                 </div>`;
 
                 result.innerHTML += `<div class="card">
                     <h4>Current Dasha</h4>
-                    <p>Lord: ${d.current_dasha?.lord || 'N/A'}</p>
-                    <p>Effect: ${d.current_dasha?.effect || 'N/A'}</p>
+                    <p>Lord: ${json.current_dasha.lord}</p>
+                    <p>Effect: ${json.current_dasha.effect}</p>
                 </div>`;
 
                 result.innerHTML += `<div class="card">
                     <h4>Predictions</h4>
-                    <p>Career: ${d.predictions?.career || 'N/A'}</p>
-                    <p>Money: ${d.predictions?.money || 'N/A'}</p>
-                    <p>Marriage: ${d.predictions?.marriage || 'N/A'}</p>
-                    <p>Health: ${d.predictions?.health || 'N/A'}</p>
+                    <p>Career: ${json.predictions.career}</p>
+                    <p>Money: ${json.predictions.money}</p>
+                    <p>Marriage: ${json.predictions.marriage}</p>
+                    <p>Health: ${json.predictions.health}</p>
                 </div>`;
 
                 result.innerHTML += `<div class="card">
                     <h4>Planets</h4>
                     <ul class="list-group list-group-flush">
-                        ${Object.entries(d.graha || {}).map(([planet, info]) => `
+                        ${Object.entries(json.graha).map(([planet, info]) => `
                             <li class="list-group-item bg-transparent border-light text-light">
                                 <strong>${planet.toUpperCase()}:</strong> ${info.rashi} (${info.degree}°) - ${info.nakshatra}
                             </li>
