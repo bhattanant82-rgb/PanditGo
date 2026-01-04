@@ -107,13 +107,15 @@ document.getElementById("kundliForm").addEventListener("submit", async (e) => {
 
   // ✅ PLACE MUST BE lat,long
   const place = document.getElementById("place").value.trim();
-
-  try {
-    const res = await fetch("http://127.0.0.1:5000/generate-kundli", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ dob, tob, place })
-    });
+     fetch("http://127.0.0.1:5000/generate-kundli", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    dob: "29/07/2005",
+    tob: "12:15:00",
+    place: "21.99,72.80"
+  })
+}).then(r => r.text()).then(t => console.log(t));
 
     const data = await res.json();
 
