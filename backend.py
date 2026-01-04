@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from astropy.time import Time
-from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun, get_moon
+from astropy.coordinates import solar_system_ephemeris, get_body, EarthLocation, AltAz, get_sun
+from astropy.coordinates import get_moon
 import astropy.units as u
 from datetime import datetime
 import math
