@@ -104,7 +104,7 @@ def generate_kundli():
 
         moon_deg = positions['moon']['degree']
         dasha_index = int(moon_deg // (360/27)) % 9
-        dasha_lord = list(DASHA_EFFECTS.keys())[dasha_index]
+        dasha_lord = list(DASHA_EFFECTS.keys())[dasha_index] # type: ignore
         dasha = {
             "lord": dasha_lord,
             "effect": "Positive influence in current period"
