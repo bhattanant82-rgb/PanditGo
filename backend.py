@@ -12,7 +12,7 @@ import requests
 from requests.auth import HTTPBasicAuth
 
 app = Flask(__name__)
-CORS(app)  # Sab frontend se call allow
+CORS(app)  # Frontend se calls allow karta hai (localhost, Netlify, etc.)
 
 # Gmail SMTP Setup
 EMAIL_ADDRESS = "bhattanant82@gmail.com"
@@ -30,48 +30,55 @@ def send_admin_email(subject, body):
             server.starttls()
             server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
             server.sendmail(EMAIL_ADDRESS, EMAIL_ADDRESS, msg.as_string())
-        print(f"✅ Email sent: {subject}")
+        print(f"Email sent successfully: {subject}")
     except Exception as e:
-        print(f"❌ Email failed: {e}")
+        print(f"Email sending failed: {e}")
 
-# Razorpay Real Refund
-RAZORPAY_KEY = "rzp_live_RvnLDFb7F45oWy"
+# Razorpay Real Keys (Live Mode)
+RAZORPAY_KEY_ID = "rzp_live_RvnLDFb7F45oWy"
 RAZORPAY_SECRET = "ZT3sVSgcQhSyR9yr36vJqn0I"
 
+# Real Refund Endpoint
 @app.route('/refund', methods=['POST'])
 def refund():
     try:
         data = request.json
         payment_id = data.get('payment_id')
-        amount = data.get('amount', 100)  # 1 ₹ = 100 paise
+        amount = data.get('amount', 100)  # Default 1 ₹ = 100 paise
 
         if not payment_id:
             return jsonify({"success": False, "error": "Payment ID missing"}), 400
 
         url = f"https://api.razorpay.com/v1/payments/{payment_id}/refund"
-        auth = HTTPBasicAuth(RAZORPAY_KEY, RAZORPAY_SECRET)
+        auth = HTTPBasicAuth(RAZORPAY_KEY_ID, RAZORPAY_SECRET)
         payload = {"amount": amount}
 
         response = requests.post(url, auth=auth, json=payload)
         refund_data = response.json()
 
         if response.status_code == 201:
-            # Refund success hone pe admin ko email
             send_admin_email(
-                "Refund Processed - ₹1",
-                f"Refund of ₹{amount/100} processed for payment {payment_id}\n\nUser refunded advance."
+                "Refund Processed - ₹1 Advance",
+                f"Refund of ₹{amount/100} processed.\n"
+                f"Payment ID: {payment_id}\n"
+                f"Refund ID: {refund_data.get('id')}\n"
+                f"User refunded advance payment."
             )
-            return jsonify({"success": True, "message": "Refund processed successfully"})
+            return jsonify({
+                "success": True,
+                "message": "Refund processed successfully",
+                "refund_id": refund_data.get('id')
+            })
         else:
-            return jsonify({"success": False, "error": refund_data.get('error', {}).get('description', 'Refund failed')}), 400
+            error_msg = refund_data.get('error', {}).get('description', 'Refund failed')
+            return jsonify({"success": False, "error": error_msg}), 400
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
 
-# ================= TERA PURA CODE (kundli + notifications + admin) =================
+# ================= Kundli Generation (Vedic) =================
 
-# Vedic Rashi & Nakshatra
 RASHIS = [
     "Mesha (Aries)", "Vrishabha (Taurus)", "Mithuna (Gemini)", "Karka (Cancer)",
     "Simha (Leo)", "Kanya (Virgo)", "Tula (Libra)", "Vrishchika (Scorpio)",
@@ -195,7 +202,7 @@ def become_pandit():
         experience = data.get('experience')
         languages = data.get('languages')
 
-        print(f"New Pandit: {name}, {phone}, {email}, {city}, {experience} years, {languages}")
+        print(f"New Pandit Registration: {name}, {phone}, {email}, {city}, {experience} years, {languages}")
 
         subject = "New Pandit Registration - Pending Approval"
         body = f"""
