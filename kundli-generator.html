@@ -130,65 +130,92 @@ h1,h2,h3{font-family:'Playfair Display',serif}
 document.getElementById("kundliForm").addEventListener("submit", async function(e){
   e.preventDefault();
 
-  output.style.display="block";
+  const output = document.getElementById("output");
+  const result = document.getElementById("result");
+
+  output.style.display = "block";
   result.innerHTML = `<div class="loading">🔮 Processing Janam Kundli…</div>`;
 
   const dob = document.getElementById("dob").value;
   const tob = document.getElementById("tob").value;
   const place = document.getElementById("place").value;
 
-  try{
+  try {
     const res = await fetch(
       `kundli_api.php?dob=${dob}&tob=${tob}&place=${place}`
     );
-    const json = await res.json();
 
-    if(json.status !== "ok"){
+    const json = await res.json();
+    console.log("API RESPONSE:", json);
+
+    if (json.status !== "ok" || !json.data) {
       result.innerHTML = `<div class="loading">❌ Kundli data not available</div>`;
       return;
     }
 
     const d = json.data;
 
+    // SAFE ACCESS (NO CRASH)
+    const nak = d.nakshatra_details?.nakshatra?.name || "N/A";
+    const pada = d.nakshatra_details?.nakshatra?.pada || "-";
+
+    const chandra = d.chandra_rasi?.name || "N/A";
+    const chandraLord = d.chandra_rasi?.lord?.vedic_name || "N/A";
+
+    const surya = d.soorya_rasi?.name || "N/A";
+    const suryaLord = d.soorya_rasi?.lord?.vedic_name || "N/A";
+
+    const zodiac = d.zodiac?.name || "N/A";
+
+    const gana = d.additional_info?.ganam || "N/A";
+    const nadi = d.additional_info?.nadi || "N/A";
+    const yoni = d.additional_info?.animal_sign || "N/A";
+    const stone = d.additional_info?.birth_stone || "N/A";
+
     result.innerHTML = `
-      <div class="card"><i class="fa-solid fa-moon"></i>
+      <div class="card">
+        <i class="fa-solid fa-moon"></i>
         <h3>Nakshatra</h3>
-        <p>${d.nakshatra_details.nakshatra.name}</p>
-        <p>Pada ${d.nakshatra_details.nakshatra.pada}</p>
+        <p>${nak}</p>
+        <p>Pada: ${pada}</p>
       </div>
 
-      <div class="card"><i class="fa-solid fa-moon"></i>
+      <div class="card">
+        <i class="fa-solid fa-moon"></i>
         <h3>Chandra Rashi</h3>
-        <p>${d.chandra_rasi.name}</p>
-        <p>Lord: ${d.chandra_rasi.lord.vedic_name}</p>
+        <p>${chandra}</p>
+        <p>Lord: ${chandraLord}</p>
       </div>
 
-      <div class="card"><i class="fa-solid fa-sun"></i>
+      <div class="card">
+        <i class="fa-solid fa-sun"></i>
         <h3>Surya Rashi</h3>
-        <p>${d.soorya_rasi.name}</p>
-        <p>Lord: ${d.soorya_rasi.lord.vedic_name}</p>
+        <p>${surya}</p>
+        <p>Lord: ${suryaLord}</p>
       </div>
 
-      <div class="card"><i class="fa-solid fa-star"></i>
+      <div class="card">
+        <i class="fa-solid fa-star"></i>
         <h3>Zodiac</h3>
-        <p>${d.zodiac.name}</p>
+        <p>${zodiac}</p>
       </div>
 
-      <div class="card"><i class="fa-solid fa-gem"></i>
+      <div class="card">
+        <i class="fa-solid fa-gem"></i>
         <h3>Additional Info</h3>
-        <p>Gana: ${d.additional_info.ganam}</p>
-        <p>Nadi: ${d.additional_info.nadi}</p>
-        <p>Yoni: ${d.additional_info.animal_sign}</p>
-        <p>Birth Stone: ${d.additional_info.birth_stone}</p>
+        <p>Gana: ${gana}</p>
+        <p>Nadi: ${nadi}</p>
+        <p>Yoni: ${yoni}</p>
+        <p>Birth Stone: ${stone}</p>
       </div>
     `;
-  }
-  catch(err){
-    result.innerHTML = `<div class="loading">❌ Server error</div>`;
+  } catch (err) {
     console.error(err);
+    result.innerHTML = `<div class="loading">❌ Network / PHP error</div>`;
   }
 });
 </script>
+
 
 </body>
 </html>
