@@ -77,8 +77,8 @@ def refund():
 
 # ================= Kundli Generation (REAL – Prokerala) =================
 
-PROKERALA_CLIENT_ID = "PASTE_YOUR_CLIENT_ID"
-PROKERALA_CLIENT_SECRET = "PASTE_YOUR_CLIENT_SECRET"
+PROKERALA_CLIENT_ID = "8ff2fde0-e9f6-41e5-ba80-adf7032f7a45 "
+PROKERALA_CLIENT_SECRET = "ZrOfGGigsni5RpDsq3n1S3eH0LMIog29nAjRzAQI"
 
 def get_prokerala_token():
     url = "https://api.prokerala.com/token"
