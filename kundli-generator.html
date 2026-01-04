@@ -1,178 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Janam Kundli Generator - BookMyPandit</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-
-<style>
-body{
-  font-family:'Poppins',sans-serif;
-  background:#0f0f1a;
-  color:#e0d8c3;
-}
-.container{max-width:900px;margin:auto;padding:40px 20px;}
-h1,h2{color:#ff9933;text-align:center;}
-.form-box{
-  background:rgba(255,153,51,0.1);
-  border-radius:20px;
-  padding:40px;
-  margin:30px auto;
-  box-shadow:0 10px 30px rgba(0,0,0,0.5);
-}
-.output{
-  display:none;
-  margin-top:40px;
-  background:rgba(20,20,40,0.8);
-  border-radius:20px;
-  padding:30px;
-}
-.card{
-  background:rgba(255,255,255,0.08);
-  border:none;
-  border-radius:15px;
-  padding:20px;
-  margin-bottom:20px;
-}
-.loading{
-  text-align:center;
-  font-size:1.4rem;
-  color:#ff9933;
-}
-</style>
+    <meta charset="UTF-8">
+    <title>Janam Kundli Generator - BookMyPandit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(to bottom, #4B0000, #8B0000); color: #f5e8d3; }
+        .container { max-width: 1000px; margin: auto; padding: 60px 20px; }
+        .hero { text-align: center; }
+        .hero h1 { font-family: 'Playfair Display', serif; color: #FF9933; font-size: 3.5rem; }
+        .form-box { background: rgba(255,153,51,0.08); border-radius: 20px; padding: 40px; box-shadow: 0 10px 40px rgba(0,0,0,0.6); }
+        .output { background: rgba(10,10,30,0.85); border-radius: 20px; padding: 40px; margin-top: 50px; }
+        .card { background: rgba(255,255,255,0.08); border: none; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .loading { text-align: center; color: #FF9933; font-size: 1.4rem; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .result-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 25px; }
+    </style>
 </head>
-
 <body>
 
-<div class="container">
-  <h1>Janam Kundli Generator</h1>
-  <p class="text-center mb-5">Real Vedic Kundli • Flask Backend</p>
+    <section class="hero">
+        <div class="container">
+            <h1>Janam Kundli Generator</h1>
+            <p class="lead mt-3">Accurate Vedic Kundli • Real Astrology Insights</p>
+        </div>
+    </section>
 
-  <div class="form-box">
-    <h2>Birth Details</h2>
-
-    <form id="kundliForm">
-      <div class="row g-4">
-        <div class="col-md-4">
-          <label>Date of Birth</label>
-          <input type="date" id="dob" class="form-control" required>
+    <section class="container">
+        <div class="form-box mx-auto">
+            <h2 class="text-center mb-4" style="color: #FF9933;">Enter Birth Details</h2>
+            <form id="kundliForm">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <label for="dob" class="form-label">Date of Birth (DD/MM/YYYY)</label>
+                        <input type="text" class="form-control" id="dob" placeholder="01/01/2000" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="tob" class="form-label">Time of Birth (HH:MM)</label>
+                        <input type="text" class="form-control" id="tob" placeholder="12:00" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="place" class="form-label">Place (City)</label>
+                        <input type="text" class="form-control" id="place" placeholder="Ahmedabad" required>
+                    </div>
+                </div>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-warning btn-lg px-5 py-3 fw-bold">Generate Kundli</button>
+                </div>
+            </form>
         </div>
 
-        <div class="col-md-4">
-          <label>Time of Birth</label>
-          <input type="time" id="tob" class="form-control" required>
+        <div class="output d-none" id="output">
+            <h2 class="text-center mb-4" style="color: #FF9933;">Your Janam Kundli</h2>
+            <div class="loading" id="loading">🔮 Generating Kundli...</div>
+            <div class="result-grid" id="result"></div>
         </div>
+    </section>
 
-        <div class="col-md-4">
-          <label>Place (lat,long)</label>
-          <input type="text" id="place" class="form-control" placeholder="21.99,72.80" required>
-        </div>
-      </div>
+    <script>
+        document.getElementById("kundliForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
 
-      <button class="btn btn-warning w-100 mt-4 py-3 fw-bold">
-        Generate Real Kundli
-      </button>
-    </form>
-  </div>
+            const output = document.getElementById("output");
+            const result = document.getElementById("result");
+            const loading = document.getElementById("loading");
 
-  <div class="output" id="output">
-    <h2>Your Janam Kundli</h2>
-    <div class="loading" id="loading">🔮 Calculating...</div>
-    <div id="result"></div>
-  </div>
-</div>
+            output.classList.remove("d-none");
+            loading.style.display = "block";
+            result.innerHTML = "";
 
-<script>
-document.getElementById("kundliForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
+            const dob = document.getElementById("dob").value;
+            const tob = document.getElementById("tob").value;
+            const place = document.getElementById("place").value;
 
-  const output = document.getElementById("output");
-  const result = document.getElementById("result");
-  const loading = document.getElementById("loading");
+            try {
+                const res = await fetch(`kundli_api.php?dob=${encodeURIComponent(dob)}&tob=${encodeURIComponent(tob)}&place=${encodeURIComponent(place)}`);
 
-  output.style.display = "block";
-  loading.style.display = "block";
-  result.innerHTML = "";
+                const json = await res.json();
 
-  // ✅ DATE FORMAT FIX
-  const rawDob = document.getElementById("dob").value; // YYYY-MM-DD
-  const [y,m,d] = rawDob.split("-");
-  const dob = `${d}/${m}/${y}`; // DD/MM/YYYY
+                if (json.error) {
+                    result.innerHTML = `<div class="text-danger text-center">Error: ${json.error}</div>`;
+                    return;
+                }
 
-  // ✅ TIME FORMAT FIX (seconds added)
-  const tob = document.getElementById("tob").value + ":00";
+                // Real Prokerala data show
+                const d = json.response || {};
+                result.innerHTML = `<div class="card">
+                    <h4>Lagna</h4>
+                    <p>Rashi: ${d.lagna?.rashi || 'N/A'}</p>
+                    <p>Nakshatra: ${d.lagna?.nakshatra || 'N/A'}</p>
+                    <p>Degree: ${d.lagna?.degree || 'N/A'}</p>
+                </div>`;
 
-  // ✅ PLACE MUST BE lat,long
-  const place = document.getElementById("place").value.trim();
-     fetch("http://127.0.0.1:5000/generate-kundli", {
-  method: "POST",
-  headers: { "Content-Type": "application/json" },
-  body: JSON.stringify({
-    dob: "29/07/2005",
-    tob: "12:15:00",
-    place: "21.99,72.80"
-  })
-}).then(r => r.text()).then(t => console.log(t));
+                result.innerHTML += `<div class="card">
+                    <h4>Current Dasha</h4>
+                    <p>Lord: ${d.current_dasha?.lord || 'N/A'}</p>
+                    <p>Effect: ${d.current_dasha?.effect || 'N/A'}</p>
+                </div>`;
 
-    const data = await res.json();
+                result.innerHTML += `<div class="card">
+                    <h4>Predictions</h4>
+                    <p>Career: ${d.predictions?.career || 'N/A'}</p>
+                    <p>Money: ${d.predictions?.money || 'N/A'}</p>
+                    <p>Marriage: ${d.predictions?.marriage || 'N/A'}</p>
+                    <p>Health: ${d.predictions?.health || 'N/A'}</p>
+                </div>`;
 
-    if (!res.ok || data.error) {
-      throw new Error(data.error || "Server Error");
-    }
+                result.innerHTML += `<div class="card">
+                    <h4>Planets</h4>
+                    <ul class="list-group list-group-flush">
+                        ${Object.entries(d.graha || {}).map(([planet, info]) => `
+                            <li class="list-group-item bg-transparent border-light text-light">
+                                <strong>${planet.toUpperCase()}:</strong> ${info.rashi} (${info.degree}°) - ${info.nakshatra}
+                            </li>
+                        `).join('')}
+                    </ul>
+                </div>`;
 
-    const lagna = data.lagna;
-    const graha = data.graha;
-    const dasha = data.current_dasha;
-    const pred = data.predictions;
-
-    let planetsHTML = "";
-    for (const p in graha) {
-      planetsHTML += `
-        <li class="list-group-item bg-transparent text-light">
-          <b>${p.toUpperCase()}</b> — ${graha[p].rashi} (${graha[p].degree}°)
-        </li>
-      `;
-    }
-
-    result.innerHTML = `
-      <div class="card">
-        <h4>Lagna</h4>
-        <p>${lagna.rashi} (${lagna.degree}°)</p>
-        <p>Nakshatra: ${lagna.nakshatra}</p>
-      </div>
-
-      <div class="card">
-        <h4>Current Dasha</h4>
-        <p><b>${dasha.lord}</b></p>
-        <p>${dasha.effect}</p>
-      </div>
-
-      <div class="card">
-        <h4>Predictions</h4>
-        <p><b>Career:</b> ${pred.career}</p>
-        <p><b>Money:</b> ${pred.money}</p>
-        <p><b>Marriage:</b> ${pred.marriage}</p>
-        <p><b>Health:</b> ${pred.health}</p>
-      </div>
-
-      <div class="card">
-        <h4>Planets</h4>
-        <ul class="list-group list-group-flush">
-          ${planetsHTML}
-        </ul>
-      </div>
-    `;
-
-  } catch (err) {
-    result.innerHTML = `<div class="text-danger text-center">❌ ${err.message}</div>`;
-  } finally {
-    loading.style.display = "none";
-  }
-});
-</script>
-
+            } catch (err) {
+                result.innerHTML = `<div class="text-danger text-center">Error: ${err.message}</div>`;
+            } finally {
+                loading.style.display = "none";
+            }
+        });
+    </script>
 </body>
 </html>
