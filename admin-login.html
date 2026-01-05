@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PanditGo - Admin Login (God Mode)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #1a1a2e, #16213e); color: white; }
+        .login-card { max-width: 450px; margin: 150px auto; border-radius: 20px; overflow: hidden; box-shadow: 0 20px 60px rgba(0,0,0,0.6); }
+        .card-header { background: #FF4500; color: white; text-align: center; padding: 40px 20px; }
+        .btn-login { background: #FF9933; border: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+<div class="login-card card">
+    <div class="card-header">
+        <h2>👑 Admin Login (God Mode)</h2>
+        <p class="lead mt-2">PanditGo ka full control</p>
+    </div>
+    <div class="card-body p-5">
+        <form id="adminLoginForm">
+            <div class="mb-4">
+                <label class="form-label fw-bold">Admin Email</label>
+                <input type="email" id="email" class="form-control form-control-lg" placeholder="admin@panditgo.com" required>
+            </div>
+            <div class="mb-4">
+                <label class="form-label fw-bold">Password</label>
+                <input type="password" id="password" class="form-control form-control-lg" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn btn-login btn-lg w-100">Enter God Mode</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+
+        // Real me backend se match karna, abhi mock
+        if (email === "admin@panditgo.com" && password === "admin123") {  // ← yahan tera real password daal
+            localStorage.setItem('isAdminLoggedIn', 'true');
+            localStorage.setItem('adminRole', 'Super Admin');
+            alert('God Mode Activated! Welcome Admin 👑');
+            window.location.href = 'admin-dashboard.html';
+        } else {
+            alert('Wrong credentials! Try again.');
+        }
+    });
+</script>
+</body>
+</html>
