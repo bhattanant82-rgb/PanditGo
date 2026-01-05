@@ -5,135 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Dashboard - BookMyPandit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #111; color: #eee; }
+        .container { max-width: 1200px; margin: auto; padding: 40px; }
+        .welcome { color: #ff9933; }
+        .card { background: #222; border: none; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
+        .status-pending { background: #ff9933; color: black; }
+        .status-confirmed { background: #28a745; color: white; }
+        .status-cancelled { background: #dc3545; color: white; }
+    </style>
 </head>
-<body class="bg-light">
+<body>
 
-    <!-- Navbar (logged in version) -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold text-danger fs-3" href="index.html">BookMyPandit</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mx-auto gap-3">
-                    <li class="nav-item"><a class="nav-link fw-medium" href="index.html">Home</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="pujas.html">Puja Types</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="pandits.html">Pandits</a></li>
-                    <li class="nav-item"><a class="nav-link fw-medium" href="become-pandit.html">Become a Pandit</a></li>
-                </ul>
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle rounded-pill px-4 py-2 fw-bold" type="button" data-bs-toggle="dropdown">
-                        Anant Bhatt
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my-dashboard.html">My Dashboard</a></li>
-                        <li><a class="dropdown-item" href="#">My Bookings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
-                    </ul>
+<div class="container">
+    <h1 class="welcome mb-4">Welcome Back, Anant! 🙏</h1>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <h3>Upcoming Bookings</h3>
+                <div class="booking-item mt-3">
+                    <p><strong>Booking ID:</strong> #BK12345</p>
+                    <p><strong>Puja:</strong> Griha Pravesh</p>
+                    <p><strong>Pandit:</strong> Pt. Ram Sharma</p>
+                    <p><strong>Date/Time:</strong> 10 Jan 2026, 10:00 AM</p>
+                    <p><strong>Status:</strong> <span class="badge status-confirmed">Confirmed</span></p>
+                    <button class="btn btn-sm btn-outline-warning mt-2">View Details</button>
+                    <button class="btn btn-sm btn-outline-danger mt-2">Request Refund</button>
                 </div>
+            </div>
+
+            <div class="card mt-4">
+                <h3>My Profile</h3>
+                <p><strong>Name:</strong> Anant Bhatt</p>
+                <p><strong>Email:</strong> bhattanant82@gmail.com</p>
+                <p><strong>Phone:</strong> +91 98765 43210</p>
+                <p><strong>Address:</strong> Ahmedabad, Gujarat</p>
+                <button class="btn btn-sm btn-outline-warning mt-2">Edit Profile</button>
             </div>
         </div>
-    </nav>
 
-    <section class="py-5">
-        <div class="container">
-            <!-- User Header -->
-            <div class="card shadow p-4 mb-5">
-                <div class="d-flex align-items-center">
-                    <img src="images/user-photo.jpg" class="rounded-circle me-4" width="100" height="100" alt="User">
-                    <div>
-                        <h2 class="fw-bold text-primary">Anant Bhatt</h2>
-                        <p class="text-muted">bhattanant82@gmail.com</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- My Bookings -->
-            <h3 class="text-primary mb-4">📅 My Bookings</h3>
-            <div class="card shadow mb-5">
-                <div class="card-body">
-                    <!-- Single Booking -->
-                    <div class="border-bottom pb-4 mb-4">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5>Satyanarayan Puja</h5>
-                                <p class="mb-1">Booking Reference: BK1766051147096</p>
-                                <p class="mb-1">Pandit: Acharya Vivek Tripathi • City: Mumbai</p>
-                                <p class="mb-1">Date: 19/12/2025 • Time: 15:15</p>
-                                <div class="d-flex gap-4 mt-3">
-                                    <p><strong>Total Amount</strong><br>₹2500</p>
-                                    <p><strong>Advance Paid</strong><br>₹151 (Completed)</p>
-                                    <p><strong>Balance Due</strong><br>₹2349 (Pending)</p>
-                                </div>
-                            </div>
-                            <div class="text-end">
-                                <span class="badge bg-success rounded-pill px-3 py-2">Confirmed</span>
-                            </div>
-                        </div>
-                        <div class="text-end mt-3">
-                            <button class="btn btn-outline-danger rounded-pill">Request Cancellation</button>
-                        </div>
-                    </div>
-
-                    <!-- More bookings add kar -->
-                </div>
-            </div>
-
-            <!-- Payments & Transactions -->
-            <h3 class="text-primary mb-4">💸 Payments & Transactions</h3>
-            <div class="card shadow p-4">
-                <p><strong>Total Spent:</strong> ₹2500</p>
-                <p><strong>Transactions:</strong> 1 completed</p>
-                <button class="btn btn-outline-primary rounded-pill">Download Invoice</button>
-            </div>
-
-            <!-- Refund Policy -->
-            <div class="card shadow p-4 mt-5">
-                <h4 class="text-primary mb-3">📄 Refund Policy</h4>
-                <ul class="small text-muted">
-                    <li>Full refund if cancelled 24 hours before puja</li>
-                    <li>50% refund if cancelled 12-24 hours before</li>
-                    <li>No refund if cancelled less than 12 hours</li>
-                    <li>Refund processed within 5-7 business days</li>
-                </ul>
+        <div class="col-md-4">
+            <div class="card">
+                <h3>Quick Actions</h3>
+                <button class="btn btn-warning w-100 mb-3">Book New Puja</button>
+                <button class="btn btn-outline-light w-100 mb-3">Generate Kundli</button>
+                <button class="btn btn-outline-light w-100 mb-3">Contact Support</button>
             </div>
         </div>
-    </section>
+    </div>
+</div>
 
-    
-    
-    <script>
-    window.addEventListener('load', function() {
-        const authSection = document.getElementById('authSection'); // id daal div pe
-        if (localStorage.getItem('userLoggedIn') === 'true') {
-            const name = localStorage.getItem('userName') || 'User';
-            const phone = localStorage.getItem('userPhone') || '';
-            authSection.innerHTML = `
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle rounded-pill px-4 py-2 fw-bold" type="button" data-bs-toggle="dropdown">
-                        ${name}
-                    </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="my-dashboard.html">My Dashboard</a></li>
-                        <li><a class="dropdown-item" href="my-bookings.html">My Bookings</a></li>
-                        <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn">Logout</a></li>
-                    </ul>
-                </div>
-            `;
-
-            document.getElementById('logoutBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                localStorage.clear();
-                alert('Logged Out!');
-                location.reload();
-            });
-        }
-    });
-</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

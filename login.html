@@ -2,190 +2,82 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Login / Sign Up - PanditGo</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - BookMyPandit</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <!-- Google Sign In Script -->
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: linear-gradient(135deg, #1a0000, #3b0a0a); color: #f5e6c8; min-height: 100vh; }
+        .login-container { max-width: 450px; margin: 100px auto; background: rgba(255,255,255,0.07); backdrop-filter: blur(15px); border-radius: 25px; padding: 50px 40px; box-shadow: 0 15px 40px rgba(0,0,0,0.6); border: 1px solid rgba(255,153,51,0.2); }
+        h2 { font-family: 'Playfair Display', serif; color: #ffcc66; text-align: center; margin-bottom: 40px; }
+        .form-label { color: #ffd27f; font-weight: 500; }
+        .form-control { background: rgba(255,255,255,0.1); border: 1px solid #ff9933; color: #fff; border-radius: 12px; padding: 14px; }
+        .form-control:focus { background: rgba(255,255,255,0.15); border-color: #ffd27f; box-shadow: 0 0 0 0.25rem rgba(255,153,51,0.25); color: #fff; }
+        .form-control::placeholder { color: rgba(255,255,255,0.6); }
+        .btn-login { background: linear-gradient(135deg, #ff9933, #ffd27f); border: none; font-weight: 600; padding: 14px; border-radius: 50px; transition: all 0.3s; }
+        .btn-login:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(255,153,51,0.4); }
+        .social-btn { background: rgba(255,255,255,0.1); border: 1px solid #ff9933; color: #ffd27f; border-radius: 50px; padding: 12px 20px; transition: all 0.3s; }
+        .social-btn:hover { background: rgba(255,153,51,0.2); }
+        .link-text { color: #ffd27f; text-decoration: none; }
+        .link-text:hover { text-decoration: underline; }
+    </style>
 </head>
-<body class="bg-light">
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="card shadow-lg p-5 rounded-3">
-                    <div class="text-center mb-5">
-                        <h1 class="display-5 fw-bold text-primary">Welcome Back</h1>
-                        <p class="lead">Login or create account to book pujas</p>
-                    </div>
+<body>
 
-                    <!-- Tabs: Login / Sign Up -->
-                    <ul class="nav nav-pills mb-4 justify-content-center" id="authTab">
-                        <li class="nav-item">
-                            <a class="nav-link active" data-bs-toggle="pill" href="#login">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" data-bs-toggle="pill" href="#signup">Sign Up</a>
-                        </li>
-                    </ul>
+<div class="login-container">
+    <h2>Welcome Back</h2>
 
-                    <div class="tab-content">
-                        <!-- Login Tab -->
-                        <div class="tab-pane fade show active" id="login">
-                            <form>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Email or Phone</label>
-                                    <input type="text" class="form-control form-control-lg rounded-pill" placeholder="email@example.com or 9876543210" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Password</label>
-                                    <input type="password" class="form-control form-control-lg rounded-pill" required>
-                                </div>
-                                <button type="submit" class="btn btn-danger btn-lg rounded-pill w-100 fw-bold">Login</button>
-                            </form>
-                        </div>
+    <form id="loginForm">
+        <div class="mb-4">
+            <label for="email" class="form-label">Email</label>
+            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+        </div>
 
-                        <!-- Sign Up Tab -->
-                        <div class="tab-pane fade" id="signup">
-                            <form>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Full Name</label>
-                                    <input type="text" class="form-control form-control-lg rounded-pill" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Email</label>
-                                    <input type="email" class="form-control form-control-lg rounded-pill" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Phone</label>
-                                    <input type="tel" class="form-control form-control-lg rounded-pill" maxlength="10" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Password</label>
-                                    <input type="password" class="form-control form-control-lg rounded-pill" required>
-                                </div>
-                                <button type="submit" class="btn btn-success btn-lg rounded-pill w-100 fw-bold">Create Account</button>
-                            </form>
-                        </div>
-                    </div>
+        <div class="mb-4">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Enter your password" required>
+        </div>
 
-                    <div class="text-center my-4">
-                        <p class="text-muted">OR</p>
-                    </div>
-
-                    <!-- Google Sign In Button -->
-                    <div id="g_id_onload"
-                         data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
-                         data-login_uri="https://yourdomain.com/google-callback"
-                         data-auto_prompt="false">
-                    </div>
-                    <div class="g_id_signin text-center"
-                         data-type="standard"
-                         data-size="large"
-                         data-theme="outline"
-                         data-text="signin_with"
-                         data-shape="rectangular"
-                         data-logo_alignment="left">
-                    </div>
-
-                    <!-- Phone OTP Option -->
-                    <div class="text-center mt-4">
-                        <a href="#" class="text-decoration-none">Login with Phone OTP →</a>
-                    </div>
-                </div>
+        <div class="d-flex justify-content-between mb-4">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Remember me</label>
             </div>
+            <a href="#" class="link-text">Forgot password?</a>
         </div>
-    </div>
-    <!-- Sign Up Tab -->
-<div class="tab-pane fade" id="signup">
-    <form id="signupForm">
-        <div class="mb-3">
-            <label class="form-label fw-bold">Full Name</label>
-            <input type="text" class="form-control form-control-lg rounded-pill" id="signupName" required>
+
+        <button type="submit" class="btn btn-login w-100 mb-4">Login</button>
+
+        <div class="divider text-center my-4">
+            <span>OR</span>
         </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Email</label>
-            <input type="email" class="form-control form-control-lg rounded-pill" id="signupEmail" required>
+
+        <div class="d-grid gap-3">
+            <button type="button" class="btn social-btn"><i class="fab fa-google me-2"></i> Login with Google</button>
+            <button type="button" class="btn social-btn"><i class="fab fa-facebook-f me-2"></i> Login with Facebook</button>
         </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Phone</label>
-            <input type="tel" class="form-control form-control-lg rounded-pill" id="signupPhone" maxlength="10" required>
-        </div>
-        <div class="mb-3">
-            <label class="form-label fw-bold">Password</label>
-            <input type="password" class="form-control form-control-lg rounded-pill" id="signupPassword" required>
-        </div>
-        <button type="submit" class="btn btn-success btn-lg rounded-pill w-100 fw-bold">Create Account</button>
+
+        <p class="text-center mt-4">
+            Don't have an account? <a href="signup.html" class="link-text">Sign Up</a>
+        </p>
     </form>
 </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const emailPhone = document.querySelector('#login input[type="text"], #signup input[type="email"], #signup input[type="tel"]').value.trim();
-            const password = document.querySelector('#login input[type="password"], #signup input[type="password"]')?.value.trim() || '';
-
-            // ADMIN LOGIN CHECK
-            if (emailPhone === 'admin@bookmypandit.com' && password === 'admin123') {
-                localStorage.setItem('adminLoggedIn', 'true');
-                localStorage.setItem('userLoggedIn', 'false');
-                alert('Admin login successful! Full control unlocked 🔥');
-                window.location.href = 'admin-dashboard.html';
-                return;
-            }
-
-            // NORMAL USER LOGIN/SIGN UP
-            if (!emailPhone || !password) {
-                alert('Email/Phone aur password daal bhai!');
-                return;
-            }
-
-            localStorage.setItem('userLoggedIn', 'true');
-            localStorage.setItem('adminLoggedIn', 'false');
-            localStorage.setItem('userName', 'Anant Bhatt');
-            localStorage.setItem('userEmail', emailPhone.includes('@') ? emailPhone : 'user@bookmypandit.com');
-            localStorage.setItem('userPhone', emailPhone.includes('@') ? '6359290705' : emailPhone);
-
-            alert('Login Successful! Welcome 🙏');
-            window.location.href = 'my-bookings.html'; // User page
-        });
-    });
-</script>
 <script>
-    // Sign Up Form Submit
-    document.getElementById('signupForm').addEventListener('submit', function(e) {
+    document.getElementById("loginForm").addEventListener("submit", function(e) {
         e.preventDefault();
+        const email = document.getElementById("email").value;
+        const password = document.getElementById("password").value;
 
-        const name = document.getElementById('signupName').value.trim();
-        const email = document.getElementById('signupEmail').value.trim();
-        const phone = document.getElementById('signupPhone').value.trim();
-        const password = document.getElementById('signupPassword').value;
-
-        if (!name || !email || !phone || !password) {
-            alert('Sab fields fill kar bhai!');
-            return;
+        if (email && password) {
+            // Future me backend call kar sakte hain
+            alert("Login successful! Redirecting to Dashboard...");
+            window.location.href = "my-dashboard.html"; // Dashboard page pe le jayega
+        } else {
+            alert("Please fill all fields!");
         }
-
-        if (phone.length !== 10 || !phone.match(/^[6-9]\d{9}$/)) {
-            alert('Valid 10 digit phone number daal!');
-            return;
-        }
-
-        // Save user data
-        localStorage.setItem('userLoggedIn', 'true');
-        localStorage.setItem('userName', name);
-        localStorage.setItem('userEmail', email);
-        localStorage.setItem('userPhone', phone);
-
-        alert('Account Created Successfully! Welcome ' + name + ' 🙏');
-        window.location.href = 'my-dashboard.html'; // Ya book-pandit.html pe redirect
     });
-
-    // Login form bhi same logic se (agar pehle se hai to skip)
 </script>
 </body>
 </html>
