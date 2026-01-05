@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PanditGo Admin Dashboard</title>
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<div class="admin-wrapper">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <h2 class="logo">PanditGo</h2>
+    <ul class="menu">
+      <li class="active"><i class="bi bi-speedometer2"></i> Dashboard</li>
+      <li><i class="bi bi-calendar-check"></i> Bookings</li>
+      <li><i class="bi bi-person-badge"></i> Pandit Requests</li>
+      <li><i class="bi bi-people"></i> Users</li>
+      <li><i class="bi bi-arrow-counterclockwise"></i> Refunds</li>
+      <li><i class="bi bi-wallet2"></i> Payments</li>
+      <li><i class="bi bi-box-arrow-right"></i> Logout</li>
+    </ul>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+
+    <!-- TOP BAR -->
+    <header class="topbar">
+      <h1>Admin Dashboard</h1>
+      <div class="top-actions">
+        <i class="bi bi-bell"></i>
+        <span class="admin-name">Anant (Admin)</span>
+      </div>
+    </header>
+
+    <!-- STATS -->
+    <section class="stats">
+      <div class="card">
+        <h3>Total Bookings</h3>
+        <p>124</p>
+      </div>
+      <div class="card">
+        <h3>Total Revenue</h3>
+        <p>₹48,500</p>
+      </div>
+      <div class="card">
+        <h3>Pandits</h3>
+        <p>27</p>
+      </div>
+      <div class="card">
+        <h3>Refund Requests</h3>
+        <p>3</p>
+      </div>
+    </section>
+
+    <!-- TABLE -->
+    <section class="table-section">
+      <h2>Recent Bookings</h2>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>User</th>
+              <th>Pandit</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>#101</td>
+              <td>Rahul</td>
+              <td>Pandit Sharma</td>
+              <td>₹2100</td>
+              <td><span class="status success">Completed</span></td>
+              <td>
+                <button class="btn view">View</button>
+                <button class="btn refund">Refund</button>
+              </td>
+            </tr>
+            <tr>
+              <td>#102</td>
+              <td>Ankit</td>
+              <td>Pandit Joshi</td>
+              <td>₹1500</td>
+              <td><span class="status pending">Pending</span></td>
+              <td>
+                <button class="btn approve">Approve</button>
+                <button class="btn reject">Reject</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script src="admin.js"></script>
+</body>
+</html>
