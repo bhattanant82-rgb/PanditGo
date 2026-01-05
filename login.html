@@ -97,19 +97,6 @@
             alert('Galat password ya email/mobile!');
         }
     });
-    // Page load pe check kar login hai ya nahi
-    if (localStorage.getItem('isLoggedIn') !== 'true' || localStorage.getItem('userType') !== 'customer') {
-        alert('Login kar pehle bhai!');
-        window.location.href = 'login.html';
-    }
-
-    // Logout function (button me onclick laga dena)
-    function logout() {
-        if (confirm('Logout kar rahe ho?')) {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        }
-    }
 </script>
 </body>
 </html>
