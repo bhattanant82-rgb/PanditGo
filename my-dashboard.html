@@ -2,60 +2,214 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Dashboard - BookMyPandit</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PanditGo - My Dashboard</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #111; color: #eee; }
-        .container { max-width: 1200px; margin: auto; padding: 40px; }
-        .welcome { color: #ff9933; }
-        .card { background: #222; border: none; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .status-pending { background: #ff9933; color: black; }
-        .status-confirmed { background: #28a745; color: white; }
-        .status-cancelled { background: #dc3545; color: white; }
+        .dashboard-header { background: linear-gradient(135deg, #FF9933, #FF4500); color: white; padding: 60px 0; text-align: center; }
+        .card-feature { border-radius: 15px; transition: all 0.3s; }
+        .card-feature:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(255,153,51,0.3); }
+        .status-badge { font-size: 0.8rem; padding: 6px 12px; border-radius: 20px; }
     </style>
 </head>
-<body>
+<body class="bg-light">
 
-<div class="container">
-    <h1 class="welcome mb-4">Welcome Back, Anant! 🙏</h1>
-
-    <div class="row">
-        <div class="col-md-8">
-            <div class="card">
-                <h3>Upcoming Bookings</h3>
-                <div class="booking-item mt-3">
-                    <p><strong>Booking ID:</strong> #BK12345</p>
-                    <p><strong>Puja:</strong> Griha Pravesh</p>
-                    <p><strong>Pandit:</strong> Pt. Ram Sharma</p>
-                    <p><strong>Date/Time:</strong> 10 Jan 2026, 10:00 AM</p>
-                    <p><strong>Status:</strong> <span class="badge status-confirmed">Confirmed</span></p>
-                    <button class="btn btn-sm btn-outline-warning mt-2">View Details</button>
-                    <button class="btn btn-sm btn-outline-danger mt-2">Request Refund</button>
-                </div>
-            </div>
-
-            <div class="card mt-4">
-                <h3>My Profile</h3>
-                <p><strong>Name:</strong> Anant Bhatt</p>
-                <p><strong>Email:</strong> bhattanant82@gmail.com</p>
-                <p><strong>Phone:</strong> +91 98765 43210</p>
-                <p><strong>Address:</strong> Ahmedabad, Gujarat</p>
-                <button class="btn btn-sm btn-outline-warning mt-2">Edit Profile</button>
-            </div>
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-3 text-danger" href="index.html">PanditGo</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav ms-auto gap-3">
+                <li><a class="nav-link" href="book-pandit.html">Book Puja</a></li>
+                <li><a class="nav-link" href="pujas.html">Pujas</a></li>
+                <li><a class="nav-link" href="kundli-generator.html">Kundli</a></li>
+            </ul>
+            <button onclick="logout()" class="btn btn-danger rounded-pill ms-3 px-4">Logout</button>
         </div>
+    </div>
+</nav>
 
-        <div class="col-md-4">
-            <div class="card">
-                <h3>Quick Actions</h3>
-                <button class="btn btn-warning w-100 mb-3">Book New Puja</button>
-                <button class="btn btn-outline-light w-100 mb-3">Generate Kundli</button>
-                <button class="btn btn-outline-light w-100 mb-3">Contact Support</button>
+<!-- Dashboard Header -->
+<section class="dashboard-header">
+    <div class="container">
+        <h1 class="display-4 fw-bold">Namaste, <span id="userName">Customer</span> 🙏</h1>
+        <p class="lead mt-3">Your Sacred Dashboard – All Puja Services at One Place</p>
+    </div>
+</section>
+
+<div class="container my-5">
+
+    <!-- 1. Profile Section -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-warning text-dark fw-bold">👤 My Profile</div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3 text-center">
+                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Profile Photo">
+                    <button class="btn btn-sm btn-outline-secondary">Change Photo</button>
+                </div>
+                <div class="col-md-9">
+                    <p><strong>Name:</strong> Ramesh Bhai Patel</p>
+                    <p><strong>DOB:</strong> 15 Aug 1990</p>
+                    <p><strong>Mobile:</strong> +91 98765 43210</p>
+                    <p><strong>Email:</strong> ramesh@example.com</p>
+                    <p><strong>Saved Addresses:</strong> Home (Ahmedabad), Office (Surat), Temple (Dwarka)</p>
+                    <button class="btn btn-sm btn-outline-warning mt-2">Edit Profile / Change Password</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <!-- 2. My Bookings (Most Important) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-success text-white fw-bold">📅 My Bookings</div>
+        <div class="card-body">
+            <ul class="list-group list-group-flush">
+                <!-- Upcoming -->
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5>Griha Pravesh Puja</h5>
+                            <p class="mb-0">Pandit: Sharma Ji • Rating: ★★★★☆</p>
+                            <small>15 Jan 2026, 9:00 AM | Ahmedabad | ₹4,999 Paid</small>
+                        </div>
+                        <span class="status-badge bg-primary text-white">Upcoming</span>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-sm btn-outline-primary">Track Live Status</button>
+                        <button class="btn btn-sm btn-outline-success">Re-Book Same</button>
+                    </div>
+                </li>
+
+                <!-- Pending -->
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5>Satyanarayan Katha</h5>
+                            <p class="mb-0">Pandit: Pandey Ji • Rating: ★★★★★</p>
+                            <small>20 Jan 2026 | Pending Confirmation</small>
+                        </div>
+                        <span class="status-badge bg-warning text-dark">Pending</span>
+                    </div>
+                </li>
+
+                <!-- Completed -->
+                <li class="list-group-item">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h5>Navgrah Shanti</h5>
+                            <small>Completed on 10 Dec 2025 | ₹3,499 Paid</small>
+                        </div>
+                        <span class="status-badge bg-success text-white">Completed</span>
+                    </div>
+                    <button class="btn btn-sm btn-outline-info mt-2">Give Review</button>
+                </li>
+            </ul>
+            <div class="text-center mt-3">
+                <a href="book-pandit.html" class="btn btn-warning">Book New Puja</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. Live Status Tracking (Example) -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-info text-white fw-bold">🔴 Live Puja Tracking</div>
+        <div class="card-body">
+            <div class="progress mb-3" style="height: 25px;">
+                <div class="progress-bar bg-success" style="width: 60%;">Pandit On the Way (60%)</div>
+            </div>
+            <ul class="list-unstyled">
+                <li>✅ Booking Requested</li>
+                <li>✅ Pandit Assigned</li>
+                <li>🚗 Pandit On the Way</li>
+                <li>⏳ Puja Started</li>
+                <li>🪔 Puja Completed</li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- 5. Reviews & Ratings -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-primary text-white fw-bold">⭐ My Reviews</div>
+        <div class="card-body">
+            <p>You have given 3 reviews so far.</p>
+            <button class="btn btn-outline-primary">View / Write New Review</button>
+        </div>
+    </div>
+
+    <!-- 6. Support & Help -->
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header bg-danger text-white fw-bold">🆘 Support & Help</div>
+        <div class="card-body">
+            <a href="https://wa.me/919876543210" class="btn btn-success mb-2">WhatsApp Support</a>
+            <button class="btn btn-outline-danger">Raise Refund / Cancel Request</button>
+            <p class="mt-3 small">Refund as per policy: Within 24 hrs before puja → 100% refund</p>
+        </div>
+    </div>
+
+    <!-- 7. Astro / Kundli Premium -->
+    <div class="card shadow-sm">
+        <div class="card-header bg-dark text-white fw-bold">🔮 Astro & Kundli Features</div>
+        <div class="card-body">
+            <div class="row g-3">
+                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Generate Janam Kundli</button></div>
+                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Kundli Matching</button></div>
+                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Daily Horoscope</button></div>
+            </div>
+            <p class="mt-3 text-muted">Personalized Vedic remedies (no fake stones)</p>
+        </div>
+    </div>
+
 </div>
 
+<!-- Footer -->
+<footer class="bg-dark text-light py-4 mt-5">
+    <div class="container text-center">
+        <p>© 2026 PanditGo – Your Trusted Puja Partner</p>
+    </div>
+</footer>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Login Protection + User Name Show
+    window.onload = function() {
+        if (localStorage.getItem('isLoggedIn') !== 'true' || localStorage.getItem('userType') !== 'customer') {
+            alert('Bhai pehle login kar!');
+            window.location.href = 'login.html';
+        }
+
+        // User name dikhana (signup/login se aayega)
+        const userId = localStorage.getItem('userId') || 'Devotee';
+        document.getElementById('userName').innerText = userId.split('@')[0]; // simple name extract
+    };
+
+    function logout() {
+        if (confirm('Logout kar rahe ho?')) {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    }
+    // Page load pe check kar login hai ya nahi
+    if (localStorage.getItem('isLoggedIn') !== 'true' || localStorage.getItem('userType') !== 'customer') {
+        alert('Login kar pehle bhai!');
+        window.location.href = 'login.html';
+    }
+
+    // Logout function (button me onclick laga dena)
+    function logout() {
+        if (confirm('Logout kar rahe ho?')) {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+    }
+</script>
 </body>
 </html>
