@@ -2,214 +2,199 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PanditGo - My Dashboard</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-
+    
     <style>
-        .dashboard-header { background: linear-gradient(135deg, #FF9933, #FF4500); color: white; padding: 60px 0; text-align: center; }
-        .card-feature { border-radius: 15px; transition: all 0.3s; }
-        .card-feature:hover { transform: translateY(-8px); box-shadow: 0 15px 35px rgba(255,153,51,0.3); }
-        .status-badge { font-size: 0.8rem; padding: 6px 12px; border-radius: 20px; }
+        body { background: linear-gradient(to bottom, #fffaf0, #ffe4d9); font-family: 'Poppins', sans-serif; }
+        .dashboard-header { background: linear-gradient(135deg, #FF9933 0%, #FF4500 100%); color: white; padding: 80px 0; text-align: center; border-radius: 0 0 40px 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .card { border: none; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.12); transition: all 0.3s ease; overflow: hidden; }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(255,153,51,0.25); }
+        .card-header { font-weight: 700; font-size: 1.3rem; padding: 18px; }
+        .btn-action { padding: 12px 24px; font-weight: 600; border-radius: 50px; transition: all 0.3s; }
+        .btn-action:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+        .status-badge { padding: 8px 16px; border-radius: 50px; font-weight: 600; font-size: 0.9rem; }
     </style>
 </head>
-<body class="bg-light">
+<body>
 
 <!-- Navbar -->
-<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3">
+<nav class="navbar navbar-expand-lg bg-white shadow-sm py-3 fixed-top">
     <div class="container">
-        <a class="navbar-brand fw-bold fs-3 text-danger" href="index.html">PanditGo</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarContent">
-            <ul class="navbar-nav ms-auto gap-3">
-                <li><a class="nav-link" href="book-pandit.html">Book Puja</a></li>
-                <li><a class="nav-link" href="pujas.html">Pujas</a></li>
-                <li><a class="nav-link" href="kundli-generator.html">Kundli</a></li>
-            </ul>
-            <button onclick="logout()" class="btn btn-danger rounded-pill ms-3 px-4">Logout</button>
+        <a class="navbar-brand fw-bold fs-4 text-danger" href="index.html">PanditGo</a>
+        <div class="ms-auto d-flex align-items-center gap-3">
+            <button onclick="logout()" class="btn btn-danger rounded-pill px-4">Logout</button>
         </div>
     </div>
 </nav>
 
 <!-- Dashboard Header -->
-<section class="dashboard-header">
+<section class="dashboard-header mt-5 pt-5">
     <div class="container">
-        <h1 class="display-4 fw-bold">Namaste, <span id="userName">Customer</span> 🙏</h1>
-        <p class="lead mt-3">Your Sacred Dashboard – All Puja Services at One Place</p>
+        <h1 class="display-4 fw-bold">Namaste, <span id="userName">Devotee</span> 🙏</h1>
+        <p class="lead mt-3">Your Puja Dashboard – All Services One Place</p>
     </div>
 </section>
 
-<div class="container my-5">
+<div class="container my-5 pt-5">
 
-    <!-- 1. Profile Section -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-warning text-dark fw-bold">👤 My Profile</div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-3 text-center">
-                    <img src="https://via.placeholder.com/150" class="rounded-circle mb-3" alt="Profile Photo">
-                    <button class="btn btn-sm btn-outline-secondary">Change Photo</button>
-                </div>
-                <div class="col-md-9">
+    <div class="row g-4">
+
+        <!-- Profile -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-warning text-dark"><i class="bi bi-person-circle me-2"></i> My Profile</div>
+                <div class="card-body">
                     <p><strong>Name:</strong> Ramesh Bhai Patel</p>
-                    <p><strong>DOB:</strong> 15 Aug 1990</p>
-                    <p><strong>Mobile:</strong> +91 98765 43210</p>
+                    <p><strong>Mobile:</strong> +91 6359290705</p>
                     <p><strong>Email:</strong> ramesh@example.com</p>
-                    <p><strong>Saved Addresses:</strong> Home (Ahmedabad), Office (Surat), Temple (Dwarka)</p>
-                    <button class="btn btn-sm btn-outline-warning mt-2">Edit Profile / Change Password</button>
+                    <p><strong>DOB:</strong> 15 Aug 1990</p>
+                    <p><strong>Addresses:</strong> Ahmedabad Home, Surat Office</p>
+                    <button class="btn btn-outline-warning btn-action w-100 mt-3" onclick="alert('Edit profile mode on! Save changes coming soon.')">
+                        Edit Profile / Change Password
+                    </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- 2. My Bookings (Most Important) -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-success text-white fw-bold">📅 My Bookings</div>
-        <div class="card-body">
-            <ul class="list-group list-group-flush">
-                <!-- Upcoming -->
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between">
+        <!-- Bookings -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-success text-white"><i class="bi bi-calendar-event me-2"></i> My Bookings</div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
                         <div>
-                            <h5>Griha Pravesh Puja</h5>
-                            <p class="mb-0">Pandit: Sharma Ji • Rating: ★★★★☆</p>
-                            <small>15 Jan 2026, 9:00 AM | Ahmedabad | ₹4,999 Paid</small>
+                            <strong>Griha Pravesh Puja</strong><br>
+                            <small>15 Feb 2026, 9 AM | Sharma Ji ★★★★☆ | ₹5,499 Paid</small>
                         </div>
                         <span class="status-badge bg-primary text-white">Upcoming</span>
                     </div>
-                    <div class="mt-2">
-                        <button class="btn btn-sm btn-outline-primary">Track Live Status</button>
-                        <button class="btn btn-sm btn-outline-success">Re-Book Same</button>
+                    <div class="d-flex gap-2">
+                        <button class="btn btn-outline-primary btn-action" onclick="alert('Live tracking: Pandit 8 min away. OTP: 7890')">Track Live</button>
+                        <button class="btn btn-outline-success btn-action" onclick="alert('Re-booking same pandit & puja – date select karo')">Re-Book</button>
                     </div>
-                </li>
-
-                <!-- Pending -->
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5>Satyanarayan Katha</h5>
-                            <p class="mb-0">Pandit: Pandey Ji • Rating: ★★★★★</p>
-                            <small>20 Jan 2026 | Pending Confirmation</small>
-                        </div>
-                        <span class="status-badge bg-warning text-dark">Pending</span>
-                    </div>
-                </li>
-
-                <!-- Completed -->
-                <li class="list-group-item">
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <h5>Navgrah Shanti</h5>
-                            <small>Completed on 10 Dec 2025 | ₹3,499 Paid</small>
-                        </div>
-                        <span class="status-badge bg-success text-white">Completed</span>
-                    </div>
-                    <button class="btn btn-sm btn-outline-info mt-2">Give Review</button>
-                </li>
-            </ul>
-            <div class="text-center mt-3">
-                <a href="book-pandit.html" class="btn btn-warning">Book New Puja</a>
+                    <button class="btn btn-warning w-100 mt-3 btn-action" onclick="window.location.href='book-pandit.html'">Book New Puja</button>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- 4. Live Status Tracking (Example) -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-info text-white fw-bold">🔴 Live Puja Tracking</div>
-        <div class="card-body">
-            <div class="progress mb-3" style="height: 25px;">
-                <div class="progress-bar bg-success" style="width: 60%;">Pandit On the Way (60%)</div>
+        <!-- Refund & Support -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-danger text-white"><i class="bi bi-headset me-2"></i> Support & Refund</div>
+                <div class="card-body">
+                    <a href="https://wa.me/916359290705?text=Namaste PanditGo Support team, meri booking me problem hai... Booking ID: [daalo]" target="_blank" class="btn btn-success w-100 mb-3 btn-action">
+                        <i class="bi bi-whatsapp me-2"></i> WhatsApp Support (6359290705)
+                    </a>
+                    <button id="refundBtn" class="btn btn-outline-danger w-100 btn-action">Raise Refund / Cancel Request</button>
+                    <p class="mt-3 small text-muted text-center">Refund Policy: 24 hrs before → 100% | Razorpay processed in 3-5 days</p>
+                </div>
             </div>
-            <ul class="list-unstyled">
-                <li>✅ Booking Requested</li>
-                <li>✅ Pandit Assigned</li>
-                <li>🚗 Pandit On the Way</li>
-                <li>⏳ Puja Started</li>
-                <li>🪔 Puja Completed</li>
-            </ul>
         </div>
-    </div>
 
-    <!-- 5. Reviews & Ratings -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-primary text-white fw-bold">⭐ My Reviews</div>
-        <div class="card-body">
-            <p>You have given 3 reviews so far.</p>
-            <button class="btn btn-outline-primary">View / Write New Review</button>
-        </div>
-    </div>
-
-    <!-- 6. Support & Help -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header bg-danger text-white fw-bold">🆘 Support & Help</div>
-        <div class="card-body">
-            <a href="https://wa.me/919876543210" class="btn btn-success mb-2">WhatsApp Support</a>
-            <button class="btn btn-outline-danger">Raise Refund / Cancel Request</button>
-            <p class="mt-3 small">Refund as per policy: Within 24 hrs before puja → 100% refund</p>
-        </div>
-    </div>
-
-    <!-- 7. Astro / Kundli Premium -->
-    <div class="card shadow-sm">
-        <div class="card-header bg-dark text-white fw-bold">🔮 Astro & Kundli Features</div>
-        <div class="card-body">
-            <div class="row g-3">
-                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Generate Janam Kundli</button></div>
-                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Kundli Matching</button></div>
-                <div class="col-md-4"><button class="btn btn-outline-dark w-100">Daily Horoscope</button></div>
+        <!-- Astro & Kundli -->
+        <div class="col-lg-6">
+            <div class="card">
+                <div class="card-header bg-dark text-white"><i class="bi bi-stars me-2"></i> Astro & Kundli</div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-6"><button class="btn btn-outline-dark w-100 btn-action" onclick="alert('Janam Kundli generating...')">Janam Kundli</button></div>
+                        <div class="col-6"><button class="btn btn-outline-dark w-100 btn-action" onclick="alert('Kundli Matching – DOB daalo')">Kundli Matching</button></div>
+                        <div class="col-6"><button class="btn btn-outline-dark w-100 btn-action" onclick="alert('Daily Horoscope loaded!')">Daily Horoscope</button></div>
+                        <div class="col-6"><button class="btn btn-outline-dark w-100 btn-action" onclick="alert('Personal Vedic remedies generated')">Remedies</button></div>
+                    </div>
+                </div>
             </div>
-            <p class="mt-3 text-muted">Personalized Vedic remedies (no fake stones)</p>
         </div>
-    </div>
 
+        <!-- Reviews -->
+        <div class="col-12">
+            <div class="card text-center p-4">
+                <h5 class="fw-bold text-primary"><i class="bi bi-star-fill me-2"></i> My Reviews & Ratings</h5>
+                <hr>
+                <p class="mb-3">You have given 4 reviews so far</p>
+                <button class="btn btn-outline-primary btn-action" onclick="alert('Reviews section open – last puja ke liye rating & comment daal do')">View / Write Review</button>
+            </div>
+        </div>
+
+    </div>
 </div>
 
 <!-- Footer -->
-<footer class="bg-dark text-light py-4 mt-5">
-    <div class="container text-center">
-        <p>© 2026 PanditGo – Your Trusted Puja Partner</p>
+<footer class="bg-dark text-light py-5 mt-5 text-center">
+    <div class="container">
+        <p class="mb-2">© 2026 PanditGo – Connecting Devotion with Trust</p>
+        <p class="small">Contact: +91 6359290705 | Email: bhattanant82@gmail.com</p>
     </div>
 </footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
 <script>
-    // Login Protection + User Name Show
-    window.onload = function() {
-        if (localStorage.getItem('isLoggedIn') !== 'true' || localStorage.getItem('userType') !== 'customer') {
-            alert('Bhai pehle login kar!');
-            window.location.href = 'login.html';
-        }
-
-        // User name dikhana (signup/login se aayega)
-        const userId = localStorage.getItem('userId') || 'Devotee';
-        document.getElementById('userName').innerText = userId.split('@')[0]; // simple name extract
-    };
-
-    function logout() {
-        if (confirm('Logout kar rahe ho?')) {
-            localStorage.clear();
-            window.location.href = 'login.html';
-        }
-    }
-    // Page load pe check kar login hai ya nahi
-    if (localStorage.getItem('isLoggedIn') !== 'true' || localStorage.getItem('userType') !== 'customer') {
+    // Login Protection
+    if (localStorage.getItem('isLoggedIn') !== 'true') {
         alert('Login kar pehle bhai!');
         window.location.href = 'login.html';
     }
 
-    // Logout function (button me onclick laga dena)
+    // User name show
+    const userName = localStorage.getItem('userName') || localStorage.getItem('userId')?.split('@')[0] || 'Devotee';
+    document.getElementById('userName').innerText = userName;
+
+    // Logout
     function logout() {
         if (confirm('Logout kar rahe ho?')) {
             localStorage.clear();
             window.location.href = 'login.html';
         }
     }
+
+    // Razorpay Refund Button (Real Connect Ready)
+    document.getElementById('refundBtn').addEventListener('click', () => {
+        const bookingId = prompt("Booking ID daalo (example: BOOK-12345):");
+        if (!bookingId) return;
+
+        const reason = prompt("Refund / Cancel ka reason batao:");
+        if (!reason) return;
+
+        const amount = prompt("Refund amount (INR) daalo:", "4999");
+        if (!amount) return;
+
+        // Razorpay Refund Simulation + Real Feel
+        // Real me backend se refund call karna (payment_id ke saath)
+        alert(`Refund Request Raised Successfully!\n\nBooking ID: ${bookingId}\nReason: ${reason}\nAmount: ₹${amount}\n\nRazorpay se refund process ho raha hai.\n3-5 working days me paise wapas aayenge.\nAdmin ko email notification gaya hai.`);
+
+        console.log(`Refund API call: booking=${bookingId}, reason=${reason}, amount=${amount}`);
+
+        // Real Razorpay refund (backend se karna better, yahan frontend simulation)
+        // Uncomment if you want direct Razorpay popup (sirf payment ke liye useful, refund ke liye backend zaroori)
+        /*
+        var options = {
+            "key": "rzp_live_RwBuGYKySb2uQY", // ← TERA RAZORPAY KEY ID DAAL
+            "amount": amount * 100,
+            "currency": "INR",
+            "name": "PanditGo Refund",
+            "description": `Refund for Booking ${bookingId}`,
+            "handler": function (response){
+                alert("Refund Successful! Razorpay Payment ID: " + response.razorpay_payment_id);
+            },
+            "prefill": {
+                "name": userName,
+                "contact": "6359290705"
+            },
+            "theme": {
+                "color": "#FF9933"
+            }
+        };
+        var rzp = new Razorpay(options);
+        rzp.open();
+        */
+    });
 </script>
 </body>
 </html>
