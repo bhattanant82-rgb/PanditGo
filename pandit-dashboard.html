@@ -3,73 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pandit Dashboard - BookMyPandit</title>
+    <title>Pandit Dashboard</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; background: #111; color: #eee; }
-        .container { max-width: 1200px; margin: auto; padding: 40px; }
-        .card { background: #222; border: none; border-radius: 15px; padding: 20px; margin-bottom: 20px; }
-        .status-new { background: #ff9933; color: black; }
-        .status-accepted { background: #28a745; color: white; }
-        .status-completed { background: #17a2b8; color: white; }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .sidebar {
+            background-color: #343a40;
+            height: 100vh;
+            padding: 20px;
+            color: white;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #495057;
+        }
+        .main-content {
+            padding: 40px;
+        }
+        .card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .card-header {
+            background-color: #007bff;
+            color: white;
+            font-weight: bold;
+        }
+        .card-body {
+            font-size: 2rem;
+            text-align: center;
+        }
+        .logout {
+            position: absolute;
+            bottom: 20px;
+            width: calc(100% - 40px);
+        }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h1 class="text-warning mb-4">Pandit Dashboard - Pt. Ram Sharma</h1>
-
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <h4>Total Bookings</h4>
-                <h2 class="text-warning">42</h2>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar Navigation -->
+            <div class="col-md-2 sidebar">
+                <h4 class="text-center mb-4">Pandit Panel</h4>
+                <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+                <a href="bookings.html"><i class="fas fa-calendar-alt"></i> My Bookings</a>
+                <a href="earnings.html"><i class="fas fa-rupee-sign"></i> Earnings</a>
+                <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                <a href="/logout" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+            <!-- Main Content -->
+            <div class="col-md-10 main-content">
+                <h2 class="mb-4">Welcome to Your Dashboard</h2>
+                <div class="row">
+                    <!-- Today's Bookings Card -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">Today's Bookings</div>
+                            <div class="card-body">2</div>  <!-- Dummy data -->
+                        </div>
+                    </div>
+                    <!-- Upcoming Bookings Card -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">Upcoming Bookings</div>
+                            <div class="card-body">5</div>  <!-- Dummy data -->
+                        </div>
+                    </div>
+                    <!-- Total Completed Pujas Card -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">Total Completed Pujas</div>
+                            <div class="card-body">45</div>  <!-- Dummy data -->
+                        </div>
+                    </div>
+                    <!-- Total Earnings Card -->
+                    <div class="col-md-3">
+                        <div class="card">
+                            <div class="card-header">Total Earnings</div>
+                            <div class="card-body">₹ 12,500</div>  <!-- Dummy data -->
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <h4>Today's Pujas</h4>
-                <h2 class="text-warning">3</h2>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <h4>Monthly Earnings</h4>
-                <h2 class="text-warning">₹1,25,000</h2>
-            </div>
-        </div>
     </div>
-
-    <div class="card mt-5">
-        <h3>New Bookings</h3>
-        <div class="booking mt-3">
-            <p><strong>Booking ID:</strong> #BK12345</p>
-            <p><strong>User:</strong> Rahul Sharma</p>
-            <p><strong>Puja:</strong> Griha Pravesh</p>
-            <p><strong>Date/Time:</strong> 10 Jan 2026, 10:00 AM</p>
-            <p><strong>Status:</strong> <span class="badge status-new">New</span></p>
-            <button class="btn btn-success btn-sm me-2">Accept</button>
-            <button class="btn btn-danger btn-sm">Reject</button>
-        </div>
-    </div>
-
-    <div class="card mt-4">
-        <h3>My Profile</h3>
-        <p><strong>Experience:</strong> 17 Years</p>
-        <p><strong>Languages:</strong> Hindi, Gujarati, Sanskrit</p>
-        <p><strong>Specialization:</strong> Griha Pravesh, Satyanarayan, Rudrabhishek</p>
-        <p><strong>Rating:</strong> 4.8 ⭐ (from 120 reviews)</p>
-        <button class="btn btn-outline-warning btn-sm mt-2">Update Profile</button>
-    </div>
-
-    <div class="card mt-4">
-        <h3>Pending Payout</h3>
-        <p><strong>Total Due:</strong> ₹45,000</p>
-        <p><strong>Last Paid:</strong> ₹80,000 on 01 Jan 2026</p>
-        <button class="btn btn-warning btn-sm">Request Payout</button>
-    </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
