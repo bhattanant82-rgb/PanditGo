@@ -136,15 +136,35 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
-    // Login Protection
-    if (localStorage.getItem('isLoggedIn') !== 'true') {
-        alert('Login kar pehle bhai!');
-        window.location.href = 'login.html';
+    // Auth check
+    async function checkAuth() {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            window.location.href = 'login.html';
+            return;
+        }
+        const res = await fetch('/api/check-auth', {
+            headers: { 'Authorization': token }
+        });
+        const data = await res.json();
+        if (!data.authenticated || data.role !== 'user') {
+            window.location.href = 'login.html';
+        }
     }
 
-    // User name show
-    const userName = localStorage.getItem('userName') || localStorage.getItem('userId')?.split('@')[0] || 'Devotee';
-    document.getElementById('userName').innerText = userName;
+    // Load bookings
+    async function loadBookings() {
+        const token = localStorage.getItem('token');
+        const res = await fetch('/api/bookings', {
+            headers: { 'Authorization': token }
+        });
+        const bookings = await res.json();
+        const container = document.getElementById('bookingsList');
+        container.innerHTML = '';
+        bookings.forEach(b => {
+            container.innerHTML += `<div class="col-md-4 mb-3"><div class="card"><div class="card-body"><h5>${b.puja_type_id}</h5><p>${b.booking_date} ${b.booking_time}</p><p>Status: ${b.status}</p></div></div></div>`;
+        });
+    }
 
     // Logout
     function logout() {
@@ -153,6 +173,11 @@
             window.location.href = 'login.html';
         }
     }
+
+    window.onload = function() {
+        checkAuth();
+        loadBookings();
+    };
 
     // Razorpay Refund Button (Real Connect Ready)
     document.getElementById('refundBtn').addEventListener('click', () => {

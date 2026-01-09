@@ -344,6 +344,37 @@
         toggleIcon.classList.replace('fa-eye-slash', 'fa-eye');
       }
     });
+
+    // Signup form submit
+    document.getElementById('signupForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value;
+      const password = document.getElementById('password').value;
+      const role = document.querySelector('input[name="role"]:checked').value;
+
+      const data = { name, email, phone, password, role };
+      if (role === 'pandit') {
+        data.city = document.getElementById('city').value;
+        data.experience = document.getElementById('experience').value;
+        data.languages = document.getElementById('languages').value;
+        data.specialization = document.getElementById('specialization').value;
+      }
+
+      const res = await fetch('/api/signup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Signup successful! Please login.');
+        window.location.href = 'login.html';
+      } else {
+        alert(result.error);
+      }
+    });
   </script>
 
 </body>

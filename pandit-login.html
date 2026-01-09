@@ -35,19 +35,26 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
             const cred = document.getElementById('credential').value.trim();
             const pass = document.getElementById('password').value.trim();
             const error = document.getElementById('errorMsg');
 
-            // Dummy check – real mein backend se aayega
-            if ((cred === "pandit1@example.com" || cred === "9876543210") && pass === "pandit123") {
-                window.location.href = "dashboard.html";
+            const res = await fetch('/api/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ identifier: cred, password: pass })
+            });
+            const data = await res.json();
+            if (data.success && data.role === 'pandit') {
+                localStorage.setItem('token', data.token);
+                window.location.href = "pandit-dashboard.html";
             } else {
                 error.style.display = 'block';
             }
+        });
         });
     </script>
 </body>
