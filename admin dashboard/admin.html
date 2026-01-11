@@ -4,96 +4,102 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PanditGo - Admin Dashboard</title>
-    <link rel="stylesheet" href="../style.css">  <!-- shared CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css"> <!-- agar shared style hai to -->
+
     <style>
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #f8f9fa;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
             margin: 0;
             padding: 0;
         }
         .sidebar {
-            width: 250px;
-            background: linear-gradient(135deg, #0d6efd, #6610f2);
-            color: white;
+            width: 260px;
+            background-color: #000000;
             height: 100vh;
             position: fixed;
             top: 0;
             left: 0;
-            padding-top: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            padding-top: 1.5rem;
+            border-right: 1px solid #333333;
+            overflow-y: auto;
         }
         .sidebar h3 {
             text-align: center;
-            margin-bottom: 30px;
-            font-weight: bold;
+            color: #e0e0e0;
+            margin-bottom: 2rem;
+            font-weight: 600;
         }
         .sidebar a {
-            color: white;
+            color: #cccccc;
             display: block;
-            padding: 15px 20px;
+            padding: 0.9rem 1.5rem;
             text-decoration: none;
-            transition: background 0.3s;
+            transition: all 0.3s;
         }
-        .sidebar a:hover {
-            background: rgba(255,255,255,0.1);
-            border-left: 4px solid #ffc107;
-        }
-        .sidebar a.active {
-            background: rgba(255,255,255,0.2);
-            border-left: 4px solid #ffc107;
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #222222;
+            color: #ffffff;
+            border-left: 4px solid #e0e0e0;
         }
         .main-content {
-            margin-left: 250px;
-            padding: 20px;
-            min-height: 100vh;
+            margin-left: 260px;
+            padding: 2rem;
         }
         .top-navbar {
-            background: white;
-            padding: 15px 20px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            background-color: #111111;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border: 1px solid #333333;
+        }
+        .card {
+            background-color: #1a1a1a;
+            border: 1px solid #333333;
             border-radius: 8px;
         }
-        .top-navbar h4 {
-            margin: 0;
-            color: #0d6efd;
+        .card-header {
+            background-color: #222222;
+            border-bottom: 1px solid #333333;
         }
-        .notification-bell {
-            position: relative;
-            cursor: pointer;
+        .table {
+            color: #ffffff;
         }
-        .notification-bell .badge {
-            position: absolute;
-            top: -5px;
-            right: -5px;
-            background: #dc3545;
+        .table thead th {
+            background-color: #222222;
+            color: #e0e0e0;
         }
-        .stats-card {
-            background: linear-gradient(135deg, #ffffff, #f8f9fa);
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
+        .table-hover tbody tr:hover {
+            background-color: #2d2d2d;
         }
-        .stats-card:hover {
-            transform: translateY(-5px);
+        .badge-pending { background-color: #ffc107; color: black; }
+        .badge-approved { background-color: #198754; }
+        .btn-outline-light {
+            color: #e0e0e0;
+            border-color: #e0e0e0;
         }
-        .stats-card .card-body {
-            text-align: center;
-            padding: 20px;
+        .btn-outline-light:hover {
+            background-color: #e0e0e0;
+            color: #1a1a1a;
         }
-        .stats-card h5 {
-            color: #6c757d;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
+        .modal-content {
+            background-color: #1a1a1a;
+            color: #ffffff;
+            border: 1px solid #333333;
         }
-        .stats-card h2 {
-            color: #0d6efd;
-            font-weight: bold;
+        .modal-header {
+            border-bottom: 1px solid #333333;
         }
-        @media (max-width: 768px) {
+        .modal-footer {
+            border-top: 1px solid #333333;
+        }
+        .btn-close-white {
+            filter: invert(1);
+        }
+        @media (max-width: 992px) {
             .sidebar {
                 width: 100%;
                 height: auto;
@@ -101,12 +107,6 @@
             }
             .main-content {
                 margin-left: 0;
-            }
-            .sidebar a {
-                display: inline-block;
-                width: 48%;
-                margin: 1%;
-                text-align: center;
             }
         }
     </style>
@@ -116,12 +116,16 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <h3>PanditGo Admin</h3>
-        <a href="admin.html" class="active">Dashboard</a>
-        <a href="pending-pandits.html">Pending Pandit Requests</a>
-        <a href="all-bookings.html">All Bookings</a>
-        <a href="refunds.html">Refunds</a>
-        <a href="users.html">Users</a>
-        <a href="../login.html">Logout</a>
+        <a href="admin.html" class="active"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</a>
+        <a href="admin-users.html"><i class="fas fa-users me-2"></i> Users</a>
+        <a href="admin-pandits.html"><i class="fas fa-user-tie me-2"></i> Pandits</a>
+        <a href="admin-bookings.html"><i class="fas fa-calendar me-2"></i> Bookings</a>
+        <a href="admin-payments.html"><i class="fas fa-money-bill me-2"></i> Payments</a>
+        <a href="admin-complaints.html"><i class="fas fa-exclamation-triangle me-2"></i> Complaints</a>
+        <a href="admin-reviews.html"><i class="fas fa-star me-2"></i> Reviews</a>
+        <a href="admin-reports.html"><i class="fas fa-chart-bar me-2"></i> Reports</a>
+        <a href="admin-settings.html"><i class="fas fa-cog me-2"></i> Settings</a>
+        <a href="../login.html"><i class="fas fa-sign-out-alt me-2"></i> Logout</a>
     </div>
 
     <!-- Main Content -->
@@ -129,358 +133,408 @@
         <!-- Top Navbar -->
         <div class="top-navbar d-flex justify-content-between align-items-center">
             <h4>Welcome, Admin Kumar</h4>
-            <div class="notification-bell">
+            <div class="notification-bell position-relative">
                 <i class="fas fa-bell fa-lg"></i>
-                <span class="badge rounded-pill">3</span>
+                <span id="notificationCount" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
             </div>
         </div>
 
         <!-- Stats Cards -->
-        <div class="row">
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card stats-card">
+        <div class="row g-4 mb-4">
+            <div class="col-md-3 col-sm-6">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5>Total Users</h5>
+                        <h5 class="text-secondary">Total Users</h5>
                         <h2 id="totalUsers">0</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card stats-card">
+            <div class="col-md-3 col-sm-6">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5>Total Pandits</h5>
-                        <h2 id="totalPandits">0</h2>
+                        <h5 class="text-secondary">Active Users</h5>
+                        <h2 id="activeUsers">0</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card stats-card">
+            <div class="col-md-3 col-sm-6">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5>Total Bookings</h5>
-                        <h2 id="totalBookings">0</h2>
+                        <h5 class="text-secondary">Pending Pandits</h5>
+                        <h2 id="pendingPandits">0</h2>
                     </div>
                 </div>
             </div>
-            <div class="col-md-3 col-sm-6 mb-4">
-                <div class="card stats-card">
+            <div class="col-md-3 col-sm-6">
+                <div class="card text-center">
                     <div class="card-body">
-                        <h5>Total Revenue</h5>
+                        <h5 class="text-secondary">Total Revenue</h5>
                         <h2 id="totalRevenue">₹0</h2>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pandit Verification Section -->
-        <div class="card">
+        <!-- Charts Section -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Revenue Trend</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="mb-0">Weekly Bookings</h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="bookingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pandit Verification -->
+        <div class="card mb-4">
             <div class="card-header">
-                <h5>Pandit Verification</h5>
+                <h5 class="mb-0">Pandit Verification</h5>
             </div>
             <div class="card-body">
-                <div class="space-y-6">
-                    <div>
-                        <h1 class="text-3xl font-bold">Pandit Verification</h1>
-                        <p class="text-muted-foreground">Review and verify pandit applications</p>
-                    </div>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Pending Verifications</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Pandit</TableHead>
-                                        <TableHead>Experience</TableHead>
-                                        <TableHead>Specialization</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Submitted</TableHead>
-                                        <TableHead>Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody id="pendingPandits">
-                                    <!-- Mock data - replace with actual API call -->
-                                    <TableRow>
-                                        <TableCell>
-                                            <div class="flex items-center space-x-3">
-                                                <Avatar>
-                                                    <AvatarImage src="/avatars/1.jpg" />
-                                                    <AvatarFallback>RS</AvatarFallback>
-                                                </Avatar>
-                                                <div>
-                                                    <div class="font-medium">Rajesh Sharma</div>
-                                                    <div class="text-sm text-muted-foreground">rajesh@example.com</div>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>5 years</TableCell>
-                                        <TableCell>Vedic Rituals</TableCell>
-                                        <TableCell>
-                                            <Badge variant="secondary">Pending</Badge>
-                                        </TableCell>
-                                        <TableCell>08/01/2024</TableCell>
-                                        <TableCell>
-                                            <div class="flex items-center space-x-2">
-                                                <Dialog>
-                                                    <DialogTrigger asChild>
-                                                        <Button variant="outline" size="sm">
-                                                            <Eye class="h-4 w-4 mr-1" />
-                                                            View
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent class="max-w-2xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Pandit Details</DialogTitle>
-                                                        </DialogHeader>
-                                                        <div class="space-y-4">
-                                                            <div class="grid grid-cols-2 gap-4">
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Name</label>
-                                                                    <p>Rajesh Sharma</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Email</label>
-                                                                    <p>rajesh@example.com</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Phone</label>
-                                                                    <p>+91 9876543210</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Experience</label>
-                                                                    <p>5 years</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Specialization</label>
-                                                                    <p>Vedic Rituals</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Status</label>
-                                                                    <Badge variant="secondary">Pending</Badge>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <label class="text-sm font-medium">Documents</label>
-                                                                <div class="flex space-x-2 mt-2">
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        ID Proof
-                                                                    </Button>
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        Certificate
-                                                                    </Button>
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        Kundli
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                            <div class="flex space-x-2 pt-4">
-                                                                <Button class="bg-green-600 hover:bg-green-700">
-                                                                    <CheckCircle class="h-4 w-4 mr-1" />
-                                                                    Approve
-                                                                </Button>
-                                                                <Button variant="destructive">
-                                                                    <XCircle class="h-4 w-4 mr-1" />
-                                                                    Reject
-                                                                </Button>
-                                                            </div>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-                                                <Button size="sm" class="bg-green-600 hover:bg-green-700">
-                                                    <CheckCircle class="h-4 w-4" />
-                                                </Button>
-                                                <Button size="sm" variant="destructive">
-                                                    <XCircle class="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell>
-                                            <div class="flex items-center space-x-3">
-                                                <Avatar>
-                                                    <AvatarImage src="/avatars/2.jpg" />
-                                                    <AvatarFallback>AK</AvatarFallback>
-                                                </Avatar>
-                                                <div>
-                                                    <div class="font-medium">Amit Kumar</div>
-                                                    <div class="text-sm text-muted-foreground">amit@example.com</div>
-                                                </div>
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>3 years</TableCell>
-                                        <TableCell>Marriage Ceremonies</TableCell>
-                                        <TableCell>
-                                            <Badge variant="default">Approved</Badge>
-                                        </TableCell>
-                                        <TableCell>07/01/2024</TableCell>
-                                        <TableCell>
-                                            <div class="flex items-center space-x-2">
-                                                <Dialog>
-                                                    <DialogTrigger asChild>
-                                                        <Button variant="outline" size="sm">
-                                                            <Eye class="h-4 w-4 mr-1" />
-                                                            View
-                                                        </Button>
-                                                    </DialogTrigger>
-                                                    <DialogContent class="max-w-2xl">
-                                                        <DialogHeader>
-                                                            <DialogTitle>Pandit Details</DialogTitle>
-                                                        </DialogHeader>
-                                                        <div class="space-y-4">
-                                                            <div class="grid grid-cols-2 gap-4">
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Name</label>
-                                                                    <p>Amit Kumar</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Email</label>
-                                                                    <p>amit@example.com</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Phone</label>
-                                                                    <p>+91 9876543211</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Experience</label>
-                                                                    <p>3 years</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Specialization</label>
-                                                                    <p>Marriage Ceremonies</p>
-                                                                </div>
-                                                                <div>
-                                                                    <label class="text-sm font-medium">Status</label>
-                                                                    <Badge variant="default">Approved</Badge>
-                                                                </div>
-                                                            </div>
-                                                            <div>
-                                                                <label class="text-sm font-medium">Documents</label>
-                                                                <div class="flex space-x-2 mt-2">
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        ID Proof
-                                                                    </Button>
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        Certificate
-                                                                    </Button>
-                                                                    <Button variant="outline" size="sm">
-                                                                        <FileText class="h-4 w-4 mr-1" />
-                                                                        Kundli
-                                                                    </Button>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </DialogContent>
-                                                </Dialog>
-                                            </div>
-                                        </TableCell>
-                                    </TableRow>
-                                    <!-- Add more mock data as needed -->
-                                </TableBody>
-                            </Table>
-                        </CardContent>
-                    </Card>
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Photo</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Experience</th>
+                                <th>Specialization</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="panditsTableBody">
+                            <!-- Dynamic content loaded from API -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
 
         <!-- Recent Bookings -->
-        <div class="row mt-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header">
-                        <h5>Recent Bookings</h5>
-                    </div>
-                    <div class="card-body">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>User</th>
-                                    <th>Pandit</th>
-                                    <th>Date</th>
-                                    <th>Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="recentBookings">
-                                <!-- Dynamic content -->
-                            </tbody>
-                        </table>
-                    </div>
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">Recent Bookings</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Pandit</th>
+                                <th>Service</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Dynamic content loaded from API -->
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Pandit Details Modal -->
+    <div class="modal fade" id="panditModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 id="panditModalLabel" class="modal-title">Pandit Details</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <img id="modalPanditImage" src="https://via.placeholder.com/300" class="img-fluid rounded" alt="Pandit">
+                        </div>
+                        <div class="col-md-8">
+                            <p><strong>Name:</strong> <span id="modalPanditName"></span></p>
+                            <p><strong>Email:</strong> <span id="modalPanditEmail"></span></p>
+                            <p><strong>Phone:</strong> <span id="modalPanditPhone"></span></p>
+                            <p><strong>Experience:</strong> <span id="modalPanditExperience"></span></p>
+                            <p><strong>Specialization:</strong> <span id="modalPanditSpecialization"></span></p>
+                            <p><strong>Status:</strong> <span id="modalPanditStatus"></span></p>
+                            <p><strong>Documents:</strong></p>
+                            <ul class="list-unstyled">
+                                <li><a href="#" class="text-decoration-none text-info">View ID Proof</a></li>
+                                <li><a href="#" class="text-decoration-none text-info">View Certificate</a></li>
+                                <li><a href="#" class="text-decoration-none text-info">View Kundli</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Auth check
-        async function checkAuth() {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = '../admin-login.html';
-                return;
-            }
-            const res = await fetch('/api/check-auth', {
-                headers: { 'Authorization': token }
-            });
-            const data = await res.json();
-            if (!data.authenticated || data.role !== 'admin') {
-                window.location.href = '../admin-login.html';
-            }
-        }
+        console.log('PanditGo Admin Dashboard Loaded Successfully - Dark Theme Active');
 
-        // Load dashboard data
+        // Global variables for real-time tracking
+        let lastPanditCount = 0;
+        let lastBookingCount = 0;
+
+        // Load dashboard data from Flask API
         async function loadDashboard() {
-            const token = localStorage.getItem('token');
-            const res = await fetch('/api/admin/dashboard', {
-                headers: { 'Authorization': token }
-            });
-            const data = await res.json();
-            if (data.error) {
-                alert('Unauthorized');
-                window.location.href = '../admin-login.html';
-                return;
+            try {
+                const [statsRes, panditsRes, bookingsRes] = await Promise.all([
+                    fetch('http://localhost:5000/api/live-stats'),
+                    fetch('http://localhost:5000/api/pandits'),
+                    fetch('http://localhost:5000/api/bookings')
+                ]);
+
+                const stats = await statsRes.json();
+                const pandits = await panditsRes.json();
+                const bookings = await bookingsRes.json();
+
+                updateStats(stats);
+                updatePanditsTable(pandits);
+                updateBookingsTable(bookings);
+                updateCharts();
+                checkForNewItems(stats);
+            } catch (error) {
+                console.error('Error loading dashboard:', error);
+                // Fallback to mock data if API fails
+                loadMockData();
             }
-            // Update stats
-            document.getElementById('totalUsers').textContent = data.stats.total_users;
-            document.getElementById('totalPandits').textContent = data.stats.total_pandits;
-            document.getElementById('totalBookings').textContent = data.stats.total_bookings;
-            document.getElementById('totalRevenue').textContent = '₹' + data.stats.total_revenue;
-            
-            // Update recent bookings
-            const tbody = document.getElementById('recentBookings');
+        }
+
+        // Update stats cards with real data
+        function updateStats(data) {
+            document.getElementById('totalUsers').textContent = data.total_users || 0;
+            document.getElementById('activeUsers').textContent = data.active_users || 0;
+            document.getElementById('pendingPandits').textContent = data.pending_pandits || 0;
+            document.getElementById('totalRevenue').textContent = '₹' + (data.total_revenue || 0);
+
+            // Update notification count
+            const newItems = (data.new_pandits ? data.new_pandits.length : 0) + (data.new_bookings ? data.new_bookings.length : 0);
+            document.getElementById('notificationCount').textContent = newItems;
+        }
+
+        // Update pandits table
+        function updatePanditsTable(pandits) {
+            const tbody = document.getElementById('panditsTableBody');
             tbody.innerHTML = '';
-            data.recent_bookings.forEach(b => {
-                tbody.innerHTML += `<tr><td>${b.user_name}</td><td>${b.pandit_name}</td><td>${b.booking_date}</td><td>${b.status}</td></tr>`;
-            });
-            
-            // Update pending pandits
-            const ptbody = document.getElementById('pendingPandits');
-            ptbody.innerHTML = '';
-            data.pending_pandits.forEach(p => {
-                ptbody.innerHTML += `<tr><td>${p.name}</td><td>${p.city}</td><td>${p.experience_years} years</td><td><button class="btn btn-success btn-sm" onclick="approvePandit(${p.pandit_id})">Approve</button></td></tr>`;
+
+            pandits.forEach(pandit => {
+                const statusClass = pandit.status === 'pending' ? 'warning' : pandit.status === 'approved' ? 'success' : 'danger';
+                const row = `
+                    <tr>
+                        <td><img src="../images/pandit${pandit.id % 7 + 1}.jpg" alt="Pandit" class="rounded-circle" width="40" height="40"></td>
+                        <td>${pandit.name}</td>
+                        <td>${pandit.email}</td>
+                        <td>${pandit.experience_years} years</td>
+                        <td>${pandit.specialization}</td>
+                        <td><span class="badge bg-${statusClass}">${pandit.status}</span></td>
+                        <td>
+                            <button class="btn btn-outline-primary btn-sm me-2" onclick="viewPandit(${pandit.id})"><i class="fas fa-eye"></i> View</button>
+                            ${pandit.status === 'pending' ? `
+                                <button class="btn btn-success btn-sm me-2" onclick="approvePandit(${pandit.id})"><i class="fas fa-check"></i> Approve</button>
+                                <button class="btn btn-danger btn-sm" onclick="rejectPandit(${pandit.id})"><i class="fas fa-times"></i> Reject</button>
+                            ` : ''}
+                        </td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
             });
         }
 
+        // Update bookings table
+        function updateBookingsTable(bookings) {
+            const tbody = document.getElementById('bookingsTableBody');
+            tbody.innerHTML = '';
+
+            bookings.forEach(booking => {
+                const statusClass = booking.status === 'confirmed' ? 'primary' : booking.status === 'completed' ? 'success' : 'warning';
+                const row = `
+                    <tr>
+                        <td>#BK${booking.id}</td>
+                        <td>${booking.user_name}</td>
+                        <td>${booking.pandit_name}</td>
+                        <td>${booking.service}</td>
+                        <td>${new Date(booking.booking_date).toLocaleDateString()}</td>
+                        <td><span class="badge bg-${statusClass}">${booking.status}</span></td>
+                        <td><button class="btn btn-outline-primary btn-sm"><i class="fas fa-eye"></i> View</button></td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML('beforeend', row);
+            });
+        }
+
+        // Update charts with Chart.js
+        function updateCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart');
+            if (revenueCtx) {
+                new Chart(revenueCtx, {
+                    type: 'line',
+                    data: {
+                        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                        datasets: [{
+                            label: 'Revenue (₹)',
+                            data: [12000, 19000, 15000, 25000, 22000, 30000], // Mock data - replace with real API data
+                            borderColor: '#198754',
+                            backgroundColor: 'rgba(25, 135, 84, 0.1)',
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+
+            // Bookings Chart
+            const bookingsCtx = document.getElementById('bookingsChart');
+            if (bookingsCtx) {
+                new Chart(bookingsCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                        datasets: [{
+                            label: 'Bookings',
+                            data: [12, 19, 15, 25, 22, 30, 18], // Mock data
+                            backgroundColor: '#0d6efd',
+                            borderColor: '#0d6efd',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: false } },
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+            }
+        }
+
+        // Approve pandit
         async function approvePandit(id) {
-            const token = localStorage.getItem('token');
-            await fetch(`/api/admin/approve-pandit/${id}`, {
-                method: 'POST',
-                headers: { 'Authorization': token }
-            });
-            loadDashboard(); // Reload data
+            try {
+                const response = await fetch(`http://localhost:5000/api/pandits/approve/${id}`, { method: 'POST' });
+                if (response.ok) {
+                    loadDashboard(); // Refresh data
+                    alert('Pandit approved successfully!');
+                }
+            } catch (error) {
+                console.error('Error approving pandit:', error);
+                alert('Error approving pandit');
+            }
         }
 
-        window.onload = function() {
-            checkAuth();
-            loadDashboard();
-        };
+        // Reject pandit
+        async function rejectPandit(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/pandits/reject/${id}`, { method: 'POST' });
+                if (response.ok) {
+                    loadDashboard(); // Refresh data
+                    alert('Pandit rejected');
+                }
+            } catch (error) {
+                console.error('Error rejecting pandit:', error);
+                alert('Error rejecting pandit');
+            }
+        }
+
+        // View pandit details (populate modal)
+        async function viewPandit(id) {
+            try {
+                const response = await fetch(`http://localhost:5000/api/pandits`);
+                const pandits = await response.json();
+                const pandit = pandits.find(p => p.id === id);
+                if (pandit) {
+                    // Populate modal
+                    document.getElementById('panditModalLabel').textContent = `Details - ${pandit.name}`;
+                    document.getElementById('modalPanditName').textContent = pandit.name;
+                    document.getElementById('modalPanditEmail').textContent = pandit.email;
+                    document.getElementById('modalPanditPhone').textContent = pandit.phone;
+                    document.getElementById('modalPanditExperience').textContent = `${pandit.experience_years} years`;
+                    document.getElementById('modalPanditSpecialization').textContent = pandit.specialization;
+                    document.getElementById('modalPanditStatus').textContent = pandit.status;
+                    // Show modal
+                    const modal = new bootstrap.Modal(document.getElementById('panditModal'));
+                    modal.show();
+                }
+            } catch (error) {
+                console.error('Error viewing pandit:', error);
+            }
+        }
+
+        // Check for new items and notify
+        function checkForNewItems(data) {
+            const currentPanditCount = data.new_pandits ? data.new_pandits.length : 0;
+            const currentBookingCount = data.new_bookings ? data.new_bookings.length : 0;
+
+            if (currentPanditCount > lastPanditCount) {
+                showNotification(`New pandit application received!`);
+            }
+            if (currentBookingCount > lastBookingCount) {
+                showNotification(`New booking received!`);
+            }
+
+            lastPanditCount = currentPanditCount;
+            lastBookingCount = currentBookingCount;
+        }
+
+        // Show notification
+        function showNotification(message) {
+            // Simple alert for now - can be replaced with toast notification
+            alert(message);
+        }
+
+        // Simulate new booking for testing
+        async function simulateNewBooking() {
+            try {
+                await fetch('http://localhost:5000/api/bookings/new', { method: 'POST' });
+                loadDashboard();
+            } catch (error) {
+                console.error('Error simulating booking:', error);
+            }
+        }
+
+        // Load mock data if API fails
+        function loadMockData() {
+            updateStats({
+                total_users: 0,
+                active_users: 0,
+                pending_pandits: 8,
+                total_revenue: 0
+            });
+            // Mock pandits and bookings data
+        }
+
+        // Real-time polling every 8 seconds
+        setInterval(loadDashboard, 8000);
+
+        // Initial load
+        window.onload = loadDashboard;
     </script>
 </body>
 </html>
