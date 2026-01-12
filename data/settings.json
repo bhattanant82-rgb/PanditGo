@@ -1,0 +1,14 @@
+{
+  "commissionPercentage": 15,
+  "appStatus": "live",
+  "features": {
+    "kundliGeneration": true,
+    "onlinePooja": true,
+    "chatConsultation": false,
+    "videoCall": true
+  },
+  "theme": "divine-dark",
+  "maintenanceMode": false,
+  "maxBookingsPerDay": 50,
+  "supportEmail": "support@panditgo.com"
+}

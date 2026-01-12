@@ -1,0 +1,57 @@
+[
+  {
+    "id": 1,
+    "name": "Priya Sharma",
+    "email": "priya@gmail.com",
+    "phone": "+91-9876543215",
+    "city": "Delhi",
+    "totalBookings": 12,
+    "totalSpent": 8500,
+    "lastBooking": "2026-01-10",
+    "status": "active"
+  },
+  {
+    "id": 2,
+    "name": "Rahul Mehta",
+    "email": "rahul@gmail.com",
+    "phone": "+91-9876543216",
+    "city": "Mumbai",
+    "totalBookings": 8,
+    "totalSpent": 6200,
+    "lastBooking": "2026-01-08",
+    "status": "active"
+  },
+  {
+    "id": 3,
+    "name": "Sunita Gupta",
+    "email": "sunita@gmail.com",
+    "phone": "+91-9876543217",
+    "city": "Bangalore",
+    "totalBookings": 15,
+    "totalSpent": 11200,
+    "lastBooking": "2026-01-12",
+    "status": "active"
+  },
+  {
+    "id": 4,
+    "name": "Amit Kumar",
+    "email": "amit.k@gmail.com",
+    "phone": "+91-9876543218",
+    "city": "Chennai",
+    "totalBookings": 6,
+    "totalSpent": 4800,
+    "lastBooking": "2026-01-05",
+    "status": "inactive"
+  },
+  {
+    "id": 5,
+    "name": "Kavita Singh",
+    "email": "kavita@gmail.com",
+    "phone": "+91-9876543219",
+    "city": "Pune",
+    "totalBookings": 9,
+    "totalSpent": 7100,
+    "lastBooking": "2026-01-11",
+    "status": "active"
+  }
+]

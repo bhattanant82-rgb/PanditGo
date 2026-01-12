@@ -1,0 +1,37 @@
+[
+  {
+    "id": "LOG001",
+    "type": "payment_error",
+    "message": "Payment gateway timeout for booking BK003",
+    "timestamp": "2026-01-12T10:30:00Z",
+    "severity": "error"
+  },
+  {
+    "id": "LOG002",
+    "type": "booking_failed",
+    "message": "Pandit unavailable for requested time slot",
+    "timestamp": "2026-01-12T09:15:00Z",
+    "severity": "warning"
+  },
+  {
+    "id": "LOG003",
+    "type": "api_failure",
+    "message": "Kundli generation API returned invalid data",
+    "timestamp": "2026-01-11T16:45:00Z",
+    "severity": "error"
+  },
+  {
+    "id": "LOG004",
+    "type": "payment_success",
+    "message": "Payment processed for booking BK001",
+    "timestamp": "2026-01-10T14:20:00Z",
+    "severity": "info"
+  },
+  {
+    "id": "LOG005",
+    "type": "user_action",
+    "message": "Admin suspended pandit ID 3",
+    "timestamp": "2026-01-09T11:00:00Z",
+    "severity": "info"
+  }
+]

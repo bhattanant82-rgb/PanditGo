@@ -1,0 +1,72 @@
+[
+  {
+    "id": 1,
+    "name": "Pandit Rajesh Sharma",
+    "expertise": "Vedic Astrology, Marriage Kundli",
+    "rating": 4.8,
+    "status": "active",
+    "earnings": 45000,
+    "city": "Delhi",
+    "phone": "+91-9876543210",
+    "email": "rajesh@panditgo.com",
+    "totalBookings": 156,
+    "lastActive": "2026-01-12",
+    "next_available_slot": "2026-01-13 10:00 AM"
+  },
+  {
+    "id": 2,
+    "name": "Pandit Amit Kumar",
+    "expertise": "Numerology, Gemstone Consultation",
+    "rating": 4.6,
+    "status": "active",
+    "earnings": 38000,
+    "city": "Mumbai",
+    "phone": "+91-9876543211",
+    "email": "amit@panditgo.com",
+    "totalBookings": 134,
+    "lastActive": "2026-01-12",
+    "next_available_slot": "2026-01-13 11:00 AM"
+  },
+  {
+    "id": 3,
+    "name": "Pandit Vijay Singh",
+    "expertise": "Vastu Shastra, Pooja Services",
+    "rating": 4.9,
+    "status": "blocked",
+    "earnings": 52000,
+    "city": "Bangalore",
+    "phone": "+91-9876543212",
+    "email": "vijay@panditgo.com",
+    "totalBookings": 189,
+    "lastActive": "2026-01-11",
+    "next_available_slot": "2026-01-14 09:00 AM"
+  },
+  {
+    "id": 4,
+    "name": "Pandit Ramesh Gupta",
+    "expertise": "Horoscope Matching, Remedial Measures",
+    "rating": 4.7,
+    "status": "active",
+    "earnings": 41000,
+    "city": "Chennai",
+    "phone": "+91-9876543213",
+    "email": "ramesh@panditgo.com",
+    "totalBookings": 142,
+    "lastActive": "2026-01-12",
+    "next_available_slot": "2026-01-13 02:00 PM"
+  },
+  {
+    "id": 5,
+    "name": "Pandit Suresh Patel",
+    "expertise": "Palmistry, Tarot Reading",
+    "rating": 4.5,
+    "status": "active",
+    "earnings": 35000,
+    "city": "Ahmedabad",
+    "phone": "+91-9876543214",
+    "email": "suresh@panditgo.com",
+    "totalBookings": 98,
+    "lastActive": "2026-01-12",
+    "next_available_slot": "2026-01-13 03:00 PM"
+  }
+]

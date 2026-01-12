@@ -1,0 +1,47 @@
+[
+  {
+    "id": "RPT001",
+    "customerId": 1,
+    "type": "Birth Chart",
+    "generatedDate": "2026-01-10",
+    "paid": true,
+    "amount": 500,
+    "status": "delivered"
+  },
+  {
+    "id": "RPT002",
+    "customerId": 2,
+    "type": "Marriage Compatibility",
+    "generatedDate": "2026-01-08",
+    "paid": true,
+    "amount": 800,
+    "status": "delivered"
+  },
+  {
+    "id": "RPT003",
+    "customerId": 3,
+    "type": "Career Analysis",
+    "generatedDate": "2026-01-12",
+    "paid": false,
+    "amount": 0,
+    "status": "processing"
+  },
+  {
+    "id": "RPT004",
+    "customerId": 4,
+    "type": "Health Prediction",
+    "generatedDate": "2026-01-05",
+    "paid": true,
+    "amount": 600,
+    "status": "delivered"
+  },
+  {
+    "id": "RPT005",
+    "customerId": 5,
+    "type": "Remedial Measures",
+    "generatedDate": "2026-01-11",
+    "paid": true,
+    "amount": 700,
+    "status": "delivered"
+  }
+]

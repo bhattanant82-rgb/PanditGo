@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pandit Dashboard - BookMyPandit</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f1a, #1a0000);
+            color: #f5e6c8;
+            min-height: 100vh;
+        }
+        .sidebar {
+            background: #0f172a;
+            border-right: 1px solid #2d3748;
+            height: 100vh;
+            position: fixed;
+            width: 260px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .sidebar h4 {
+            font-family: 'Playfair Display', serif;
+            color: #ffcc66;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.8rem;
+        }
+        .sidebar a {
+            color: #cbd5e1;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
+            border-radius: 10px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+        .sidebar a:hover, .sidebar a.active {
+            background: #1e293b;
+            color: #ffcc66;
+        }
+        .sidebar .logout {
+            margin-top: 80px;
+            color: #ef4444;
+        }
+        .main-content {
+            margin-left: 260px;
+            padding: 40px;
+        }
+        .welcome {
+            font-family: 'Playfair Display', serif;
+            color: #ffcc66;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+        }
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,153,51,0.2);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+        .stat-card:hover {
+            transform: translateY(-8px);
+        }
+        .stat-number {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: #ffcc66;
+            margin: 12px 0;
+        }
+        .stat-label {
+            color: #cbd5e1;
+            font-size: 1rem;
+        }
+        .table-section {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 40px;
+            border: 1px solid rgba(255,153,51,0.2);
+        }
+        .table-section h4 {
+            color: #ffcc66;
+            margin-bottom: 20px;
+        }
+        .table {
+            color: #e2e8f0;
+        }
+        .table thead th {
+            background: #1e293b;
+            color: #94a3b8;
+            border-bottom: 1px solid #334155;
+        }
+        .table tbody tr:hover {
+            background: rgba(255,153,51,0.1);
+        }
+        .status-paid {
+            background: #16a34a;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .status-pending {
+            background: #ca8a04;
+            color: black;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+        }
+        .btn-action {
+            font-size: 13px;
+            padding: 6px 12px;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+<script>
+    const role = localStorage.getItem('role');
+    if (role !== 'pandit') {
+        window.location.href = 'pandit-login.html';
+    }
+</script>
+
+<div class="admin-wrapper">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4>Pandit Panel</h4>
+        <a href="pandit-dashboard.php" class="active"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="my-bookings.html"><i class="fas fa-calendar-alt"></i> My Bookings</a>
+        <a href="earnings.html"><i class="fas fa-rupee-sign"></i> Earnings</a>
+        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+        <a href="logout.php" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="welcome">Namaste Pandit Ji 🙏</h1>
+
+        <div class="row g-4">
+            <!-- Earnings Cards -->
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">Total Earnings</div>
+                    <div class="stat-number">₹ 1,89,400</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">This Month</div>
+                    <div class="stat-number">₹ 34,500</div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="stat-card">
+                    <div class="stat-label">Pending Payout</div>
+                    <div class="stat-number">₹ 18,000</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Transactions -->
+        <div class="table-section">
+            <h4>Recent Transactions</h4>
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>06 Jan 2026</td>
+                            <td>#BK7841</td>
+                            <td>Priya Singh</td>
+                            <td>₹ 5,500</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                        <tr>
+                            <td>05 Jan 2026</td>
+                            <td>#BK7839</td>
+                            <td>Sunita Gupta</td>
+                            <td>₹ 8,000</td>
+                            <td><span class="status-pending">Pending</span></td>
+                        </tr>
+                        <tr>
+                            <td>04 Jan 2026</td>
+                            <td>#BK7821</td>
+                            <td>Rahul Mehta</td>
+                            <td>₹ 12,000</td>
+                            <td><span class="status-paid">Paid</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

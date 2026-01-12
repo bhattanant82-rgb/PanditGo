@@ -1,0 +1,971 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanditGo - Admin Dashboard (Pro Version)</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-primary: #0B0F14;
+            --accent-gold: #D4AF37;
+            --secondary-blue: #1F3B73;
+            --text-light: #EAEAEA;
+            --text-muted: #B0B7C3;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border-color: rgba(212, 175, 55, 0.2);
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .top-bar {
+            background: var(--secondary-blue);
+            padding: 15px 30px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 280px;
+            right: 0;
+            z-index: 1000;
+            transition: left 0.3s ease;
+        }
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 280px;
+            height: 100vh;
+            background: var(--bg-primary);
+            border-right: 1px solid var(--border-color);
+            padding: 20px;
+            overflow-y: auto;
+            z-index: 1001;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            transform: translateX(-280px);
+        }
+
+        .sidebar h3 {
+            color: var(--accent-gold);
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .sidebar a {
+            display: block;
+            color: var(--text-light);
+            text-decoration: none;
+            padding: 12px 15px;
+            margin-bottom: 5px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background: var(--secondary-blue);
+            color: var(--accent-gold);
+        }
+
+        .sidebar a i {
+            margin-right: 10px;
+            width: 20px;
+        }
+
+        .main-content {
+            margin-left: 280px;
+            margin-top: 80px;
+            padding: 30px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .sidebar.collapsed ~ .main-content {
+            margin-left: 0;
+        }
+
+        .sidebar.collapsed ~ .top-bar {
+            left: 0;
+        }
+
+        .kpi-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(212, 175, 55, 0.1);
+        }
+
+        .kpi-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--accent-gold);
+            margin: 10px 0;
+        }
+
+        .kpi-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .chart-container {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chart-container h4 {
+            color: var(--accent-gold);
+            margin-bottom: 20px;
+        }
+
+        .table-responsive {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .table {
+            color: var(--text-light);
+        }
+
+        .table thead th {
+            background: var(--secondary-blue);
+            color: var(--text-light);
+            border: none;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(31, 59, 115, 0.1);
+        }
+
+        .btn-gold {
+            background: var(--accent-gold);
+            color: var(--bg-primary);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background: #B8941F;
+            transform: translateY(-2px);
+        }
+
+        .status-active {
+            color: #10B981;
+        }
+
+        .status-blocked {
+            color: #EF4444;
+        }
+
+        .status-pending {
+            color: #F59E0B;
+        }
+
+        .status-completed {
+            color: #10B981;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-280px);
+            }
+            .sidebar.collapsed {
+                transform: translateX(0);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+            .top-bar {
+                left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <h3><i class="fas fa-om"></i> PanditGo Admin</h3>
+        <a href="#overview" class="active" onclick="showSection('overview')"><i class="fas fa-tachometer-alt"></i> Dashboard Overview</a>
+        <a href="#pandits" onclick="showSection('pandits')"><i class="fas fa-user-tie"></i> Pandits Management</a>
+        <a href="#customers" onclick="showSection('customers')"><i class="fas fa-users"></i> Customers</a>
+        <a href="#bookings" onclick="showSection('bookings')"><i class="fas fa-calendar-alt"></i> Bookings</a>
+        <a href="#revenue" onclick="showSection('revenue')"><i class="fas fa-rupee-sign"></i> Revenue & Payouts</a>
+        <a href="#reports" onclick="showSection('reports')"><i class="fas fa-chart-line"></i> Kundli Reports</a>
+        <a href="#analytics" onclick="showSection('analytics')"><i class="fas fa-chart-bar"></i> Analytics</a>
+        <a href="#logs" onclick="showSection('logs')"><i class="fas fa-exclamation-triangle"></i> Logs & Errors</a>
+        <a href="#settings" onclick="showSection('settings')"><i class="fas fa-cog"></i> Settings</a>
+        <a href="../logout.html" class="mt-5"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <!-- Top Bar -->
+    <div class="top-bar">
+        <div>
+            <button class="btn btn-outline-light me-3" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+            <span>Welcome, Admin <span id="adminName"></span></span>
+        </div>
+        <div>
+            <span class="me-3"><i class="fas fa-bell"></i> Notifications</span>
+            <span class="text-success"><i class="fas fa-circle"></i> System Live</span>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Overview Section -->
+        <div id="overview-section" class="section">
+            <h2 class="mb-4">Dashboard Overview</h2>
+
+            <!-- KPI Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Pandits</div>
+                        <div class="kpi-number" id="totalPandits">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Active Customers</div>
+                        <div class="kpi-number" id="activeCustomers">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Today's Bookings</div>
+                        <div class="kpi-number" id="todayBookings">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Monthly Revenue</div>
+                        <div class="kpi-number" id="monthlyRevenue">₹0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Revenue per Month</h4>
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Pandit Availability</h4>
+                        <canvas id="panditChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pandits Management Section -->
+        <div id="pandits-section" class="section" style="display: none;">
+            <h2 class="mb-4">Pandits Management</h2>
+            <div class="table-responsive">
+                <table class="table" id="panditsTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Expertise</th>
+                            <th>Rating</th>
+                            <th>Status</th>
+                            <th>Earnings</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="panditsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Customers Section -->
+        <div id="customers-section" class="section" style="display: none;">
+            <h2 class="mb-4">Customers Management</h2>
+            <div class="table-responsive">
+                <table class="table" id="customersTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>City</th>
+                            <th>Total Bookings</th>
+                            <th>Total Spent</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="customersTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Bookings Section -->
+        <div id="bookings-section" class="section" style="display: none;">
+            <h2 class="mb-4">Bookings Management</h2>
+            <div class="table-responsive">
+                <table class="table" id="bookingsTable">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Customer</th>
+                            <th>Pandit</th>
+                            <th>Service</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                            <th>Payment</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Revenue Section -->
+        <div id="revenue-section" class="section" style="display: none;">
+            <h2 class="mb-4">Revenue & Payouts</h2>
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Revenue</div>
+                        <div class="kpi-number" id="totalRevenue">₹0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Commission (15%)</div>
+                        <div class="kpi-number" id="commissionAmount">₹0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Pending Payouts</div>
+                        <div class="kpi-number" id="pendingPayouts">₹0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Completed Payouts</div>
+                        <div class="kpi-number" id="completedPayouts">₹0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chart-container">
+                <h4>Revenue Trend</h4>
+                <canvas id="revenueTrendChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Reports Section -->
+        <div id="reports-section" class="section" style="display: none;">
+            <h2 class="mb-4">Kundli Reports</h2>
+            <div class="row g-4 mb-4">
+                <div class="col-md-4">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Reports</div>
+                        <div class="kpi-number" id="totalReports">0</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Paid Reports</div>
+                        <div class="kpi-number" id="paidReports">0</div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Free Reports</div>
+                        <div class="kpi-number" id="freeReports">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table" id="reportsTable">
+                    <thead>
+                        <tr>
+                            <th>Report ID</th>
+                            <th>Customer</th>
+                            <th>Type</th>
+                            <th>Generated Date</th>
+                            <th>Paid</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="reportsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Logs Section -->
+        <div id="logs-section" class="section" style="display: none;">
+            <h2 class="mb-4">System Logs & Errors</h2>
+            <div class="table-responsive">
+                <table class="table" id="logsTable">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Message</th>
+                            <th>Severity</th>
+                            <th>Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody id="logsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Settings Section -->
+        <div id="settings-section" class="section" style="display: none;">
+            <h2 class="mb-4">Settings</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="card" style="background: var(--card-bg); border: 1px solid var(--border-color);">
+                        <div class="card-body">
+                            <h5 class="card-title" style="color: var(--accent-gold);">System Settings</h5>
+                            <div class="mb-3">
+                                <label class="form-label">Commission Rate (%)</label>
+                                <input type="number" class="form-control" id="commissionRate" value="15">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Max Bookings Per Day</label>
+                                <input type="number" class="form-control" id="maxBookings" value="50">
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="kundliEnabled" checked>
+                                    <label class="form-check-label">Enable Kundli Generation</label>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="onlinePoojaEnabled" checked>
+                                    <label class="form-check-label">Enable Online Pooja</label>
+                                </div>
+                            </div>
+                            <button class="btn btn-gold" onclick="saveSettings()">Save Settings</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auth check
+        const role = localStorage.getItem('role');
+        const email = localStorage.getItem('email');
+        if (role !== 'admin' || !email) {
+            window.location.href = '../login.html';
+        }
+
+        document.getElementById('adminName').textContent = email;
+
+        // Sidebar toggle
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+        }
+
+        // Section switching
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionName + '-section').style.display = 'block';
+
+            document.querySelectorAll('.sidebar a').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Load data and initialize dashboard
+        let panditsData = [];
+        let customersData = [];
+        let bookingsData = [];
+        let revenueData = [];
+
+        async function loadData() {
+            try {
+                const [panditsRes, customersRes, bookingsRes, revenueRes] = await Promise.all([
+                    fetch('http://localhost:3000/api/pandits'),
+                    fetch('http://localhost:3000/api/customers'),
+                    fetch('http://localhost:3000/api/bookings'),
+                    fetch('http://localhost:3000/api/revenue')
+                ]);
+
+                panditsData = await panditsRes.json();
+                customersData = await customersRes.json();
+                bookingsData = await bookingsRes.json();
+                revenueData = await revenueRes.json();
+
+                updateKPIs();
+                renderCharts();
+                renderPanditsTable();
+                renderCustomersTable();
+                renderBookingsTable();
+                renderRevenueSection();
+                renderReportsSection();
+                renderLogsSection();
+            } catch (error) {
+                console.error('Error loading data:', error);
+                // Fallback to local JSON if backend not running
+                loadLocalData();
+            }
+        }
+
+        async function loadLocalData() {
+            try {
+                const [panditsRes, customersRes, bookingsRes, revenueRes] = await Promise.all([
+                    fetch('../data/pandits.json'),
+                    fetch('../data/customers.json'),
+                    fetch('../data/bookings.json'),
+                    fetch('../data/revenue.json')
+                ]);
+
+                panditsData = await panditsRes.json();
+                customersData = await customersRes.json();
+                bookingsData = await bookingsRes.json();
+                revenueData = await revenueRes.json();
+
+                updateKPIs();
+                renderCharts();
+                renderPanditsTable();
+                renderCustomersTable();
+                renderBookingsTable();
+                renderRevenueSection();
+                renderReportsSection();
+                renderLogsSection();
+            } catch (error) {
+                console.error('Error loading local data:', error);
+            }
+        }
+
+        function updateKPIs() {
+            // Count-up animation for numbers
+            animateNumber('totalPandits', panditsData.length);
+            animateNumber('activeCustomers', customersData.filter(c => c.status === 'active').length);
+            animateNumber('todayBookings', bookingsData.filter(b => b.date === '2026-01-12').length);
+            document.getElementById('monthlyRevenue').textContent = '₹' + revenueData.monthlyRevenue[revenueData.monthlyRevenue.length - 1].amount.toLocaleString();
+        }
+
+        function animateNumber(elementId, target) {
+            const element = document.getElementById(elementId);
+            let current = 0;
+            const increment = target / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= target) {
+                    current = target;
+                    clearInterval(timer);
+                }
+                element.textContent = Math.floor(current);
+            }, 30);
+        }
+
+        function renderCharts() {
+            // Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'bar',
+                data: {
+                    labels: revenueData.monthlyRevenue.map(item => item.month),
+                    datasets: [{
+                        label: 'Revenue (₹)',
+                        data: revenueData.monthlyRevenue.map(item => item.amount),
+                        backgroundColor: 'rgba(212, 175, 55, 0.8)',
+                        borderColor: 'rgba(212, 175, 55, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#EAEAEA'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#EAEAEA'
+                            },
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.2)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#EAEAEA'
+                            },
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Pandit Status Chart
+            const panditCtx = document.getElementById('panditChart').getContext('2d');
+            const activeCount = panditsData.filter(p => p.status === 'active').length;
+            const blockedCount = panditsData.filter(p => p.status === 'blocked').length;
+
+            new Chart(panditCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Active', 'Blocked'],
+                    datasets: [{
+                        data: [activeCount, blockedCount],
+                        backgroundColor: ['rgba(16, 185, 129, 0.8)', 'rgba(239, 68, 68, 0.8)'],
+                        borderColor: ['rgba(16, 185, 129, 1)', 'rgba(239, 68, 68, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#EAEAEA'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function renderPanditsTable() {
+            const tbody = document.getElementById('panditsTableBody');
+            tbody.innerHTML = '';
+
+            panditsData.forEach(pandit => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${pandit.name}</td>
+                    <td>${pandit.expertise}</td>
+                    <td><i class="fas fa-star text-warning"></i> ${pandit.rating}</td>
+                    <td><span class="status-${pandit.status}">${pandit.status}</span></td>
+                    <td>₹${pandit.earnings.toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-gold btn-sm me-2" onclick="viewPandit(${pandit.id})">View</button>
+                        <button class="btn btn-outline-light btn-sm me-2" onclick="suspendPandit(${pandit.id})">${pandit.status === 'active' ? 'Suspend' : 'Activate'}</button>
+                        <button class="btn btn-outline-light btn-sm" onclick="processPayout(${pandit.id})">Payout</button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function viewPandit(id) {
+            const pandit = panditsData.find(p => p.id === id);
+            alert(`Viewing details for ${pandit.name}\nExpertise: ${pandit.expertise}\nRating: ${pandit.rating}\nEarnings: ₹${pandit.earnings}`);
+        }
+
+        function suspendPandit(id) {
+            const pandit = panditsData.find(p => p.id === id);
+            const newStatus = pandit.status === 'active' ? 'blocked' : 'active';
+
+            fetch(`http://localhost:3000/api/pandits/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    pandit.status = newStatus;
+                    renderPanditsTable();
+                    alert(`${pandit.name} has been ${newStatus === 'active' ? 'activated' : 'suspended'}\n📧 Gmail notification sent!`);
+                } else {
+                    alert('Error updating status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Fallback to local update
+                pandit.status = newStatus;
+                renderPanditsTable();
+                alert(`${pandit.name} has been ${newStatus === 'active' ? 'activated' : 'suspended'} (local update)`);
+            });
+        }
+
+        function processPayout(id) {
+            const pandit = panditsData.find(p => p.id === id);
+
+            fetch(`http://localhost:3000/api/pandits/${id}/payout`, {
+                method: 'PUT'
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    pandit.earnings = 0;
+                    renderPanditsTable();
+                    alert(`Payout processed for ${pandit.name}\nAmount: ₹${data.amount}\n📧 Gmail notification sent!`);
+                } else {
+                    alert('Error processing payout');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert(`Payout processed for ${pandit.name} (local simulation)`);
+            });
+        }
+
+        function renderCustomersTable() {
+            const tbody = document.getElementById('customersTableBody');
+            tbody.innerHTML = '';
+
+            customersData.forEach(customer => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${customer.name}</td>
+                    <td>${customer.email}</td>
+                    <td>${customer.city}</td>
+                    <td>${customer.totalBookings}</td>
+                    <td>₹${customer.totalSpent.toLocaleString()}</td>
+                    <td><span class="status-${customer.status}">${customer.status}</span></td>
+                    <td>
+                        <button class="btn btn-outline-light btn-sm me-2" onclick="viewCustomer(${customer.id})">View</button>
+                        <button class="btn btn-outline-light btn-sm" onclick="toggleCustomerStatus(${customer.id}, '${customer.status}')">
+                            ${customer.status === 'active' ? 'Block' : 'Unblock'}
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderBookingsTable() {
+            const tbody = document.getElementById('bookingsTableBody');
+            tbody.innerHTML = '';
+
+            bookingsData.forEach(booking => {
+                const customer = customersData.find(c => c.id === booking.customerId);
+                const pandit = panditsData.find(p => p.id === booking.panditId);
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${booking.id}</td>
+                    <td>${customer ? customer.name : 'Unknown'}</td>
+                    <td>${pandit ? pandit.name : 'Unknown'}</td>
+                    <td>${booking.service}</td>
+                    <td>${booking.date}</td>
+                    <td>₹${booking.amount}</td>
+                    <td><span class="status-${booking.status}">${booking.status}</span></td>
+                    <td><span class="status-${booking.paymentStatus}">${booking.paymentStatus}</span></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function renderRevenueSection() {
+            document.getElementById('totalRevenue').textContent = '₹' + revenueData.totalRevenue.toLocaleString();
+            document.getElementById('commissionAmount').textContent = '₹' + revenueData.platformFees.toLocaleString();
+            document.getElementById('pendingPayouts').textContent = '₹' + revenueData.pendingPayouts.toLocaleString();
+            document.getElementById('completedPayouts').textContent = '₹' + revenueData.completedPayouts.toLocaleString();
+
+            // Revenue trend chart
+            const revenueCtx = document.getElementById('revenueTrendChart').getContext('2d');
+            new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: revenueData.monthlyRevenue.map(item => item.month),
+                    datasets: [{
+                        label: 'Monthly Revenue',
+                        data: revenueData.monthlyRevenue.map(item => item.amount),
+                        borderColor: 'rgba(212, 175, 55, 1)',
+                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#EAEAEA'
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: '#EAEAEA'
+                            },
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.2)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: '#EAEAEA'
+                            },
+                            grid: {
+                                color: 'rgba(212, 175, 55, 0.2)'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function renderReportsSection() {
+            try {
+                const reportsRes = await fetch('http://localhost:3000/api/reports');
+                const reportsData = await reportsRes.json();
+
+                document.getElementById('totalReports').textContent = reportsData.length;
+                document.getElementById('paidReports').textContent = reportsData.filter(r => r.paid).length;
+                document.getElementById('freeReports').textContent = reportsData.filter(r => !r.paid).length;
+
+                const tbody = document.getElementById('reportsTableBody');
+                tbody.innerHTML = '';
+
+                reportsData.forEach(report => {
+                    const customer = customersData.find(c => c.id === report.customerId);
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${report.id}</td>
+                        <td>${customer ? customer.name : 'Unknown'}</td>
+                        <td>${report.type}</td>
+                        <td>${new Date(report.generatedDate).toLocaleDateString()}</td>
+                        <td>${report.paid ? 'Yes' : 'No'}</td>
+                        <td>₹${report.amount}</td>
+                        <td><span class="status-${report.status}">${report.status}</span></td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading reports:', error);
+            }
+        }
+
+        async function renderLogsSection() {
+            try {
+                const logsRes = await fetch('http://localhost:3000/api/logs');
+                const logsData = await logsRes.json();
+
+                const tbody = document.getElementById('logsTableBody');
+                tbody.innerHTML = '';
+
+                logsData.slice(-20).reverse().forEach(log => { // Show last 20 logs
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${log.type}</td>
+                        <td>${log.message}</td>
+                        <td><span class="status-${log.severity}">${log.severity}</span></td>
+                        <td>${new Date(log.timestamp).toLocaleString()}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
+            } catch (error) {
+                console.error('Error loading logs:', error);
+            }
+        }
+
+        function viewCustomer(id) {
+            const customer = customersData.find(c => c.id === id);
+            alert(`Customer Details:\nName: ${customer.name}\nEmail: ${customer.email}\nPhone: ${customer.phone}\nCity: ${customer.city}\nTotal Bookings: ${customer.totalBookings}\nTotal Spent: ₹${customer.totalSpent}`);
+        }
+
+        function toggleCustomerStatus(id, currentStatus) {
+            const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
+            fetch(`http://localhost:3000/api/customers/${id}/status`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const customer = customersData.find(c => c.id === id);
+                    customer.status = newStatus;
+                    renderCustomersTable();
+                    alert(`${customer.name} has been ${newStatus === 'active' ? 'activated' : 'blocked'}\n📧 Gmail notification sent!`);
+                } else {
+                    alert('Error updating customer status');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error updating status (backend not running)');
+            });
+        }
+
+        function saveSettings() {
+            const settings = {
+                commissionPercentage: parseInt(document.getElementById('commissionRate').value),
+                maxBookingsPerDay: parseInt(document.getElementById('maxBookings').value),
+                features: {
+                    kundliGeneration: document.getElementById('kundliEnabled').checked,
+                    onlinePooja: document.getElementById('onlinePoojaEnabled').checked
+                }
+            };
+
+            fetch('http://localhost:3000/api/settings', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(settings)
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Settings saved successfully!\n📧 Gmail notification sent!');
+                } else {
+                    alert('Error saving settings');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Settings saved locally (backend not running)');
+            });
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

@@ -35,25 +35,23 @@
     </div>
 
     <script>
-        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
             const cred = document.getElementById('credential').value.trim();
             const pass = document.getElementById('password').value.trim();
             const error = document.getElementById('errorMsg');
 
-            const res = await fetch('/api/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ identifier: cred, password: pass })
-            });
-            const data = await res.json();
-            if (data.success && data.role === 'pandit') {
-                localStorage.setItem('token', data.token);
-                window.location.href = "pandit-dashboard.html";
-            } else {
+            if (!cred || !pass) {
                 error.style.display = 'block';
+                error.textContent = 'All fields are required';
+                return;
             }
+
+            // Simple demo logic
+            localStorage.setItem('email', cred);
+            localStorage.setItem('role', 'pandit');
+            window.location.href = 'pandit-dashboard.html';
         });
     
     </script>

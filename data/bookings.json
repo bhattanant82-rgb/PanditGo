@@ -1,0 +1,57 @@
+[
+  {
+    "id": "BK001",
+    "customerId": 1,
+    "panditId": 1,
+    "service": "Marriage Kundli",
+    "date": "2026-01-12",
+    "time": "14:00",
+    "amount": 2500,
+    "status": "completed",
+    "paymentStatus": "paid"
+  },
+  {
+    "id": "BK002",
+    "customerId": 2,
+    "panditId": 2,
+    "service": "Gemstone Consultation",
+    "date": "2026-01-12",
+    "time": "16:30",
+    "amount": 1800,
+    "status": "confirmed",
+    "paymentStatus": "paid"
+  },
+  {
+    "id": "BK003",
+    "customerId": 3,
+    "panditId": 3,
+    "service": "Vastu Shastra",
+    "date": "2026-01-13",
+    "time": "10:00",
+    "amount": 3200,
+    "status": "pending",
+    "paymentStatus": "pending"
+  },
+  {
+    "id": "BK004",
+    "customerId": 4,
+    "panditId": 4,
+    "service": "Horoscope Matching",
+    "date": "2026-01-11",
+    "time": "11:30",
+    "amount": 2800,
+    "status": "completed",
+    "paymentStatus": "paid"
+  },
+  {
+    "id": "BK005",
+    "customerId": 5,
+    "panditId": 5,
+    "service": "Palmistry Reading",
+    "date": "2026-01-12",
+    "time": "13:00",
+    "amount": 1500,
+    "status": "confirmed",
+    "paymentStatus": "paid"
+  }
+]
