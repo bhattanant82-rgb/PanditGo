@@ -8,16 +8,45 @@
     "totalBookings": 12,
     "totalSpent": 8500,
     "lastBooking": "2026-01-10",
-    "status": "active"
+    "status": "active",
+    "wallet_balance": 500
   },
   {
-    "id": 2,
-    "name": "Rahul Mehta",
-    "email": "rahul@gmail.com",
-    "phone": "+91-9876543216",
-    "city": "Mumbai",
-    "totalBookings": 8,
-    "totalSpent": 6200,
+    "id": 22,
+    "name": "Amit Singh",
+    "email": "amit@gmail.com",
+    "phone": "+91-9876543222",
+    "city": "Delhi",
+    "totalBookings": 5,
+    "totalSpent": 3000,
+    "lastBooking": "2026-01-12",
+    "status": "active",
+    "wallet_balance": 200
+  },
+  {
+    "id": 33,
+    "name": "Sneha Patel",
+    "email": "sneha@gmail.com",
+    "phone": "+91-9876543233",
+    "city": "Ahmedabad",
+    "totalBookings": 3,
+    "totalSpent": 1500,
+    "lastBooking": "2026-01-11",
+    "status": "active",
+    "wallet_balance": 100
+  },
+  {
+    "id": 44,
+    "name": "Vikram Rao",
+    "email": "vikram@gmail.com",
+    "phone": "+91-9876543244",
+    "city": "Bangalore",
+    "totalBookings": 7,
+    "totalSpent": 4200,
+    "lastBooking": "2026-01-12",
+    "status": "active",
+    "wallet_balance": 300
+  }
     "lastBooking": "2026-01-08",
     "status": "active"
   },

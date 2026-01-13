@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call/Chat Session - PanditGo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+        .cosmic-bg {
+            background: radial-gradient(circle at center, rgba(255,215,0,0.1) 0%, transparent 70%);
+            min-height: 100vh;
+        }
+        .session-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 20px;
+        }
+        .timer {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255,215,0,0.5);
+        }
+        .balance {
+            font-size: 1.5rem;
+            color: #4CAF50;
+        }
+        .call-btn {
+            background: linear-gradient(45deg, #FF6B6B, #4ECDC4);
+            border: none;
+            border-radius: 50px;
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            box-shadow: 0 10px 30px rgba(255,107,107,0.3);
+            transition: all 0.3s ease;
+        }
+        .call-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 40px rgba(255,107,107,0.5);
+        }
+        .chat-messages {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .message {
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            padding: 10px 15px;
+            margin: 5px 0;
+        }
+        .message.user {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-left: 50px;
+        }
+        .message.pandit {
+            background: linear-gradient(45deg, #f093fb, #f5576c);
+            margin-right: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="cosmic-bg">
+        <div class="container py-5">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="session-card p-5">
+                        <div class="text-center mb-4">
+                            <h2 class="mb-3">Session with <span id="pandit-name">Pandit</span></h2>
+                            <div class="timer mb-3" id="timer">00:00:00</div>
+                            <div class="balance" id="balance">Wallet: ₹0</div>
+                        </div>
+
+                        <!-- Call Interface -->
+                        <div id="call-interface" class="text-center" style="display: none;">
+                            <div class="mb-4">
+                                <video id="localVideo" autoplay muted style="width: 200px; height: 150px; border-radius: 10px;"></video>
+                                <video id="remoteVideo" autoplay style="width: 200px; height: 150px; border-radius: 10px;"></video>
+                            </div>
+                            <button class="call-btn" id="end-call-btn">📞</button>
+                        </div>
+
+                        <!-- Chat Interface -->
+                        <div id="chat-interface" style="display: none;">
+                            <div class="chat-messages mb-3" id="chat-messages"></div>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="chat-input" placeholder="Type your message...">
+                                <button class="btn btn-warning" id="send-btn">Send</button>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="text-center mt-4">
+                            <button class="btn btn-danger" id="end-session-btn">End Session</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const sessionId = urlParams.get('session');
+        const type = urlParams.get('type');
+        const panditId = urlParams.get('pandit');
+        const userId = 22; // Hardcoded for demo, should come from auth
+
+        let startTime;
+        let timerInterval;
+        let sessionData;
+        let localStream;
+        let peerConnection;
+
+        // Load session data
+        async function loadSession() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/bookings`);
+                const bookings = await response.json();
+                sessionData = bookings.find(b => b.booking_id == sessionId);
+                
+                if (sessionData) {
+                    const panditsResponse = await fetch(`http://localhost:3000/api/pandits`);
+                    const pandits = await response.json();
+                    const pandit = pandits.find(p => p.id == sessionData.pandit_id);
+                    document.getElementById('pandit-name').textContent = pandit.name;
+                    
+                    startTime = new Date(sessionData.created_at);
+                    startTimer();
+                    
+                    if (type === 'call') {
+                        document.getElementById('call-interface').style.display = 'block';
+                        initWebRTC();
+                    } else {
+                        document.getElementById('chat-interface').style.display = 'block';
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading session:', error);
+            }
+        }
+
+        // Timer function
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                const now = new Date();
+                const elapsed = Math.floor((now - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                const hours = Math.floor(minutes / 60);
+                
+                document.getElementById('timer').textContent = 
+                    `${hours.toString().padStart(2, '0')}:${(minutes % 60).toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                
+                // Update billing every minute
+                if (elapsed % 60 === 0 && elapsed > 0) {
+                    updateBilling(Math.floor(elapsed / 60));
+                }
+                
+                updateBalance();
+            }, 1000);
+        }
+
+        // Update billing
+        async function updateBilling(minutes) {
+            try {
+                await fetch('http://localhost:3000/api/update-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: sessionId, minutes })
+                });
+            } catch (error) {
+                console.error('Error updating billing:', error);
+            }
+        }
+
+        // Update balance display
+        async function updateBalance() {
+            try {
+                const response = await fetch(`http://localhost:3000/api/wallet/${userId}`);
+                const data = await response.json();
+                document.getElementById('balance').textContent = `Wallet: ₹${data.balance}`;
+            } catch (error) {
+                console.error('Error updating balance:', error);
+            }
+        }
+
+        // WebRTC for calls
+        async function initWebRTC() {
+            try {
+                localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+                document.getElementById('localVideo').srcObject = localStream;
+                
+                peerConnection = new RTCPeerConnection();
+                localStream.getTracks().forEach(track => peerConnection.addTrack(track, localStream));
+                
+                peerConnection.ontrack = event => {
+                    document.getElementById('remoteVideo').srcObject = event.streams[0];
+                };
+                
+                // In real implementation, signaling would happen here
+                // For MVP, this is placeholder
+            } catch (error) {
+                console.error('WebRTC error:', error);
+            }
+        }
+
+        // Chat functionality
+        document.getElementById('send-btn').addEventListener('click', sendMessage);
+        document.getElementById('chat-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        function sendMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if (message) {
+                addMessage('user', message);
+                input.value = '';
+                
+                // Simulate pandit response
+                setTimeout(() => {
+                    addMessage('pandit', 'Thank you for your question. Let me provide guidance...');
+                }, 1000);
+            }
+        }
+
+        function addMessage(sender, text) {
+            const messages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}`;
+            messageDiv.textContent = text;
+            messages.appendChild(messageDiv);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        // End session
+        document.getElementById('end-session-btn').addEventListener('click', endSession);
+        document.getElementById('end-call-btn').addEventListener('click', endSession);
+
+        async function endSession() {
+            clearInterval(timerInterval);
+            
+            if (localStream) {
+                localStream.getTracks().forEach(track => track.stop());
+            }
+            
+            try {
+                await fetch('http://localhost:3000/api/end-session', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: sessionId })
+                });
+                
+                alert('Session ended successfully!');
+                window.location.href = 'my-dashboard.html';
+            } catch (error) {
+                console.error('Error ending session:', error);
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', loadSession);
+    </script>
+</body>
+</html>

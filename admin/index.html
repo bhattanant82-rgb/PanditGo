@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PanditGo CMS Admin</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; }
+        .sidebar { width: 200px; background: #333; color: white; height: 100vh; padding: 20px 0; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar li { padding: 10px 20px; cursor: pointer; }
+        .sidebar li:hover { background: #555; }
+        .content { flex: 1; padding: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
+        th { background: #f2f2f2; }
+        .form-group { margin-bottom: 10px; }
+        label { display: block; }
+        input, select { width: 100%; padding: 8px; }
+        button { padding: 10px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        button:hover { background: #45a049; }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <h2>PanditGo CMS</h2>
+        <ul>
+            <li onclick="loadSection('dashboard')">Dashboard</li>
+            <li onclick="loadSection('pandits')">Pandits</li>
+            <li onclick="loadSection('bookings')">Bookings</li>
+            <li onclick="loadSection('payments')">Payments</li>
+            <li onclick="loadSection('pricing')">Pricing Rules</li>
+            <li onclick="loadSection('cms')">CMS Content</li>
+            <li onclick="loadSection('panchang')">Panchang / Events</li>
+            <li onclick="loadSection('notifications')">Notifications</li>
+            <li onclick="loadSection('logs')">Admin Logs</li>
+            <li onclick="loadSection('settings')">Settings</li>
+        </ul>
+    </div>
+    <div class="content" id="content">
+        <h1>Welcome to PanditGo CMS</h1>
+        <p>Select a section from the sidebar.</p>
+    </div>
+    <script>
+        function loadSection(section) {
+            const content = document.getElementById('content');
+            switch(section) {
+                case 'pandits':
+                    loadPandits();
+                    break;
+                case 'bookings':
+                    loadBookings();
+                    break;
+                case 'payments':
+                    loadPayments();
+                    break;
+                case 'pricing':
+                    loadPricing();
+                    break;
+                case 'cms':
+                    loadCMS();
+                    break;
+                case 'panchang':
+                    loadPanchang();
+                    break;
+                case 'notifications':
+                    loadNotifications();
+                    break;
+                case 'logs':
+                    loadLogs();
+                    break;
+                default:
+                    content.innerHTML = '<h1>' + section + '</h1>';
+            }
+        }
+        async function loadPandits() {
+            const res = await fetch('/admin/pandits');
+            const pandits = await res.json();
+            let html = '<h1>Pandits</h1><button onclick="showAddPanditForm()">Add Pandit</button><table><tr><th>Name</th><th>City</th><th>Status</th><th>Actions</th></tr>';
+            pandits.forEach(p => {
+                html += `<tr><td>${p.name}</td><td>${p.city}</td><td>${p.status}</td><td><button onclick="editPandit('${p._id}')">Edit</button> <button onclick="deletePandit('${p._id}')">Delete</button></td></tr>`;
+            });
+            html += '</table>';
+            document.getElementById('content').innerHTML = html;
+        }
+        function showAddPanditForm() {
+            const form = `
+                <h2>Add Pandit</h2>
+                <form onsubmit="addPandit(event)">
+                    <div class="form-group"><label>Name:</label><input name="name" required></div>
+                    <div class="form-group"><label>Photo:</label><input name="photo"></div>
+                    <div class="form-group"><label>City:</label><input name="city" required></div>
+                    <div class="form-group"><label>Languages (comma separated):</label><input name="languages"></div>
+                    <div class="form-group"><label>Experience:</label><input name="experience" type="number"></div>
+                    <div class="form-group"><label>Specialization:</label><input name="specialization"></div>
+                    <div class="form-group"><label>Chat Price/min:</label><input name="chat_price_per_min" type="number" required></div>
+                    <div class="form-group"><label>Call Price/min:</label><input name="call_price_per_min" type="number" required></div>
+                    <div class="form-group"><label>Availability:</label><select name="availability"><option value="online">Online</option><option value="offline">Offline</option></select></div>
+                    <div class="form-group"><label>Phone:</label><input name="phone"></div>
+                    <button type="submit">Add</button>
+                </form>
+            `;
+            document.getElementById('content').innerHTML = form;
+        }
+        async function addPandit(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            data.languages = data.languages.split(',').map(l => l.trim());
+            data.experience = parseInt(data.experience);
+            data.chat_price_per_min = parseFloat(data.chat_price_per_min);
+            data.call_price_per_min = parseFloat(data.call_price_per_min);
+            await fetch('/admin/pandits', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            loadPandits();
+        }
+        async function deletePandit(id) {
+            if (confirm('Delete?')) {
+                await fetch(`/admin/pandits/${id}`, { method: 'DELETE' });
+                loadPandits();
+            }
+        }
+        async function loadBookings() {
+            const res = await fetch('/admin/bookings');
+            const bookings = await res.json();
+            let html = '<h1>Bookings</h1><table><tr><th>ID</th><th>Pandit</th><th>Customer</th><th>Type</th><th>Amount</th><th>Status</th><th>Actions</th></tr>';
+            bookings.forEach(b => {
+                html += `<tr><td>${b._id}</td><td>${b.pandit_id ? b.pandit_id.name : ''}</td><td>${b.customer_id ? b.customer_id.name : ''}</td><td>${b.type}</td><td>${b.amount}</td><td>${b.booking_status}</td><td><button onclick="cancelBooking('${b._id}')">Cancel</button></td></tr>`;
+            });
+            html += '</table>';
+            document.getElementById('content').innerHTML = html;
+        }
+        async function cancelBooking(id) {
+            await fetch(`/admin/bookings/${id}/cancel`, { method: 'PUT' });
+            loadBookings();
+        }
+        async function loadPricing() {
+            const res = await fetch('/admin/pricing-rules');
+            const rule = await res.json();
+            const html = `
+                <h1>Pricing Rules</h1>
+                <form onsubmit="updatePricing(event)">
+                    <div class="form-group"><label>Chat Base Price:</label><input name="chat_base_price" value="${rule ? rule.chat_base_price : ''}" type="number" step="0.01" required></div>
+                    <div class="form-group"><label>Call Base Price:</label><input name="call_base_price" value="${rule ? rule.call_base_price : ''}" type="number" step="0.01" required></div>
+                    <div class="form-group"><label>Platform Commission %:</label><input name="platform_commission_percent" value="${rule ? rule.platform_commission_percent : ''}" type="number" step="0.01" required></div>
+                    <button type="submit">Update</button>
+                </form>
+            `;
+            document.getElementById('content').innerHTML = html;
+        }
+        async function updatePricing(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const data = Object.fromEntries(formData);
+            data.chat_base_price = parseFloat(data.chat_base_price);
+            data.call_base_price = parseFloat(data.call_base_price);
+            data.platform_commission_percent = parseFloat(data.platform_commission_percent);
+            await fetch('/admin/pricing-rules', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            alert('Updated');
+        }
+        async function loadCMS() {
+            const res = await fetch('/admin/cms-content');
+            const contents = await res.json();
+            let html = '<h1>CMS Content</h1><table><tr><th>Page</th><th>Section</th><th>Title</th><th>Description</th><th>Actions</th></tr>';
+            contents.forEach(c => {
+                html += `<tr><td>${c.page}</td><td>${c.section_name}</td><td>${c.title}</td><td>${c.description}</td><td><button onclick="editCMS('${c._id}')">Edit</button></td></tr>`;
+            });
+            html += '</table>';
+            document.getElementById('content').innerHTML = html;
+        }
+        function editCMS(id) {
+            alert('Edit CMS ' + id);
+        }
+    </script>
+</body>
+</html>

@@ -11,102 +11,338 @@
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
     <style>
         :root {
-            --primary: #FF9933;
-            --dark: #1a252f;
-            --gold: #FFD700;
+            --background: #FFFDF8; /* Off-white/ivory */
+            --primary: #C9A24D; /* Soft gold */
+            --text: #2E2E2E; /* Charcoal */
+            --muted: #7A7A7A; /* Muted gray */
+            --accent: #E9D8A6; /* Light gold */
+            --border: #F0F0F0;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(to bottom, #f8f9fa, #fffaf0);
-            color: #333;
+            background: var(--background);
+            background-image: 
+                radial-gradient(circle at 20% 80%, rgba(201, 162, 77, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(233, 216, 166, 0.02) 0%, transparent 50%);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
         }
+
+        /* Minimal Navbar */
         .navbar {
-            background: var(--dark);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            background: var(--background);
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
         }
+
         .navbar-brand {
             font-family: 'Playfair Display', serif;
-            font-size: 2.2rem;
+            font-size: 1.8rem;
+            font-weight: 700;
             color: var(--primary) !important;
         }
-        .card-pandit {
-            border: none;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
-            transition: all 0.4s ease;
-            background: white;
+
+        .navbar-nav .nav-link {
+            color: var(--text) !important;
+            font-weight: 500;
+            transition: color 0.3s ease;
         }
-        .card-pandit:hover {
-            transform: translateY(-12px);
-            box-shadow: 0 20px 50px rgba(255,153,51,0.25);
+
+        .navbar-nav .nav-link:hover {
+            color: var(--primary) !important;
         }
-        .pandit-img {
-            width: 140px;
-            height: 140px;
-            object-fit: cover;
-            border: 5px solid var(--primary);
-            border-radius: 50%;
-            margin: -60px auto 20px;
-            background: white;
-            padding: 5px;
-        }
-        .badge-verified {
-            background: linear-gradient(45deg, #28a745, #34d058);
-            font-size: 0.9rem;
-            padding: 6px 14px;
-        }
-        .btn-book {
-            background: var(--primary);
-            border: none;
-            border-radius: 50px;
-            padding: 12px 30px;
+
+        .navbar-nav .nav-link.active {
+            color: var(--primary) !important;
             font-weight: 600;
-            transition: all 0.3s;
-            color: white;
         }
-        .btn-book:hover {
-            background: #e68a00;
-            transform: scale(1.05);
+
+        /* Main Content */
+        .main-content {
+            padding-top: 100px;
+            min-height: 100vh;
         }
-        .btn-chat {
-            background: #25D366;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 8px 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
-        .btn-call {
-            background: #00BFFF;
-            color: white;
-            border: none;
-            border-radius: 50px;
-            padding: 8px 20px;
-            font-size: 0.9rem;
-            transition: all 0.3s;
+
+        /* Section Header */
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 2rem 0;
         }
-        .btn-chat:hover, .btn-call:hover {
-            transform: scale(1.05);
+
+        .section-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
         }
-        .no-pandit-msg {
-            font-size: 1.4rem;
-            color: #6c757d;
-            padding: 60px 20px;
+
+        .section-header p {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Pandit Cards - Clean & Simple */
+        .pandit-card {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
         }
+
+        .pandit-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Pandit Image */
+        .pandit-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+            transition: opacity 0.5s ease;
+        }
+
+        /* Card Content */
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .pandit-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .pandit-meta {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            color: var(--muted);
+            flex-wrap: wrap;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .specialization {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn-action {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.5rem 1rem;
+            font-weight: 600;
+            font-size: 0.85rem;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            min-width: 120px;
+        }
+
+        .btn-action:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 162, 77, 0.3);
+        }
+
+        .btn-chat {
+            border-color: #25D366;
+            color: #25D366;
+        }
+
+        .btn-chat:hover {
+            background: #25D366;
+            border-color: #25D366;
+            box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+        }
+
+        .btn-call {
+            border-color: #007bff;
+            color: #007bff;
+        }
+
+        .btn-call:hover {
+            background: #007bff;
+            border-color: #007bff;
+            box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Book Button */
+        .btn-book {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: 2px solid var(--primary);
+            border-radius: 8px;
+            padding: 0.75rem 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-book:hover {
+            background: white;
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(201, 162, 77, 0.3);
+        }
+
+        .btn-book::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .btn-book:hover::before {
+            left: 100%;
+        }
+
+        /* Error Message */
+        .no-pandit-msg {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--muted);
+            font-size: 1.1rem;
+            box-shadow: var(--shadow);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .section-header h1 {
+                font-size: 2.2rem;
+            }
+
+            .pandit-image {
+                height: 220px;
+            }
+
+            .pandit-name {
+                font-size: 1.3rem;
+            }
+
+            .pandit-meta {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .pricing-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+            }
+
+            .btn-action {
+                width: 100%;
+                min-width: unset;
+            }
+
+            .btn-book {
+                padding: 0.875rem 1.25rem;
+                font-size: 0.95rem;
+            }
+        }
+
+        /* Fade-in Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .pandit-card {
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        .pandit-card:nth-child(1) { animation-delay: 0.1s; }
+        .pandit-card:nth-child(2) { animation-delay: 0.2s; }
+        .pandit-card:nth-child(3) { animation-delay: 0.3s; }
+        .pandit-card:nth-child(4) { animation-delay: 0.4s; }
+        .pandit-card:nth-child(5) { animation-delay: 0.5s; }
+        .pandit-card:nth-child(6) { animation-delay: 0.6s; }
+        .pandit-card:nth-child(7) { animation-delay: 0.7s; }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+<!-- Minimal Navbar -->
+<nav class="navbar navbar-expand-lg">
     <div class="container">
-        <a class="navbar-brand fw-bold" href="index.html">BookMyPandit</a>
-        <a href="/pandit/bookings.html">Bookings</a>
+        <a class="navbar-brand" href="index.html">BookMyPandit</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -114,266 +350,26 @@
             <ul class="navbar-nav mx-auto">
                 <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
                 <li class="nav-item"><a class="nav-link active" href="pandits.html">Pandits</a></li>
-                <li class="nav-item"><a class="nav-link" href="kundli-generator.html">Kundli</a></li>
-                <li class="nav-item"><a class="nav-link" href="puja-types.html">Pujas</a></li>
-                <li class="nav-item"><a class="nav-link" href="become-pandit.html">Become Pandit</a></li>
             </ul>
-            <div class="d-flex gap-2">
-                <a href="login.html" class="btn btn-outline-light btn-sm">Login</a>
-                <a href="signup.html" class="btn btn-warning btn-sm">Sign Up</a>
-            </div>
         </div>
     </div>
 </nav>
 
-<!-- Pandit List Section -->
-<section class="py-5 mt-5">
-    <div class="container pt-5">
-        <div class="text-center mb-5">
-            <h1 class="display-5 fw-bold" style="color: var(--dark);">Our Verified Pandits 🙏</h1>
-            <p class="lead text-muted">Trusted, experienced & verified pandits for your sacred rituals</p>
+<!-- Main Content -->
+<div class="main-content">
+    <div class="container">
+        <div class="section-header">
+            <h1>Our Verified Pandits 🙏</h1>
+            <p>Trusted, experienced & verified pandits for your sacred rituals</p>
         </div>
 
-        <div class="row g-4 justify-content-center" id="panditsList">
-            <!-- 7 Pandits -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit1.jpg" class="pandit-img" alt="Pt. Ram Sharma">
-                    <h5 class="fw-bold mb-2">Pt. Ram Sharma</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Ahmedabad</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 20+ Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi, Sanskrit, Gujarati</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 4.9</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Griha Pravesh, Satyanarayan Katha, Rudrabhishek</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Ram Sharma&id=PT001'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Ram Sharma')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Ram Sharma')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 2 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit2.jpg" class="pandit-img" alt="Pt. Mahesh Joshi">
-                    <h5 class="fw-bold mb-2">Pt. Mahesh Joshi</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Surat</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 18 Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi, Gujarati</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 4.8</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Marriage Puja, Namkaran, Annaprashan</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Mahesh Joshi&id=PT002'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Mahesh Joshi')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Mahesh Joshi')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 3 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit3.jpg" class="pandit-img" alt="Pt. Vikram Patel">
-                    <h5 class="fw-bold mb-2">Pt. Vikram Patel</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Mumbai</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 25+ Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi, Gujarati</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 5.0</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Vastu Puja, Ganesh Yagya, Navgrah Shanti</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Vikram Patel&id=PT003'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Vikram Patel')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Vikram Patel')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 4 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit4.jpg" class="pandit-img" alt="Pt. Anil Trivedi">
-                    <h5 class="fw-bold mb-2">Pt. Anil Trivedi</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Jaipur</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 15+ Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi, Rajasthani</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 4.7</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Laxmi Puja, Durga Saptashati, Kali Puja</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Anil Trivedi&id=PT004'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Anil Trivedi')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Anil Trivedi')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 5 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit5.jpg" class="pandit-img" alt="Pt. Rajesh Dubey">
-                    <h5 class="fw-bold mb-2">Pt. Rajesh Dubey</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Delhi</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 22 Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi, Sanskrit</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 4.9</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Kaal Sarp Dosh Nivaran, Pitra Dosha Shanti</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Rajesh Dubey&id=PT005'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Rajesh Dubey')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Rajesh Dubey')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 6 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit6.jpg" class="pandit-img" alt="Pt. Sanjay Mishra">
-                    <h5 class="fw-bold mb-2">Pt. Sanjay Mishra</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Delhi</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 17 Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Hindi</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 4.8</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> Maha Mrityunjaya, Navgrah Shanti</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Sanjay Mishra&id=PT006'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Sanjay Mishra')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Sanjay Mishra')">Call</button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Pandit 7 -->
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="images/pandit7.jpg" class="pandit-img" alt="Pt. Kishan Shastri">
-                    <h5 class="fw-bold mb-2">Pt. Kishan Shastri</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> Ahmedabad</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> 30 Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> Sanskrit, Hindi, Gujarati</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ 5.0</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> All Major Pujas & Shanti</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=Pt. Kishan Shastri&id=PT007'">Book Now</button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('Pt. Kishan Shastri')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('Pt. Kishan Shastri')">Call</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="text-center mt-5">
-            <a href="become-pandit.html" class="btn btn-success btn-lg rounded-pill px-5 py-3 fw-bold">Become a Pandit</a>
+        <div class="row g-4" id="panditsList">
+            <!-- Pandits will be loaded dynamically from JSON -->
         </div>
     </div>
-</section>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-// Built-in 7 Pandits
-const builtInPandits = [
-    { id: "PT001", name: "Pt. Ram Sharma", city: "Ahmedabad", exp: 20, lang: "Hindi, Sanskrit, Gujarati", pujas: "Griha Pravesh, Satyanarayan Katha, Rudrabhishek", photo: "images/pandit1.jpg", status: "Verified", rating: 4.9 },
-    { id: "PT002", name: "Pt. Mahesh Joshi", city: "Surat", exp: 18, lang: "Hindi, Gujarati", pujas: "Marriage Puja, Namkaran, Annaprashan", photo: "images/pandit2.jpg", status: "Verified", rating: 4.8 },
-    { id: "PT003", name: "Pt. Vikram Patel", city: "Mumbai", exp: 25, lang: "Hindi, Marathi, Sanskrit", pujas: "Vastu Puja, Ganesh Yagya, Navgrah Shanti", photo: "images/pandit3.jpg", status: "Verified", rating: 5.0 },
-    { id: "PT004", name: "Pt. Anil Trivedi", city: "Jaipur", exp: 15, lang: "Hindi, Rajasthani", pujas: "Laxmi Puja, Durga Saptashati, Kali Puja", photo: "images/pandit4.jpg", status: "Verified", rating: 4.7 },
-    { id: "PT005", name: "Pt. Rajesh Dubey", city: "Delhi", exp: 22, lang: "Hindi, Sanskrit", pujas: "Kaal Sarp Dosh Nivaran, Pitra Dosha Shanti", photo: "images/pandit5.jpg", status: "Verified", rating: 4.9 },
-    { id: "PT006", name: "Pt. Sanjay Mishra", city: "Delhi", exp: 17, lang: "Hindi", pujas: "Maha Mrityunjaya, Navgrah Shanti", photo: "images/pandit6.jpg", status: "Verified", rating: 4.8 },
-    { id: "PT007", name: "Pt. Kishan Shastri", city: "Ahmedabad", exp: 30, lang: "Sanskrit, Hindi, Gujarati", pujas: "All Major Pujas & Shanti", photo: "images/pandit7.jpg", status: "Verified", rating: 5.0 }
-];
-
-function loadPandits() {
-    const container = document.getElementById('panditsList');
-    container.innerHTML = '';
-
-    builtInPandits.forEach(p => {
-        container.innerHTML += `
-            <div class="col-lg-4 col-md-6">
-                <div class="card-pandit text-center p-4">
-                    <img src="${p.photo}" class="pandit-img" alt="${p.name}">
-                    <h5 class="fw-bold mb-2">${p.name}</h5>
-                    <p class="text-muted mb-1"><i class="bi bi-geo-alt-fill me-1"></i> ${p.city}</p>
-                    <p class="text-muted mb-2"><i class="bi bi-clock-history me-1"></i> ${p.exp}+ Years</p>
-                    <p class="text-muted small mb-3"><i class="bi bi-translate me-1"></i> ${p.lang}</p>
-                    <p class="mb-3">
-                        <span class="badge-verified">VERIFIED</span>
-                        <span class="badge bg-warning ms-2">⭐ ${p.rating}</span>
-                    </p>
-                    <p class="text-muted small mb-4"><strong>Specializes in:</strong> ${p.pujas}</p>
-                    <div class="d-flex justify-content-center gap-2 flex-wrap">
-                        <button class="btn btn-book mb-2" onclick="window.location.href='book-pandit.html?pandit=${encodeURIComponent(p.name)}&id=${p.id}'">
-                            Book Now
-                        </button>
-                        <button class="btn btn-chat mb-2" onclick="startChat('${p.name}')">Chat</button>
-                        <button class="btn btn-call mb-2" onclick="startCall('${p.name}')">Call</button>
-                    </div>
-                </div>
-            </div>
-        `;
-    });
-}
-
-function startChat(name) {
-    let minutes = prompt(`How many minutes chat with Pandit ${name}? (₹19/min)`, "5");
-    if (!minutes || minutes < 1) return alert("Minimum 1 minute");
-    const amount = 19 * minutes * 100;
-    const options = {
-        "key": "rzp_live_RwBuGYKySb2uQY",
-        "amount": amount,
-        "currency": "INR",
-        "name": "BookMyPandit",
-        "description": `Chat with ${name} - ${minutes} min`,
-        "handler": function (response){
-            alert('Payment Success! Chat starting...');
-            window.open(`https://wa.me/919876543210?text=Hello Pandit ${name}, I paid for ${minutes} min chat`, '_blank');
-        },
-        "theme": {"color": "#25D366"}
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
-}
-
-function startCall(name) {
-    let minutes = prompt(`How many minutes call with Pandit ${name}? (₹19/min)`, "5");
-    if (!minutes || minutes < 1) return alert("Minimum 1 minute");
-    const amount = 19 * minutes * 100;
-    const options = {
-        "key": "rzp_live_RwBuGYKySb2uQY",
-        "amount": amount,
-        "currency": "INR",
-        "name": "BookMyPandit",
-        "description": `Call with ${name} - ${minutes} min`,
-        "handler": function (response){
-            alert('Payment Success! Calling Pandit ' + name + '...');
-            alert('(Demo Call) In real app, this will connect real call');
-        },
-        "theme": {"color": "#00BFFF"}
-    };
-    const rzp = new Razorpay(options);
-    rzp.open();
-}
-
-window.onload = loadPandits;
-</script>
+<script src="frontend/js/pandits.js"></script>
 </body>
 </html>

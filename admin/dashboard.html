@@ -291,6 +291,75 @@
             </div>
         </div>
 
+        <!-- Revenue Analytics Section -->
+        <div id="revenue-section" class="section" style="display: none;">
+            <h2 class="mb-4">Revenue Analytics</h2>
+
+            <!-- Revenue KPI Cards -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Total Revenue</div>
+                        <div class="kpi-number" id="totalRevenue">₹0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Platform Commission</div>
+                        <div class="kpi-number" id="platformCommission">₹0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Call Minutes Sold</div>
+                        <div class="kpi-number" id="callMinutes">0</div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Chat Minutes Sold</div>
+                        <div class="kpi-number" id="chatMinutes">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Revenue Charts -->
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Revenue Breakdown</h4>
+                        <canvas id="revenueBreakdownChart"></canvas>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="chart-container">
+                        <h4>Session Types</h4>
+                        <canvas id="sessionTypesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pandit Earnings Table -->
+            <div class="chart-container">
+                <h4>Pandit Earnings & Payouts</h4>
+                <div class="table-responsive">
+                    <table class="table" id="panditEarningsTable">
+                        <thead>
+                            <tr>
+                                <th>Pandit Name</th>
+                                <th>Wallet Balance</th>
+                                <th>Total Earnings</th>
+                                <th>Pending Payout</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="panditEarningsBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
         <!-- Pandits Management Section -->
         <div id="pandits-section" class="section" style="display: none;">
             <h2 class="mb-4">Pandits Management</h2>
@@ -800,55 +869,121 @@
         }
 
         function renderRevenueSection() {
-            document.getElementById('totalRevenue').textContent = '₹' + revenueData.totalRevenue.toLocaleString();
-            document.getElementById('commissionAmount').textContent = '₹' + revenueData.platformFees.toLocaleString();
-            document.getElementById('pendingPayouts').textContent = '₹' + revenueData.pendingPayouts.toLocaleString();
-            document.getElementById('completedPayouts').textContent = '₹' + revenueData.completedPayouts.toLocaleString();
+            // Load revenue data from new API
+            fetch('http://localhost:3000/api/admin/revenue')
+                .then(res => res.json())
+                .then(data => {
+                    document.getElementById('totalRevenue').textContent = '₹' + data.total_revenue.toLocaleString();
+                    document.getElementById('platformCommission').textContent = '₹' + data.platform_commission.toLocaleString();
+                    document.getElementById('callMinutes').textContent = data.call_minutes_sold;
+                    document.getElementById('chatMinutes').textContent = data.chat_minutes_sold;
 
-            // Revenue trend chart
-            const revenueCtx = document.getElementById('revenueTrendChart').getContext('2d');
-            new Chart(revenueCtx, {
-                type: 'line',
-                data: {
-                    labels: revenueData.monthlyRevenue.map(item => item.month),
-                    datasets: [{
-                        label: 'Monthly Revenue',
-                        data: revenueData.monthlyRevenue.map(item => item.amount),
-                        borderColor: 'rgba(212, 175, 55, 1)',
-                        backgroundColor: 'rgba(212, 175, 55, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            labels: {
-                                color: '#EAEAEA'
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            ticks: {
-                                color: '#EAEAEA'
-                            },
-                            grid: {
-                                color: 'rgba(212, 175, 55, 0.2)'
-                            }
+                    // Revenue Breakdown Chart
+                    const breakdownCtx = document.getElementById('revenueBreakdownChart').getContext('2d');
+                    new Chart(breakdownCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Platform Commission', 'Pandit Earnings'],
+                            datasets: [{
+                                data: [data.platform_commission, data.pandit_earnings],
+                                backgroundColor: ['rgba(212, 175, 55, 0.8)', 'rgba(31, 59, 115, 0.8)'],
+                                borderColor: ['rgba(212, 175, 55, 1)', 'rgba(31, 59, 115, 1)'],
+                                borderWidth: 2
+                            }]
                         },
-                        x: {
-                            ticks: {
-                                color: '#EAEAEA'
-                            },
-                            grid: {
-                                color: 'rgba(212, 175, 55, 0.2)'
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#EAEAEA'
+                                    }
+                                }
                             }
                         }
-                    }
-                }
-            });
+                    });
+
+                    // Session Types Chart
+                    const sessionCtx = document.getElementById('sessionTypesChart').getContext('2d');
+                    new Chart(sessionCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Call Minutes', 'Chat Minutes'],
+                            datasets: [{
+                                label: 'Minutes Sold',
+                                data: [data.call_minutes_sold, data.chat_minutes_sold],
+                                backgroundColor: ['rgba(16, 185, 129, 0.8)', 'rgba(59, 130, 246, 0.8)'],
+                                borderColor: ['rgba(16, 185, 129, 1)', 'rgba(59, 130, 246, 1)'],
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    labels: {
+                                        color: '#EAEAEA'
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    ticks: {
+                                        color: '#EAEAEA'
+                                    },
+                                    grid: {
+                                        color: 'rgba(212, 175, 55, 0.2)'
+                                    }
+                                },
+                                x: {
+                                    ticks: {
+                                        color: '#EAEAEA'
+                                    },
+                                    grid: {
+                                        color: 'rgba(212, 175, 55, 0.2)'
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    // Pandit Earnings Table
+                    const tbody = document.getElementById('panditEarningsBody');
+                    tbody.innerHTML = '';
+                    
+                    panditsData.forEach(pandit => {
+                        const row = `
+                            <tr>
+                                <td>${pandit.name}</td>
+                                <td>₹${pandit.wallet_balance || 0}</td>
+                                <td>₹${pandit.earnings || 0}</td>
+                                <td>₹${pandit.wallet_balance || 0}</td>
+                                <td><button class="btn btn-gold btn-sm" onclick="processPayout(${pandit.id})">Process Payout</button></td>
+                            </tr>
+                        `;
+                        tbody.innerHTML += row;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading revenue data:', error);
+                    // Fallback to old data
+                    document.getElementById('totalRevenue').textContent = '₹' + (revenueData.totalRevenue || 0).toLocaleString();
+                });
+        }
+
+        function processPayout(panditId) {
+            if (confirm('Process payout for this pandit?')) {
+                // In real implementation, integrate with payment gateway
+                alert('Payout processed successfully!');
+                // Update pandit wallet to 0
+                fetch(`http://localhost:3000/api/pandits/${panditId}`, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ wallet_balance: 0 })
+                }).then(() => {
+                    loadData(); // Reload data
+                });
+            }
         }
 
         async function renderReportsSection() {

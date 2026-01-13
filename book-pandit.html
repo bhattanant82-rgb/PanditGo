@@ -149,17 +149,8 @@
                     <!-- Step 3: Select Pandit -->
                     <div class="step-content" id="step3">
                         <h3 class="text-center mb-4">Select Pandit</h3>
-                        <div class="row g-4">
-                            <div class="col-md-4">
-                                <div class="card text-center p-3 shadow">
-                                    <img src="images/pandit1.jpg" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="Pandit">
-                                    <h5>Pt. Ram Sharma</h5>
-                                    <p class="small text-muted">20+ Years • Hindi/Sanskrit/Gujarati</p>
-                                    <p class="text-warning">⭐ 4.9</p>
-                                    <button type="button" class="btn btn-primary rounded-pill select-pandit" data-pandit="Pt. Ram Sharma">Select</button>
-                                </div>
-                            </div>
-                            <!-- Baaki pandits ke cards tere original code se copy kar lena -->
+                        <div class="row g-4" id="panditSelectionContainer">
+                            <!-- Pandits will be loaded dynamically -->
                         </div>
                         <div class="text-center mt-4">
                             <button type="button" class="btn btn-outline-secondary me-3 prev-btn">Previous</button>
@@ -421,6 +412,54 @@
         });
 
         showStep(currentStep);
+
+        // Load pandits dynamically
+        async function loadPanditsForBooking() {
+            try {
+                const response = await fetch('data/pandits.json');
+                const pandits = await response.json();
+                
+                const container = document.getElementById('panditSelectionContainer');
+                container.innerHTML = '';
+
+                pandits.forEach(p => {
+                    const statusBadge = p.status === 'online' ? 
+                        '<span class="badge bg-success">● Online</span>' : 
+                        '<span class="badge bg-secondary">● Offline</span>';
+                    
+                    container.innerHTML += `
+                        <div class="col-md-4">
+                            <div class="card text-center p-3 shadow">
+                                <img src="${p.photo}" class="rounded-circle mx-auto mb-3" width="120" height="120" alt="${p.name}">
+                                <h5>${p.name}</h5>
+                                <p class="small text-muted">${p.experience}+ Years • ${p.languages.join('/')}</p>
+                                <p class="text-warning">⭐ ${p.rating} ${statusBadge}</p>
+                                <p class="small text-muted">${p.city}</p>
+                                <button type="button" class="btn btn-outline-primary rounded-pill select-pandit" data-pandit="${p.name}">Select</button>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                // Re-attach event listeners for newly created buttons
+                document.querySelectorAll('.select-pandit').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        document.querySelectorAll('.select-pandit').forEach(b => {
+                            b.classList.remove('btn-primary');
+                            b.classList.add('btn-outline-primary');
+                        });
+                        this.classList.remove('btn-outline-primary');
+                        this.classList.add('btn-primary');
+                    });
+                });
+            } catch (error) {
+                console.error('Error loading pandits:', error);
+                document.getElementById('panditSelectionContainer').innerHTML = '<div class="col-12"><div class="alert alert-warning">Unable to load pandits. Please refresh the page.</div></div>';
+            }
+        }
+
+        // Load pandits when page loads
+        loadPanditsForBooking();
     </script>
     <script src="js/auth.js"></script>
 </body>

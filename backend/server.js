@@ -4,14 +4,29 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const notify = require('./events');
+const connectDB = require('./db');
 
 const app = express();
 const PORT = 3000;
+
+// Connect to MongoDB
+connectDB();
 
 // Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files for admin
+app.use('/admin-ui', express.static(path.join(__dirname, '..', 'admin-ui')));
+
+// Admin routes
+const panditsAdminRoutes = require('./routes/admin/pandits.routes');
+app.use('/admin/pandits', panditsAdminRoutes);
+
+// Public routes
+const panditsPublicRoutes = require('./routes/public/pandits.api');
+app.use('/api/pandits', panditsPublicRoutes);
 
 // Data file paths
 const dataDir = path.join(__dirname, '..', 'data');
@@ -219,6 +234,147 @@ app.post('/api/log-error', (req, res) => {
   notify("System Error Logged", error);
 
   res.json({ success: true });
+});
+
+// ===== NEW CALL/CHAT APIs =====
+
+// Start Call/Chat Session
+app.post('/api/start-session', (req, res) => {
+  const { pandit_id, user_id, type } = req.body;
+  
+  const session = {
+    session_id: `S${Date.now()}`,
+    pandit_id,
+    user_id,
+    type,
+    status: 'active',
+    start_time: new Date().toISOString(),
+    end_time: null,
+    minutes: 0,
+    amount: 0
+  };
+
+  const bookings = readJSON(bookingsFile);
+  bookings.push(session);
+  writeJSON(bookingsFile, bookings);
+
+  notify("Session Started", session);
+
+  res.json({ success: true, session });
+});
+
+// Update Session (per minute billing)
+app.post('/api/update-session', (req, res) => {
+  const { session_id, minutes } = req.body;
+  
+  const bookings = readJSON(bookingsFile);
+  const sessionIndex = bookings.findIndex(b => b.booking_id == session_id);
+  
+  if (sessionIndex === -1) {
+    return res.status(404).json({ error: 'Session not found' });
+  }
+
+  const session = bookings[sessionIndex];
+  const pandits = readJSON(panditsFile);
+  const pandit = pandits.find(p => p.id == session.pandit_id);
+  
+  if (!pandit) {
+    return res.status(404).json({ error: 'Pandit not found' });
+  }
+
+  // Calculate price per minute
+  const pricePerMin = session.type === 'call' ? pandit.call_price_per_min : pandit.chat_price_per_min;
+  const newAmount = minutes * pricePerMin;
+  
+  session.minutes = minutes;
+  session.amount = newAmount;
+  
+  writeJSON(bookingsFile, bookings);
+
+  res.json({ success: true, session });
+});
+
+// End Session
+app.post('/api/end-session', (req, res) => {
+  const { session_id } = req.body;
+  
+  const bookings = readJSON(bookingsFile);
+  const sessionIndex = bookings.findIndex(b => b.booking_id == session_id);
+  
+  if (sessionIndex === -1) {
+    return res.status(404).json({ error: 'Session not found' });
+  }
+
+  const session = bookings[sessionIndex];
+  session.status = 'completed';
+  session.end_time = new Date().toISOString();
+  
+  // Update pandit wallet
+  const pandits = readJSON(panditsFile);
+  const panditIndex = pandits.findIndex(p => p.id == session.pandit_id);
+  if (panditIndex !== -1) {
+    pandits[panditIndex].wallet_balance += session.amount * 0.8; // 80% to pandit
+    writeJSON(panditsFile, pandits);
+  }
+
+  writeJSON(bookingsFile, bookings);
+
+  notify("Session Completed", session);
+
+  res.json({ success: true, session });
+});
+
+// Wallet Top-up (Razorpay integration placeholder)
+app.post('/api/wallet-topup', (req, res) => {
+  const { user_id, amount, razorpay_payment_id } = req.body;
+  
+  // Here you would verify Razorpay payment
+  // For now, assume success
+  
+  // Update user wallet (assuming customers.json has wallet_balance)
+  const customers = readJSON(customersFile);
+  const customerIndex = customers.findIndex(c => c.id == user_id);
+  if (customerIndex !== -1) {
+    customers[customerIndex].wallet_balance = (customers[customerIndex].wallet_balance || 0) + amount;
+    writeJSON(customersFile, customers);
+  }
+
+  notify("Wallet Top-up", { user_id, amount, razorpay_payment_id });
+
+  res.json({ success: true, new_balance: customers[customerIndex].wallet_balance });
+});
+
+// Get User Wallet Balance
+app.get('/api/wallet/:user_id', (req, res) => {
+  const { user_id } = req.params;
+  const customers = readJSON(customersFile);
+  const customer = customers.find(c => c.id == user_id);
+  
+  res.json({ balance: customer ? customer.wallet_balance || 0 : 0 });
+});
+
+// Admin Revenue Dashboard
+app.get('/api/admin/revenue', (req, res) => {
+  const bookings = readJSON(bookingsFile);
+  const pandits = readJSON(panditsFile);
+  
+  const totalRevenue = bookings.reduce((sum, b) => sum + (b.amount || 0), 0);
+  const platformCommission = totalRevenue * 0.2; // 20% commission
+  const panditEarnings = totalRevenue * 0.8;
+  
+  const callMinutes = bookings.filter(b => b.type === 'call').reduce((sum, b) => sum + (b.minutes || 0), 0);
+  const chatMinutes = bookings.filter(b => b.type === 'chat').reduce((sum, b) => sum + (b.minutes || 0), 0);
+  
+  const pendingPayouts = pandits.reduce((sum, p) => sum + (p.wallet_balance || 0), 0);
+
+  res.json({
+    total_revenue: totalRevenue,
+    platform_commission: platformCommission,
+    pandit_earnings: panditEarnings,
+    call_minutes_sold: callMinutes,
+    chat_minutes_sold: chatMinutes,
+    pending_payouts: pendingPayouts
+  });
 });
 
 // Start server
